@@ -4,23 +4,24 @@ import BaseLayout from "@/layouts/BaseLayout.astro"
 import BlogCard from "@/components/BlogCard.astro"
 import ProjectCard from "@/components/ProjectCard.astro"
 import SectionHeading from "@/components/SectionHeading.astro"
-import WorkCard from "@/components/WorkCard.astro"
 import { homeIntroConfig } from "@/data/portfolio"
 import { siteMetadata } from "@/data/site"
 import { getAllBlogPosts, getAllProjects, getAllWorkItems } from "@/lib/content"
+import { calculateDuration, formatDateRange } from "@/lib/utils"
 
 const [blog, work, projects] = await Promise.all([
   getAllBlogPosts(),
   getAllWorkItems(),
   getAllProjects(),
 ])
+const featuredWork = work[0]
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: siteMetadata.author.name,
   url: siteMetadata.siteUrl,
   description: siteMetadata.description,
-  jobTitle: homeIntroConfig.facts[4]?.label,
+  jobTitle: "Forward Deployed Engineer",
   sameAs: [
     "https://github.com/pyand3v",
     "https://www.linkedin.com/in/pyandev/",
@@ -31,40 +32,67 @@ const jsonLd = {
 
 <BaseLayout jsonLd={jsonLd}>
   <section class="mx-auto max-w-4xl px-4">
-    <div class="mt-2 text-center motion-safe:animate-[fade-in_0.5s_ease-out]">
-      <h1 class="mb-4 text-3xl font-bold text-gray-900 sm:text-4xl dark:text-gray-100">
-        Hi, I&apos;m {homeIntroConfig.shortName || homeIntroConfig.name}
-        <span class="inline-block motion-safe:animate-[wave_1.5s_ease-in-out_0.5s]">👋</span>
+    <div class="mt-8 max-w-3xl motion-safe:animate-[fade-in_0.5s_ease-out]">
+      <p
+        class="mb-3 text-sm font-bold tracking-[0.18em] text-accent-600 uppercase dark:text-accent-400"
+      >
+        Forward Deployed Engineer
+      </p>
+      <h1 class="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl dark:text-white">
+        {homeIntroConfig.name}
       </h1>
-      <div class="mx-auto mb-8 max-w-3xl space-y-4">
-        <p class="text-left text-base leading-relaxed text-gray-600 sm:text-lg dark:text-gray-300">
-          {homeIntroConfig.introParagraphs[0]}
-        </p><p
-          class="text-left text-base leading-relaxed text-gray-600 sm:text-lg dark:text-gray-300"
+      <p
+        class="mt-5 max-w-2xl text-xl leading-relaxed text-gray-700 sm:text-2xl dark:text-gray-200"
+      >
+        {homeIntroConfig.headline}
+      </p>
+      <p class="mt-5 text-sm font-medium text-gray-600 dark:text-gray-400">
+        {homeIntroConfig.availability}
+      </p>
+      <div class="mt-7 flex flex-wrap items-center gap-3">
+        <a
+          href="/work"
+          class="inline-flex items-center gap-2 rounded-xl bg-accent-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-accent-700 focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:outline-none dark:focus-visible:ring-offset-gray-950"
         >
-          {homeIntroConfig.introParagraphs[1]}
-        </p>
+          View selected work <Icon name="lucide:arrow-right" class="size-4" />
+        </a>
+        <a
+          href="https://www.linkedin.com/in/pyandev/"
+          target="_blank"
+          rel="noreferrer"
+          class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700 transition hover:text-accent-700 focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:outline-none dark:text-gray-200 dark:hover:text-accent-400 dark:focus-visible:ring-offset-gray-950"
+        >
+          Connect on LinkedIn <Icon name="lucide:arrow-up-right" class="size-4" />
+        </a>
       </div>
     </div>
-    <div class="mb-12 flex flex-wrap justify-center gap-2">
-      {
-        homeIntroConfig.facts.map(fact => (
-          <span class="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
-            <Icon name={fact.icon} class="size-4 text-accent-500" />
-            {fact.label}
-          </span>
-        ))
-      }
-    </div>
-    <section class="mb-12">
-      <SectionHeading
-        title="Work Experience"
-        href="/work"
-        showLink={work.length > homeIntroConfig.workItemsToShow}
-      /><div class="grid gap-6">
-        {work.slice(0, homeIntroConfig.workItemsToShow).map(item => <WorkCard item={item} />)}
-      </div>
-    </section>
+    {
+      featuredWork && (
+        <section class="mt-16 mb-12 max-w-3xl">
+          <p class="mb-3 text-sm font-bold tracking-[0.18em] text-accent-600 uppercase dark:text-accent-400">
+            Featured work
+          </p>
+          <article class="rounded-2xl border border-gray-200 bg-white/70 p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900/70">
+            <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+              {formatDateRange(featuredWork.start, featuredWork.end)} ·{" "}
+              {calculateDuration(featuredWork.start, featuredWork.end)}
+            </p>
+            <h2 class="mt-2 text-2xl font-bold text-gray-950 dark:text-white">
+              {featuredWork.title} at {featuredWork.company}
+            </h2>
+            <p class="mt-3 max-w-2xl leading-relaxed text-gray-700 dark:text-gray-300">
+              {featuredWork.description}
+            </p>
+            <a
+              href={`/work/${featuredWork.slug}`}
+              class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-accent-600 transition hover:gap-3 dark:text-accent-400"
+            >
+              Read the work story <Icon name="lucide:arrow-right" class="size-4" />
+            </a>
+          </article>
+        </section>
+      )
+    }
     <section class="mb-12">
       <SectionHeading
         title="Projects"

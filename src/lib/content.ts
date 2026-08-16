@@ -11,9 +11,20 @@ export type BlogPost = CollectionEntry<"blog">["data"] & {
 export type WorkItem = CollectionEntry<"work">["data"] & { slug: string; body: string }
 export type Project = CollectionEntry<"projects">["data"] & { slug: string; body: string }
 
+export const featuredBlogPostSlugs = new Set([
+  "post15",
+  "post14",
+  "post13",
+  "post12",
+  "post11",
+  "post10",
+  "post9",
+])
+
 export async function getAllBlogPosts(): Promise<BlogPost[]> {
   const posts = await getCollection("blog")
   return posts
+    .filter(post => featuredBlogPostSlugs.has(post.id.replace(/\.mdx$/, "")))
     .map(post => ({
       ...post.data,
       slug: post.id.replace(/\.mdx$/, ""),

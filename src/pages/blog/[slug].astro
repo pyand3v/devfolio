@@ -5,12 +5,14 @@ import BaseLayout from "@/layouts/BaseLayout.astro"
 import BlogCard from "@/components/BlogCard.astro"
 import { homeIntroConfig } from "@/data/portfolio"
 import { siteMetadata } from "@/data/site"
-import { getAllBlogPosts } from "@/lib/content"
+import { featuredBlogPostSlugs, getAllBlogPosts } from "@/lib/content"
 import { formatBlogDate, getReadingTime } from "@/lib/utils"
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog")
-  return posts.map(post => ({ params: { slug: post.id.replace(/\.mdx$/, "") }, props: { post } }))
+  return posts
+    .filter(post => featuredBlogPostSlugs.has(post.id.replace(/\.mdx$/, "")))
+    .map(post => ({ params: { slug: post.id.replace(/\.mdx$/, "") }, props: { post } }))
 }
 
 const { post } = Astro.props

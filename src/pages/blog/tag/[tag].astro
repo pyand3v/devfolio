@@ -1,14 +1,11 @@
 ---
-import { getCollection } from "astro:content"
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import BlogCard from "@/components/BlogCard.astro"
 import { getAllBlogPosts } from "@/lib/content"
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog")
-  const tags = [
-    ...new Set(posts.flatMap(post => post.data.tags ?? []).map(tag => tag.toLowerCase())),
-  ]
+  const posts = await getAllBlogPosts()
+  const tags = [...new Set(posts.flatMap(post => post.tags ?? []).map(tag => tag.toLowerCase()))]
   return tags.map(tag => ({ params: { tag } }))
 }
 const { tag } = Astro.params

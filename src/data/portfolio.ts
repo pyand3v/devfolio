@@ -1,21 +1,9 @@
 export const homeIntroConfig = {
   name: "Daniel Benitez",
   shortName: "Daniel",
-  introParagraphs: [
-    "I'm a Forward Deployed Engineer from Paraguay, building thoughtful web, desktop, and infrastructure products. I turn complex customer problems into reliable, useful systems by working closely with the people who depend on them.",
-    "My current interests span Zig, Rust, Go, Astro, Tauri, and Electron, alongside the platform tooling that keeps products healthy: Docker, Linux, Terraform, Kubernetes, Grafana, and Prometheus.",
-  ],
-  facts: [
-    { icon: "lucide:briefcase-business", label: "Forward Deployed Engineer" },
-    { icon: "lucide:map-pin", label: "Paraguay" },
-    { icon: "lucide:layers-3", label: "Web, desktop & systems" },
-    { icon: "lucide:terminal", label: "Zig, Rust & Go" },
-    { icon: "lucide:monitor-smartphone", label: "Astro, Tauri & Electron" },
-    { icon: "lucide:container", label: "Docker & Kubernetes" },
-    { icon: "lucide:network", label: "Platform engineering" },
-    { icon: "lucide:chart-no-axes-combined", label: "Observability" },
-  ],
-  workItemsToShow: 3,
+  headline: "I help teams turn messy customer and platform problems into reliable product systems.",
+  availability: "Based in Paraguay · Remote-first · Open to forward-deployed and platform work",
+  workItemsToShow: 1,
   projectsToShow: 4,
   blogPostsToShow: 3,
 }

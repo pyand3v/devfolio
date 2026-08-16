@@ -1,40 +1,28 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro"
-import CollectionBrowser from "@/components/CollectionBrowser.astro"
 import WorkCard from "@/components/WorkCard.astro"
-import { paginationConfig } from "@/data/portfolio"
 import { getAllWorkItems } from "@/lib/content"
 const work = await getAllWorkItems()
-const counts = new Map<string, number>()
-work.forEach(item => counts.set(item.company, (counts.get(item.company) ?? 0) + 1))
-const filters = [...counts]
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([name, count]) => ({ name, count }))
 ---
 
 <BaseLayout title="Work" description="Explore my professional work experience and career journey."
   ><section class="mx-auto max-w-4xl px-4">
-    <h1 class="sr-only">Work</h1><CollectionBrowser
-      kind="work"
-      filters={filters}
-      pageSize={paginationConfig.workItemsPerPage}
-      filterLabel="Filter by Company"
-      sortOptions={[
-        { value: "newest", label: "Newest First" },
-        { value: "oldest", label: "Oldest First" },
-      ]}
-    /><div class="grid gap-6" data-collection-items="work">
-      {
-        work.map(item => (
-          <div
-            class="collection-item"
-            data-values={item.company}
-            data-sort-key={item.end === "Present" ? "9999-12" : item.end}
-          >
-            <WorkCard item={item} />
-          </div>
-        ))
-      }
+    <header class="mb-8 max-w-2xl">
+      <p
+        class="mb-2 text-sm font-bold tracking-[0.18em] text-accent-600 uppercase dark:text-accent-400"
+      >
+        Career
+      </p>
+      <h1 class="text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl dark:text-white">
+        Work
+      </h1>
+      <p class="mt-3 text-base leading-relaxed text-gray-600 dark:text-gray-300">
+        Selected roles building customer-facing products, platform capabilities, and reliable
+        systems.
+      </p>
+    </header>
+    <div class="grid gap-6">
+      {work.map(item => <WorkCard item={item} />)}
     </div>
   </section></BaseLayout
 >
