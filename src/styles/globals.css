@@ -170,6 +170,19 @@
     auto;
 }
 
+.portfolio-desk-grid {
+  background-color: #090c10;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0,
+      transparent 17px,
+      rgb(159 199 219 / 0.035) 17px,
+      rgb(159 199 219 / 0.035) 18px
+    ),
+    radial-gradient(circle at 12% 84%, rgb(48 78 93 / 0.2), transparent 34%);
+}
+
 .display-type {
   font-family: Gabarito, Arial, sans-serif;
   font-weight: 700;
