@@ -15,10 +15,7 @@ const actionLabel = { en: "Read article", es: "Leer artículo", "pt-br": "Ler ar
 <article
   class="blog-card group flex h-full flex-col border border-white/25 bg-white/5 p-6 text-white transition hover:border-[#c86d61] hover:bg-white/10"
 >
-  <p class="text-xs font-black tracking-[0.16em] text-[#d7df72] uppercase">
-    {post.tags?.[0] ?? "Engineering"}
-  </p>
-  <h3 class="mt-5 text-2xl font-bold leading-tight tracking-tight">
+  <h3 class="text-2xl font-bold leading-tight tracking-tight">
     <a href={`/blog/${post.slug}`}>{post.title}</a>
   </h3>
   <p class="mt-4 grow leading-relaxed text-white/65">{post.summary}</p>
@@ -27,6 +24,17 @@ const actionLabel = { en: "Read article", es: "Leer artículo", "pt-br": "Ler ar
     <span>·</span>
     <span>{post.readingTime} min read</span>
   </div>
+  <ul class="mt-4 flex flex-wrap gap-2" aria-label="Article tags">
+    {(post.tags?.length ? post.tags : ["Engineering"]).map(tag => (
+      <li>
+        <a
+          href={`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`}
+          class="inline-flex border border-[#d7df72]/55 px-2 py-1 text-[0.65rem] leading-none font-black tracking-[0.13em] text-[#d7df72] uppercase transition hover:border-[#c86d61] hover:bg-[#c86d61] hover:text-white focus-visible:border-[#c86d61] focus-visible:bg-[#c86d61] focus-visible:text-white focus-visible:outline-none"
+          >{tag}</a
+        >
+      </li>
+    ))}
+  </ul>
   <a
     href={`/blog/${post.slug}`}
     class="mt-6 inline-flex items-center gap-2 text-xs font-black tracking-[0.14em] text-white uppercase"
