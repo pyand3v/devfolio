@@ -8,8 +8,9 @@ interface Props {
   project: Project
   eager?: boolean
   locale?: Locale
+  surface?: "light" | "dark"
 }
-const { project, eager = false, locale = "en" } = Astro.props
+const { project, eager = false, locale = "en", surface = "light" } = Astro.props
 const visibleTech = project.techStack.slice(0, 5)
 const more = project.techStack.length - visibleTech.length
 const labels = {
@@ -17,13 +18,24 @@ const labels = {
   es: { type: "Proyecto", action: "Ver proyecto" },
   "pt-br": { type: "Projeto", action: "Ver projeto" },
 }[locale]
+const isDark = surface === "dark"
 ---
 
 <a href={`/projects/${project.slug}`} class="group block h-full">
   <article
-    class="flex h-full flex-col overflow-hidden border-2 border-[#11151b] bg-[#f7f4ed] shadow-[6px_6px_0_#c86d61] transition duration-200 hover:-translate-y-1 hover:shadow-[10px_10px_0_#c86d61]"
+    class:list={[
+      "flex h-full flex-col overflow-hidden transition duration-200 hover:-translate-y-1",
+      isDark
+        ? "border border-white/20 bg-white/[0.06] hover:border-[#c86d61] hover:bg-white/[0.1]"
+        : "border-2 border-[#11151b] bg-[#f7f4ed] shadow-[6px_6px_0_#c86d61] hover:shadow-[10px_10px_0_#c86d61]",
+    ]}
   >
-    <div class="relative h-56 overflow-hidden border-b-2 border-[#11151b] bg-[#11151b]">
+    <div
+      class:list={[
+        "relative h-56 overflow-hidden bg-[#11151b]",
+        isDark ? "border-b border-white/20" : "border-b-2 border-[#11151b]",
+      ]}
+    >
       <img
         src={project.image}
         alt={project.title}
@@ -36,25 +48,47 @@ const labels = {
       >
     </div>
     <div class="flex flex-1 flex-col p-6">
-      <p class="text-xs font-black tracking-[0.14em] text-[#a95047] uppercase">
+      <p
+        class:list={[
+          "text-xs font-black tracking-[0.14em] uppercase",
+          isDark ? "text-[#e17669]" : "text-[#a95047]",
+        ]}
+      >
         {formatDateRange(project.startDate, project.endDate)} · {
           calculateDuration(project.startDate, project.endDate)
         }
       </p>
-      <h3 class="mt-4 text-3xl font-bold tracking-tight text-[#11151b]">{project.title}</h3>
-      <p class="mt-3 grow leading-relaxed text-[#11151b]/70">{project.description}</p>
+      <h3
+        class:list={[
+          "mt-4 text-3xl font-bold tracking-tight",
+          isDark ? "text-white" : "text-[#11151b]",
+        ]}
+      >
+        {project.title}
+      </h3>
+      <p class:list={["mt-3 grow leading-relaxed", isDark ? "text-white/65" : "text-[#11151b]/70"]}>
+        {project.description}
+      </p>
       <div class="mt-6 flex flex-wrap gap-2">
-        {visibleTech.map(name => <TechBadge name={name} small />)}
+        {visibleTech.map(name => <TechBadge name={name} small surface={surface} />)}
         {
           more > 0 && (
-            <span class="border border-[#11151b]/35 px-2 py-0.5 text-xs font-bold text-[#11151b]/70">
+            <span
+              class:list={[
+                "border px-2 py-0.5 text-xs font-bold",
+                isDark ? "border-white/35 text-white/70" : "border-[#11151b]/35 text-[#11151b]/70",
+              ]}
+            >
               + {more}
             </span>
           )
         }
       </div>
       <span
-        class="mt-6 inline-flex items-center gap-2 text-xs font-black tracking-[0.14em] text-[#11151b] uppercase"
+        class:list={[
+          "mt-6 inline-flex items-center gap-2 text-xs font-black tracking-[0.14em] uppercase",
+          isDark ? "text-white" : "text-[#11151b]",
+        ]}
         >{labels.action}
         <Icon
           name="lucide:arrow-up-right"

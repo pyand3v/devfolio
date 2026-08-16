@@ -110,13 +110,17 @@ const notesTitleLines = labels.notesTitle.split("\n")
     </section>
   )
 }
-<section class="portfolio-grid bg-[#ece8df] text-[#11151b]">
+<section class="portfolio-projects-grid bg-[#101a26] text-white">
   <div class="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
-    <div class="max-w-4xl">
-      <p class="text-xs font-black tracking-[0.2em] text-[#a95047] uppercase">
-        {labels.projectsLabel}
-      </p>
-      <div class="mt-5 flex flex-wrap items-end justify-between gap-6">
+    <div
+      class="grid gap-8 border-y border-[#75a8c4]/45 py-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end lg:gap-16 lg:py-10"
+    >
+      <div>
+        <p class="text-xs font-black tracking-[0.2em] text-[#9fc7db] uppercase">
+          02 · {labels.projectsLabel}
+        </p>
+      </div>
+      <div>
         <h2 class="display-type max-w-3xl text-5xl leading-[0.9] sm:text-6xl">
           {
             projectTitleLines.map((line, index) => (
@@ -129,7 +133,7 @@ const notesTitleLines = labels.notesTitle.split("\n")
         </h2>
         <a
           href={getLocalizedPath("/projects", locale)}
-          class="mb-1 inline-flex items-center gap-2 border-b-2 border-[#c86d61] pb-2 text-xs font-black tracking-[0.14em] uppercase"
+          class="mt-7 inline-flex items-center gap-2 border-b-2 border-[#9fc7db] pb-2 text-xs font-black tracking-[0.14em] uppercase transition hover:text-[#9fc7db]"
           >{labels.allProjects} <Icon name="lucide:arrow-right" class="size-4" /></a
         >
       </div>
@@ -139,7 +143,7 @@ const notesTitleLines = labels.notesTitle.split("\n")
         projects
           .slice(0, homeIntroConfig.projectsToShow)
           .map((project, index) => (
-            <ProjectCard project={project} eager={index === 0} locale={locale} />
+            <ProjectCard project={project} eager={index === 0} locale={locale} surface="dark" />
           ))
       }
     </div>

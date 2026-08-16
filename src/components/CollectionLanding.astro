@@ -19,22 +19,18 @@ const [work, projects, posts] = await Promise.all([
   getAllBlogPosts(),
 ])
 const titleLines = labels.title.split("\n")
-const themes = {
-  work: "portfolio-dark-grid min-h-screen bg-[#0b0b0c] text-white",
-  projects: "portfolio-grid min-h-screen bg-[#ece8df] text-[#11151b]",
-  blog: "min-h-screen bg-[#11151b] text-white",
-}
-const descriptionColor = kind === "projects" ? "text-[#11151b]/70" : "text-white/70"
 ---
 
-<section class={themes[kind]}>
-  <div class="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
+<section class="portfolio-dark-grid min-h-screen bg-[#0b0b0c] text-white">
+  <div class="mx-auto max-w-[90rem] px-5 py-20 lg:px-10 lg:py-28">
     <header
-      class="grid gap-8 border-b-2 border-[#c86d61] pb-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-end"
+      class="grid gap-10 border-b border-[#c86d61] pb-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16 lg:pb-14"
     >
       <div>
-        <p class="text-xs font-black tracking-[0.2em] text-[#c86d61] uppercase">{labels.eyebrow}</p>
-        <h1 class="display-type mt-6 text-6xl leading-[0.85] sm:text-8xl">
+        <p class="text-xs font-black tracking-[0.22em] text-[#e17669] uppercase">
+          {labels.eyebrow}
+        </p>
+        <h1 class="display-type mt-7 text-6xl leading-[0.82] sm:text-7xl lg:text-8xl">
           {
             titleLines.map((line, index) => (
               <>
@@ -45,7 +41,7 @@ const descriptionColor = kind === "projects" ? "text-[#11151b]/70" : "text-white
           }
         </h1>
       </div>
-      <p class={`max-w-xl text-lg leading-relaxed ${descriptionColor}`}>{labels.description}</p>
+      <p class="max-w-xl text-lg leading-relaxed text-white/75">{labels.description}</p>
     </header>
     {
       kind === "work" && (
@@ -60,7 +56,7 @@ const descriptionColor = kind === "projects" ? "text-[#11151b]/70" : "text-white
       kind === "projects" && (
         <div class="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2">
           {projects.map((project, index) => (
-            <ProjectCard project={project} eager={index === 0} locale={locale} />
+            <ProjectCard project={project} eager={index === 0} locale={locale} surface="dark" />
           ))}
         </div>
       )
