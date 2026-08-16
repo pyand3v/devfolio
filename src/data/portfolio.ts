@@ -21,7 +21,7 @@ export const footerConfig = {
     { label: "GitHub", href: "https://github.com/pyand3v", icon: "fa6-brands:github" },
     {
       label: "LinkedIn",
-      href: "https://www.linkedin.com/in/pyandev/",
+      href: "https://www.linkedin.com/in/danielbenitezpy/",
       icon: "fa6-brands:linkedin",
     },
     { label: "X", href: "https://twitter.com/pyandev", icon: "fa6-brands:x-twitter" },
