@@ -1,6 +1,14 @@
 ---
 import { Icon } from "astro-icon/components"
-import { homeIntroConfig, navItems } from "@/data/portfolio"
+import LanguageFlag from "@/components/LanguageFlag.astro"
+import { homeIntroConfig } from "@/data/portfolio"
+import {
+  copy,
+  getLocaleFromPathname,
+  getLocaleSwitchPath,
+  getLocalizedPath,
+  localeOptions,
+} from "@/lib/i18n"
 
 interface Props {
   pathname: string
@@ -9,155 +17,100 @@ interface Props {
   isBlogPost?: boolean
 }
 
-const { pathname, title, subtitle, isBlogPost = false } = Astro.props
+const { pathname, title, isBlogPost = false } = Astro.props
+const locale = getLocaleFromPathname(pathname)
+const labels = copy[locale]
 const crumbs = pathname.split("/").filter(Boolean)
-const isDetail = /^(blog|projects|work)\/[^/]+$/.test(crumbs.join("/"))
 const initials = homeIntroConfig.name
   .split(" ")
   .map(part => part[0])
   .join("")
   .toUpperCase()
-const accentColors: Record<string, string> = {
-  blue: "#3b82f6",
-  purple: "#a855f7",
-  green: "#22c55e",
-  orange: "#f97316",
-  rose: "#f43f5e",
-  teal: "#14b8a6",
-  indigo: "#6366f1",
-  amber: "#f59e0b",
-  cyan: "#06b6d4",
-  violet: "#8b5cf6",
-  pink: "#ec4899",
-  lime: "#84cc16",
-}
+const navigation = [
+  { key: "work", path: "/work" },
+  { key: "projects", path: "/projects" },
+  { key: "blog", path: "/blog" },
+] as const
+const activePath = `/${crumbs.filter(crumb => !localeOptions.some(item => item.code === crumb))[0] ?? ""}`
+const activeLocale = localeOptions.find(option => option.code === locale) ?? localeOptions[0]
 ---
 
 <header
   id="headerPortfolio"
-  class="sticky top-0 z-50 w-full border-b border-gray-300 bg-zinc-50/90 text-black shadow-sm backdrop-blur-md backdrop-saturate-150 transition-all duration-300 hover:shadow-md dark:border-gray-800 dark:bg-zinc-950/90 dark:text-white"
+  class="sticky top-0 z-50 border-b-4 border-[#c86d61] bg-[#0b0b0c] text-white"
 >
-  <div class="mx-auto flex w-full max-w-4xl items-center justify-between gap-4 px-5 py-4 md:py-5">
-    <div class="min-w-0 flex-1 md:flex-initial">
-      <div class="header-crumbs flex min-w-0 items-center gap-1.5 text-sm font-semibold">
-        <a
-          href="/"
-          class="text-accent-600 transition-colors hover:text-accent-500 dark:text-accent-400"
-          >{initials}</a
-        >
-        {
-          crumbs.map((crumb, index) => (
-            <span class="contents">
-              <span class="text-gray-400">/</span>
-              <span
-                class={
-                  index === crumbs.length - 1
-                    ? "truncate text-gray-700 dark:text-gray-200"
-                    : "text-gray-500"
-                }
-              >
-                {decodeURIComponent(crumb).replaceAll("-", " ")}
-              </span>
-            </span>
-          ))
-        }
-      </div>
-      {
-        isDetail && title && (
-          <div class="header-title hidden min-w-0">
-            <p class="truncate text-sm font-bold text-gray-900 dark:text-white">{title}</p>
-            {subtitle && (
-              <p class="truncate text-xs text-gray-500 dark:text-gray-400">{subtitle}</p>
-            )}
-          </div>
-        )
-      }
-    </div>
-
-    <nav
-      class="hidden items-center rounded-lg border border-gray-200 bg-gray-100 p-1 shadow-inner dark:border-gray-800 dark:bg-gray-900 md:flex"
-      aria-label="Main navigation"
+  <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-6 px-5 py-4 lg:px-8">
+    <a
+      href={getLocalizedPath("/", locale)}
+      class="flex items-center gap-3"
+      aria-label="Daniel Benitez home"
     >
+      <span
+        class="grid size-10 place-items-center border-2 border-white text-sm font-black tracking-tighter"
+        >{initials}</span
+      >
+      <span class="text-xs font-black leading-[0.85] tracking-[0.16em] uppercase sm:text-sm"
+        >Daniel<br />Benitez</span
+      >
+    </a>
+    <nav class="hidden items-center gap-7 md:flex" aria-label="Main navigation">
       {
-        navItems
-          .filter(item => item.path !== "/")
-          .map(item => (
-            <a
-              href={item.path}
-              class:list={[
-                "rounded-md px-3 py-1.5 text-sm font-semibold transition-colors",
-                pathname === item.path || pathname.startsWith(`${item.path}/`)
-                  ? "bg-white text-accent-600 shadow-sm dark:bg-gray-800 dark:text-accent-400"
-                  : "text-gray-600 hover:text-accent-600 dark:text-gray-300 dark:hover:text-accent-400",
-              ]}
-            >
-              {item.name}
-            </a>
-          ))
+        navigation.map(item => (
+          <a
+            href={getLocalizedPath(item.path, locale)}
+            class:list={[
+              "relative py-2 text-xs font-black tracking-[0.14em] uppercase transition-colors after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:bg-[#c86d61] after:transition-transform",
+              activePath === item.path
+                ? "text-white after:scale-x-100"
+                : "text-white/60 hover:text-white after:scale-x-0 hover:after:scale-x-100",
+            ]}
+          >
+            {labels.nav[item.key]}
+          </a>
+        ))
       }
     </nav>
-
     <div class="flex items-center gap-3">
-      <div class="relative">
-        <button
-          id="theme-toggle"
-          class="inline-flex size-10 items-center justify-center rounded-lg border border-gray-300 bg-gray-100 text-gray-700 transition hover:border-accent-500 hover:text-accent-600 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:text-accent-400"
-          aria-label="Change theme"
-          aria-expanded="false"
+      {
+        crumbs.length > 0 && title && (
+          <span class="hidden max-w-48 truncate text-xs font-bold tracking-wide text-white/55 lg:inline">
+            / {title}
+          </span>
+        )
+      }
+      <details class="group relative hidden md:block">
+        <summary
+          class="flex cursor-pointer list-none items-center gap-2 border border-[#c86d61] bg-[#171719] px-3 py-2 text-xs font-black text-white transition hover:bg-[#242426] [&::-webkit-details-marker]:hidden"
         >
-          <Icon name="lucide:sun-moon" class="size-5" />
-        </button>
+          <LanguageFlag locale={activeLocale.code} />
+          <span>{activeLocale.label}</span>
+          <Icon name="lucide:chevron-down" class="size-3 transition group-open:rotate-180" />
+        </summary>
         <div
-          id="theme-menu"
-          class="invisible absolute right-0 top-12 z-50 w-52 origin-top-right rounded-xl border border-gray-200 bg-white p-3 opacity-0 shadow-xl transition dark:border-gray-700 dark:bg-gray-900"
+          class="absolute right-0 mt-2 w-56 overflow-hidden border border-[#c86d61] bg-[#171719] p-1 shadow-2xl"
         >
-          <button
-            data-theme-mode="light"
-            class="theme-mode-btn flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-            ><Icon name="lucide:sun" /> Light</button
-          >
-          <button
-            data-theme-mode="dark"
-            class="theme-mode-btn flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-            ><Icon name="lucide:moon" /> Dark</button
-          >
-          <button
-            data-theme-mode="system"
-            class="theme-mode-btn flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-            ><Icon name="lucide:monitor" /> System</button
-          >
-          <hr class="my-2 border-gray-200 dark:border-gray-700" />
-          <p class="mb-2 px-2 text-xs font-semibold text-gray-500">Accent color</p>
-          <div class="grid grid-cols-4 gap-2" aria-label="Accent color">
-            {
-              [
-                "blue",
-                "purple",
-                "green",
-                "orange",
-                "rose",
-                "teal",
-                "indigo",
-                "amber",
-                "cyan",
-                "violet",
-                "pink",
-                "lime",
-              ].map(color => (
-                <button
-                  data-accent={color}
-                  style={`background-color: ${accentColors[color]}`}
-                  class="accent-dot size-6 rounded-full ring-offset-2 transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent-500 dark:ring-offset-gray-900"
-                  aria-label={`Use ${color} accent`}
-                />
-              ))
-            }
-          </div>
+          {
+            localeOptions.map(option => (
+              <a
+                href={getLocaleSwitchPath(pathname, option.code)}
+                aria-current={option.code === locale ? "true" : undefined}
+                class:list={[
+                  "flex items-center gap-3 px-3 py-3 text-sm font-bold transition",
+                  option.code === locale
+                    ? "bg-[#c86d61] text-white"
+                    : "text-white/85 hover:bg-white/10 hover:text-white",
+                ]}
+              >
+                <LanguageFlag locale={option.code} />
+                {option.label}
+              </a>
+            ))
+          }
         </div>
-      </div>
+      </details>
       <button
         id="mobile-menu-toggle"
-        class="inline-flex size-10 items-center justify-center rounded-lg border border-gray-300 bg-gray-100 text-gray-700 transition hover:border-accent-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 md:hidden"
+        class="inline-flex size-10 items-center justify-center border border-white/30 text-white transition hover:border-[#c86d61] md:hidden"
         aria-label="Toggle navigation"
         aria-expanded="false"
       >
@@ -167,22 +120,49 @@ const accentColors: Record<string, string> = {
   </div>
   <nav
     id="mobile-menu"
-    class="hidden border-t border-gray-200 bg-zinc-50 px-5 py-3 dark:border-gray-800 dark:bg-zinc-950 md:hidden"
+    class="hidden border-t border-white/15 px-5 py-4 md:hidden"
     aria-label="Mobile navigation"
   >
-    <div class="mx-auto flex max-w-4xl flex-col gap-1">
+    <div class="flex flex-col gap-1">
+      <a
+        href={getLocalizedPath("/", locale)}
+        class:list={[
+          "border-l-2 px-3 py-2 text-xs font-black tracking-[0.14em] uppercase",
+          activePath === "/" ? "border-[#c86d61] text-white" : "border-transparent text-white/65",
+        ]}>{labels.nav.home}</a
+      >
       {
-        navItems.map(item => (
+        navigation.map(item => (
           <a
-            href={item.path}
+            href={getLocalizedPath(item.path, locale)}
             class:list={[
-              "rounded-md px-3 py-2 font-semibold",
-              pathname === item.path
-                ? "bg-accent-500/10 text-accent-600 dark:text-accent-400"
-                : "text-gray-700 dark:text-gray-200",
+              "border-l-2 px-3 py-2 text-xs font-black tracking-[0.14em] uppercase",
+              activePath === item.path
+                ? "border-[#c86d61] text-white"
+                : "border-transparent text-white/65",
             ]}
           >
-            {item.name}
+            {labels.nav[item.key]}
+          </a>
+        ))
+      }
+    </div>
+    <div class="mt-4 grid grid-cols-3 gap-2 border-t border-white/15 pt-4">
+      {
+        localeOptions.map(option => (
+          <a
+            href={getLocaleSwitchPath(pathname, option.code)}
+            class:list={[
+              "border px-2 py-2 text-center text-xs font-black",
+              option.code === locale
+                ? "border-[#c86d61] bg-[#c86d61]"
+                : "border-white/25 text-white/70",
+            ]}
+          >
+            <>
+              <LanguageFlag locale={option.code} />
+              <span class="sr-only">{option.label}</span>
+            </>
           </a>
         ))
       }
@@ -192,7 +172,7 @@ const accentColors: Record<string, string> = {
     isBlogPost && (
       <div
         id="scroll-progress"
-        class="h-1 origin-left scale-x-0 bg-accent-500"
+        class="h-1 origin-left scale-x-0 bg-[#c86d61]"
         aria-label="Scroll progress"
       />
     )

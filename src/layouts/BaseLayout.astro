@@ -7,6 +7,7 @@ import "@/styles/globals.css"
 import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import { siteMetadata } from "@/data/site"
+import { getLocaleFromPathname } from "@/lib/i18n"
 import Analytics from "@vercel/analytics/astro"
 import SpeedInsights from "@vercel/speed-insights/astro"
 
@@ -36,6 +37,7 @@ const {
 } = Astro.props
 const fullTitle = title ? `${title} | ${siteMetadata.title}` : siteMetadata.title
 const url = new URL(canonical, siteMetadata.siteUrl).toString()
+const locale = getLocaleFromPathname(Astro.url.pathname)
 const socialImage =
   ogImage === null
     ? null
@@ -46,7 +48,7 @@ const socialImage =
 ---
 
 <!doctype html>
-<html lang="en" data-theme={siteMetadata.theme}>
+<html lang={locale} data-theme={siteMetadata.theme}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
@@ -66,8 +68,6 @@ const socialImage =
       title={`${siteMetadata.title} RSS`}
       href="/rss.xml"
     />
-    <link rel="icon" href="/icons/favicon.ico" />
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content={siteMetadata.title} />
@@ -98,31 +98,17 @@ const socialImage =
         />
       )
     }
-    <script is:inline>
-      const storedTheme = localStorage.getItem("theme") || "system"
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-      document.documentElement.classList.toggle(
-        "dark",
-        storedTheme === "dark" || (storedTheme === "system" && prefersDark)
-      )
-      document.documentElement.dataset.theme =
-        localStorage.getItem("accent-theme") || document.documentElement.dataset.theme || "blue"
-    </script>
   </head>
   <body
-    class="flex min-h-screen flex-col overscroll-none bg-white font-[Gabarito,Arial,sans-serif] antialiased transition-colors dark:bg-zinc-950"
+    class="portfolio-shell flex min-h-screen flex-col overscroll-none font-[Gabarito,Arial,sans-serif] antialiased"
   >
-    <div
-      class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle,#d1d5db_1px,transparent_1px)] bg-size-[30px_30px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)] dark:bg-[radial-gradient(circle,#3f3f46_1px,transparent_1px)]"
-    >
-    </div>
     <Header
       pathname={Astro.url.pathname}
       title={pageTitle}
       subtitle={pageSubtitle}
       isBlogPost={isBlogPost}
     />
-    <main class="container mx-auto grow px-4 py-6"><slot /></main>
+    <main class="grow"><slot /></main>
     <Footer />
     <Analytics />
     <SpeedInsights />

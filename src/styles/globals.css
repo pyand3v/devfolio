@@ -118,6 +118,107 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Studio-inspired portfolio system: intentionally fixed rather than theme-switchable. */
+:root,
+[data-theme] {
+  --background: #ece8df;
+  --foreground: #11151b;
+  --accent-400: #d58376;
+  --accent-500: #c86d61;
+  --accent-600: #a95047;
+  --accent-700: #853e37;
+}
+
+.portfolio-shell {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.portfolio-shell::selection {
+  background: #c86d61;
+  color: #fff;
+}
+
+.portfolio-grid {
+  background-color: #ece8df;
+  background-image:
+    linear-gradient(rgb(17 21 27 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(17 21 27 / 0.07) 1px, transparent 1px);
+  background-size: 2rem 2rem;
+}
+
+.portfolio-dark-grid {
+  background-color: #0b0b0c;
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 14px,
+    rgb(255 255 255 / 0.045) 14px,
+    rgb(255 255 255 / 0.045) 15px
+  );
+}
+
+.display-type {
+  font-family: Gabarito, Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.055em;
+}
+
+.language-flag {
+  position: relative;
+  display: inline-block;
+  width: 1.35rem;
+  height: 0.9rem;
+  flex: none;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.32);
+}
+
+.language-flag-en {
+  background: repeating-linear-gradient(to bottom, #b22234 0 12%, #fff 12% 24%);
+}
+
+.language-flag-en::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 46%;
+  height: 56%;
+  background: #3c3b6e;
+  content: "";
+}
+
+.language-flag-es {
+  background: linear-gradient(to bottom, #aa151b 0 25%, #f1bf00 25% 75%, #aa151b 75% 100%);
+}
+
+.language-flag-pt-br {
+  background: #19934a;
+}
+
+.language-flag-pt-br::before {
+  position: absolute;
+  top: 19%;
+  left: 30%;
+  width: 40%;
+  height: 62%;
+  transform: rotate(45deg);
+  background: #ffdf00;
+  content: "";
+}
+
+.language-flag-pt-br::after {
+  position: absolute;
+  top: 31%;
+  left: 40%;
+  width: 20%;
+  height: 36%;
+  border-radius: 999px;
+  background: #21468b;
+  content: "";
+}
+
 /* View transition: disable default crossfade so the circle reveal animation takes over */
 ::view-transition-old(root),
 ::view-transition-new(root) {

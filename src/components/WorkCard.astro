@@ -1,52 +1,40 @@
 ---
 import { Icon } from "astro-icon/components"
 import type { WorkItem } from "@/lib/content"
+import type { Locale } from "@/lib/i18n"
 import { calculateDuration, formatDateRange } from "@/lib/utils"
 interface Props {
   item: WorkItem
+  locale?: Locale
 }
-const { item } = Astro.props
+const { item, locale = "en" } = Astro.props
+const actionLabel = { en: "Read role", es: "Leer rol", "pt-br": "Ler cargo" }[locale]
 ---
 
 <a href={`/work/${item.slug}`} class="group block">
   <article
-    class="rounded-xl border border-gray-300 bg-gray-100 p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-500 hover:bg-gray-200 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
+    class="border border-white/25 border-t-4 border-t-[#c86d61] bg-[#11151b] p-6 text-white transition hover:-translate-y-1 hover:border-white/60"
   >
-    <div class="flex items-center">
-      {
-        item.logoUrl && (
-          <img
-            src={item.logoUrl}
-            alt={`${item.company} logo`}
-            width="25"
-            height="25"
-            class="mr-4 rounded-full"
-            loading="lazy"
-          />
-        )
-      }
-      <h3 class="text-xl font-semibold transition group-hover:text-accent-500">
-        {item.title} @ {item.company}
-      </h3>
-    </div>
-    <div class="mt-2 flex flex-col text-gray-500 sm:flex-row sm:items-center">
-      <div class="flex items-center gap-2">
-        <Icon name="lucide:calendar-days" class="size-4" /><span
-          >{formatDateRange(item.start, item.end)}</span
-        ><span>·</span><span>{calculateDuration(item.start, item.end)}</span>
+    <div class="flex flex-wrap items-start justify-between gap-5">
+      <div>
+        <p class="text-xs font-black tracking-[0.14em] text-[#d7df72] uppercase">
+          {formatDateRange(item.start, item.end)} · {calculateDuration(item.start, item.end)}
+        </p>
+        <h3 class="mt-4 text-3xl font-bold tracking-tight">{item.title} at {item.company}</h3>
       </div>
       {
         item.locations.length > 0 && (
-          <div class="mt-1 flex items-center sm:ml-2 sm:mt-0">
-            <>
-              <span class="mx-2 hidden sm:inline">|</span>
-              <Icon name="lucide:map-pin" class="mr-1 size-4" />
-              <span>{item.locations.join(", ")}</span>
-            </>
-          </div>
+          <p class="text-xs font-bold tracking-wide text-white/55">{item.locations.join(" · ")}</p>
         )
       }
     </div>
-    <p class="mt-2 text-gray-700 dark:text-gray-300">{item.description}</p>
+    <p class="mt-5 max-w-3xl leading-relaxed text-white/70">{item.description}</p>
+    <span class="mt-6 inline-flex items-center gap-2 text-xs font-black tracking-[0.14em] uppercase"
+      >{actionLabel}
+      <Icon
+        name="lucide:arrow-up-right"
+        class="size-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+      /></span
+    >
   </article>
 </a>

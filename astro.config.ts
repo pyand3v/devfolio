@@ -9,6 +9,11 @@ const site = process.env.PUBLIC_SITE_URL ?? "https://nextjs-portofolio-website.v
 
 export default defineConfig({
   site,
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "es", "pt-br"],
+    routing: { prefixDefaultLocale: false },
+  },
   integrations: [mdx(), sitemap(), icon()],
   vite: {
     plugins: [tailwindcss()],

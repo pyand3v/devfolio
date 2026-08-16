@@ -1,60 +1,67 @@
 ---
 import { Icon } from "astro-icon/components"
-import packageJson from "../../package.json"
 import { footerConfig } from "@/data/portfolio"
+import { copy, getLocaleFromPathname, getLocalizedPath } from "@/lib/i18n"
+
+const locale = getLocaleFromPathname(Astro.url.pathname)
+const labels = copy[locale]
+const navigation = [
+  { key: "home", path: "/" },
+  { key: "work", path: "/work" },
+  { key: "projects", path: "/projects" },
+  { key: "blog", path: "/blog" },
+] as const
 ---
 
 <footer
   id="footerPortfolio"
-  class="relative mt-6 border-t border-gray-200 bg-zinc-50/80 px-4 py-6 text-center text-sm text-gray-600 backdrop-blur-sm dark:border-gray-900 dark:bg-zinc-950/80 dark:text-gray-400"
+  class="border-t-4 border-[#c86d61] bg-[#0b0b0c] px-5 py-12 text-white lg:px-8"
 >
-  <div class="mb-4 flex flex-wrap justify-center gap-4">
-    {
-      footerConfig.socialLinks.map(link => (
-        <a
-          href={link.href}
-          aria-label={link.label}
-          class="group flex size-11 items-center justify-center rounded-lg border border-gray-300 bg-gray-100 text-gray-700 transition-all duration-200 hover:scale-110 hover:border-accent-500 hover:bg-accent-500/10 hover:text-accent-600 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-accent-400 dark:hover:text-accent-400"
-        >
-          <Icon name={link.icon} class="size-5" />
-        </a>
-      ))
-    }
+  <div class="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.2fr_1fr_1fr]">
+    <div>
+      <p class="text-sm font-black tracking-[0.16em] uppercase">Daniel Benitez</p>
+      <p class="mt-4 max-w-xs text-sm leading-relaxed text-white/60">{labels.footer.description}</p>
+    </div>
+    <div>
+      <p class="text-xs font-black tracking-[0.16em] text-[#c86d61] uppercase">
+        {labels.footer.explore}
+      </p>
+      <div class="mt-4 flex flex-col gap-2">
+        {
+          navigation.map(item => (
+            <a
+              href={getLocalizedPath(item.path, locale)}
+              class="text-sm font-bold text-white/75 hover:text-white"
+            >
+              {labels.nav[item.key]}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+    <div>
+      <p class="text-xs font-black tracking-[0.16em] text-[#c86d61] uppercase">
+        {labels.footer.findMe}
+      </p>
+      <div class="mt-4 flex gap-3">
+        {
+          footerConfig.socialLinks.map(link => (
+            <a
+              href={link.href}
+              aria-label={link.label}
+              class="grid size-10 place-items-center border border-white/25 text-white transition hover:border-[#c86d61] hover:bg-[#c86d61]"
+            >
+              <Icon name={link.icon} class="size-4" />
+            </a>
+          ))
+        }
+      </div>
+    </div>
   </div>
-  <div
-    class="mx-auto mb-4 h-px max-w-xs bg-linear-to-r from-transparent via-gray-300 to-transparent dark:via-gray-700"
+  <p
+    class="mx-auto mt-12 max-w-7xl border-t border-white/15 pt-5 text-xs font-semibold tracking-wide text-white/45"
   >
-  </div>
-  <p class="mb-2">
     © {new Date().getFullYear()}
     {footerConfig.copyrightName}. All rights reserved.
   </p>
-  {
-    footerConfig.showVersionAndAttribution && (
-      <div class="flex flex-col items-center justify-center gap-2 font-mono text-xs text-gray-500 sm:flex-row sm:gap-3">
-        <a
-          href={`https://github.com/alemoraru/nextjs-portofolio-website/releases/tag/v${packageJson.version}`}
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-gray-200 px-3 py-1.5 transition hover:border-accent-500 hover:bg-accent-500/10 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-accent-400"
-        >
-          <>
-            <Icon name="lucide:git-branch" class="size-3" />
-            <span class="font-semibold text-accent-600 dark:text-accent-400">
-              {packageJson.version}
-            </span>
-          </>
-        </a>
-        <span>
-          built by{" "}
-          <a
-            href="https://github.com/alemoraru"
-            rel="noopener noreferrer"
-            class="font-semibold hover:text-accent-500"
-          >
-            @alemoraru
-          </a>
-        </span>
-      </div>
-    )
-  }
 </footer>

@@ -1,0 +1,16 @@
+---
+import type { Locale } from "@/lib/i18n"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const labels: Record<Locale, string> = {
+  en: "United States",
+  es: "Spain",
+  "pt-br": "Brazil",
+}
+---
+
+<span class={`language-flag language-flag-${locale}`} role="img" aria-label={labels[locale]}></span>

@@ -1,0 +1,180 @@
+---
+import { Icon } from "astro-icon/components"
+import BlogCard from "@/components/BlogCard.astro"
+import ProjectCard from "@/components/ProjectCard.astro"
+import type { Locale } from "@/lib/i18n"
+import { copy, getLocalizedPath } from "@/lib/i18n"
+import { homeIntroConfig } from "@/data/portfolio"
+import { getAllBlogPosts, getAllProjects, getAllWorkItems } from "@/lib/content"
+import { calculateDuration, formatDateRange } from "@/lib/utils"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const labels = copy[locale].home
+const [blog, work, projects] = await Promise.all([
+  getAllBlogPosts(),
+  getAllWorkItems(),
+  getAllProjects(),
+])
+const featuredWork = work[0]
+const titleLines = labels.title.split("\n")
+const featuredTitleLines = labels.featuredTitle.split("\n")
+const projectTitleLines = labels.projectsTitle.split("\n")
+const notesTitleLines = labels.notesTitle.split("\n")
+---
+
+<section class="relative isolate overflow-hidden bg-[#061426] text-white">
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 bg-[radial-gradient(circle_at_75%_30%,#174772_0%,transparent_30%),radial-gradient(circle_at_35%_105%,#0d2e4d_0%,transparent_42%),linear-gradient(135deg,#061426,#02070e)]"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="absolute -right-24 top-40 size-[32rem] rotate-45 border-[28px] border-[#c86d61]/85 shadow-[0_0_0_28px_rgb(200_109_97_/_0.16)] sm:-right-10"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 bg-[linear-gradient(rgb(255_255_255_/_0.035)_1px,transparent_1px),linear-gradient(90deg,rgb(255_255_255_/_0.035)_1px,transparent_1px)] bg-size-[40px_40px]"
+  >
+  </div>
+  <div class="relative mx-auto flex min-h-[42rem] max-w-7xl items-end px-5 py-18 lg:px-8 lg:py-24">
+    <div class="max-w-4xl">
+      <p class="mb-7 text-xs font-black tracking-[0.22em] text-[#d7df72] uppercase">
+        {labels.eyebrow}
+      </p>
+      <h1 class="display-type max-w-3xl text-5xl leading-[0.87] sm:text-7xl lg:text-8xl">
+        {
+          titleLines.map((line, index) => (
+            <>
+              {line}
+              {index < titleLines.length - 1 && <br />}
+            </>
+          ))
+        }
+      </h1>
+      <p class="mt-7 max-w-xl text-lg leading-relaxed text-white/75 sm:text-xl">
+        {labels.headline}
+      </p>
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <a
+          href={getLocalizedPath("/work", locale)}
+          class="inline-flex items-center gap-3 bg-[#c86d61] px-6 py-4 text-xs font-black tracking-[0.14em] uppercase transition hover:bg-white hover:text-[#11151b]"
+          >{labels.primary} <Icon name="lucide:arrow-up-right" class="size-4" /></a
+        >
+        <span class="text-xs font-black tracking-[0.14em] text-white/70 uppercase"
+          >{labels.availability}</span
+        >
+      </div>
+    </div>
+  </div>
+</section>
+{
+  featuredWork && (
+    <section class="portfolio-dark-grid border-y-4 border-[#c86d61] bg-[#0b0b0c] text-white">
+      <div class="mx-auto grid max-w-7xl gap-12 px-5 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:px-8 lg:py-28">
+        <div>
+          <p class="text-xs font-black tracking-[0.2em] text-[#c86d61] uppercase">
+            {labels.featuredLabel}
+          </p>
+          <h2 class="display-type mt-6 max-w-3xl text-5xl leading-[0.9] sm:text-6xl">
+            {featuredTitleLines.map((line, index) => (
+              <>
+                {line}
+                {index < featuredTitleLines.length - 1 && <br />}
+              </>
+            ))}
+          </h2>
+        </div>
+        <article class="border border-white/25 bg-white/5 p-7 backdrop-blur-sm">
+          <p class="text-xs font-black tracking-[0.14em] text-[#d7df72] uppercase">
+            {formatDateRange(featuredWork.start, featuredWork.end)} ·{" "}
+            {calculateDuration(featuredWork.start, featuredWork.end)}
+          </p>
+          <h3 class="mt-4 text-3xl font-bold tracking-tight">
+            {featuredWork.title} at {featuredWork.company}
+          </h3>
+          <p class="mt-4 leading-relaxed text-white/70">{featuredWork.description}</p>
+          <a
+            href={`/work/${featuredWork.slug}`}
+            class="mt-7 inline-flex items-center gap-3 border-b-2 border-[#c86d61] pb-2 text-xs font-black tracking-[0.14em] uppercase transition hover:text-[#d7df72]"
+          >
+            {labels.story} <Icon name="lucide:arrow-right" class="size-4" />
+          </a>
+        </article>
+      </div>
+    </section>
+  )
+}
+<section class="portfolio-grid bg-[#ece8df] text-[#11151b]">
+  <div class="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
+    <div class="max-w-4xl">
+      <p class="text-xs font-black tracking-[0.2em] text-[#a95047] uppercase">
+        {labels.projectsLabel}
+      </p>
+      <div class="mt-5 flex flex-wrap items-end justify-between gap-6">
+        <h2 class="display-type max-w-3xl text-5xl leading-[0.9] sm:text-6xl">
+          {
+            projectTitleLines.map((line, index) => (
+              <>
+                {line}
+                {index < projectTitleLines.length - 1 && <br />}
+              </>
+            ))
+          }
+        </h2>
+        <a
+          href={getLocalizedPath("/projects", locale)}
+          class="mb-1 inline-flex items-center gap-2 border-b-2 border-[#c86d61] pb-2 text-xs font-black tracking-[0.14em] uppercase"
+          >{labels.allProjects} <Icon name="lucide:arrow-right" class="size-4" /></a
+        >
+      </div>
+    </div>
+    <div class="mt-14 grid grid-cols-1 gap-7 md:grid-cols-2">
+      {
+        projects
+          .slice(0, homeIntroConfig.projectsToShow)
+          .map((project, index) => (
+            <ProjectCard project={project} eager={index === 0} locale={locale} />
+          ))
+      }
+    </div>
+  </div>
+</section>
+<section class="bg-[#11151b] text-white">
+  <div class="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p class="text-xs font-black tracking-[0.2em] text-[#c86d61] uppercase">
+          {labels.notesLabel}
+        </p>
+        <h2 class="display-type mt-5 text-5xl leading-[0.9] sm:text-6xl">
+          {
+            notesTitleLines.map((line, index) => (
+              <>
+                {line}
+                {index < notesTitleLines.length - 1 && <br />}
+              </>
+            ))
+          }
+        </h2>
+      </div>
+      <a
+        href={getLocalizedPath("/blog", locale)}
+        class="mb-1 inline-flex items-center gap-2 border-b-2 border-[#c86d61] pb-2 text-xs font-black tracking-[0.14em] uppercase"
+        >{labels.readBlog} <Icon name="lucide:arrow-right" class="size-4" /></a
+      >
+    </div>
+    <div class="mt-14 grid gap-5 lg:grid-cols-3">
+      {
+        blog
+          .slice(0, homeIntroConfig.blogPostsToShow)
+          .map(post => <BlogCard post={post} locale={locale} />)
+      }
+    </div>
+  </div>
+</section>

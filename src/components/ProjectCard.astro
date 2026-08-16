@@ -1,57 +1,66 @@
 ---
 import { Icon } from "astro-icon/components"
 import type { Project } from "@/lib/content"
+import type { Locale } from "@/lib/i18n"
 import TechBadge from "@/components/TechBadge.astro"
 import { calculateDuration, formatDateRange } from "@/lib/utils"
 interface Props {
   project: Project
   eager?: boolean
+  locale?: Locale
 }
-const { project, eager = false } = Astro.props
+const { project, eager = false, locale = "en" } = Astro.props
 const visibleTech = project.techStack.slice(0, 5)
 const more = project.techStack.length - visibleTech.length
+const labels = {
+  en: { type: "Project", action: "View project" },
+  es: { type: "Proyecto", action: "Ver proyecto" },
+  "pt-br": { type: "Projeto", action: "Ver projeto" },
+}[locale]
 ---
 
 <a href={`/projects/${project.slug}`} class="group block h-full">
   <article
-    class="flex h-full flex-col overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-accent-500 hover:shadow-2xl hover:shadow-accent-500/20 dark:border-gray-700 dark:bg-gray-900"
+    class="flex h-full flex-col overflow-hidden border-2 border-[#11151b] bg-[#f7f4ed] shadow-[6px_6px_0_#c86d61] transition duration-200 hover:-translate-y-1 hover:shadow-[10px_10px_0_#c86d61]"
   >
-    <div class="relative h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-900">
+    <div class="relative h-56 overflow-hidden border-b-2 border-[#11151b] bg-[#11151b]">
       <img
         src={project.image}
         alt={project.title}
-        class="size-full object-cover transition-transform duration-300 group-hover:scale-110"
+        class="size-full object-cover transition duration-500 group-hover:scale-105 group-hover:opacity-80"
         loading={eager ? "eager" : "lazy"}
       />
+      <span
+        class="absolute right-4 top-4 bg-[#c86d61] px-2 py-1 text-[0.65rem] font-black tracking-[0.14em] text-white uppercase"
+        >{labels.type}</span
+      >
     </div>
-    <div
-      class="flex flex-1 flex-col gap-3 bg-linear-to-b from-white to-gray-50/70 p-4 dark:from-gray-900 dark:to-gray-900/65"
-    >
-      <div class="flex flex-col gap-2">
-        <h3
-          class="text-center text-lg font-bold text-gray-900 transition-colors group-hover:text-accent-600 dark:text-white dark:group-hover:text-accent-400"
-        >
-          {project.title}
-        </h3><p
-          class="line-clamp-2 text-center text-sm leading-relaxed text-gray-600 dark:text-gray-400"
-        >
-          {project.description}
-        </p>
-      </div>
-      <div class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-        <Icon name="lucide:calendar-days" class="size-3" /><span
-          >{formatDateRange(project.startDate, project.endDate)}</span
-        ><span>·</span><span>{calculateDuration(project.startDate, project.endDate)}</span>
-      </div>
-      <div class="flex flex-wrap justify-center gap-2">
-        {visibleTech.map(name => <TechBadge name={name} small />)}{
+    <div class="flex flex-1 flex-col p-6">
+      <p class="text-xs font-black tracking-[0.14em] text-[#a95047] uppercase">
+        {formatDateRange(project.startDate, project.endDate)} · {
+          calculateDuration(project.startDate, project.endDate)
+        }
+      </p>
+      <h3 class="mt-4 text-3xl font-bold tracking-tight text-[#11151b]">{project.title}</h3>
+      <p class="mt-3 grow leading-relaxed text-[#11151b]/70">{project.description}</p>
+      <div class="mt-6 flex flex-wrap gap-2">
+        {visibleTech.map(name => <TechBadge name={name} small />)}
+        {
           more > 0 && (
-            <span class="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-              + {more} more
+            <span class="border border-[#11151b]/35 px-2 py-0.5 text-xs font-bold text-[#11151b]/70">
+              + {more}
             </span>
           )
         }
       </div>
+      <span
+        class="mt-6 inline-flex items-center gap-2 text-xs font-black tracking-[0.14em] text-[#11151b] uppercase"
+        >{labels.action}
+        <Icon
+          name="lucide:arrow-up-right"
+          class="size-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        /></span
+      >
     </div>
   </article>
 </a>
