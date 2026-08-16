@@ -4,7 +4,7 @@ import { getAllBlogPosts } from "@/lib/content"
 import { escapeXml } from "@/lib/utils"
 
 export const GET: APIRoute = async () => {
-  const posts = await getAllBlogPosts()
+  const posts = await getAllBlogPosts("en", { featuredOnly: false })
   const feedUrl = `${siteMetadata.siteUrl}/rss.xml`
   const items = posts
     .map(post => {

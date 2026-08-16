@@ -12,12 +12,10 @@ import {
 
 interface Props {
   pathname: string
-  title?: string
-  subtitle?: string
   isBlogPost?: boolean
 }
 
-const { pathname, title, isBlogPost = false } = Astro.props
+const { pathname, isBlogPost = false } = Astro.props
 const locale = getLocaleFromPathname(pathname)
 const labels = copy[locale]
 const crumbs = pathname.split("/").filter(Boolean)
@@ -71,13 +69,6 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
       }
     </nav>
     <div class="flex items-center gap-3">
-      {
-        crumbs.length > 0 && title && (
-          <span class="hidden max-w-48 truncate text-xs font-bold tracking-wide text-white/55 lg:inline">
-            / {title}
-          </span>
-        )
-      }
       <details class="group relative hidden md:block">
         <summary
           class="flex cursor-pointer list-none items-center gap-2 border border-[#c86d61] bg-[#171719] px-3 py-2 text-xs font-black text-white transition hover:bg-[#242426] [&::-webkit-details-marker]:hidden"
@@ -93,6 +84,7 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
             localeOptions.map(option => (
               <a
                 href={getLocaleSwitchPath(pathname, option.code)}
+                data-locale-option={option.code}
                 aria-current={option.code === locale ? "true" : undefined}
                 class:list={[
                   "flex items-center gap-3 px-3 py-3 text-sm font-bold transition",
@@ -152,6 +144,7 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
         localeOptions.map(option => (
           <a
             href={getLocaleSwitchPath(pathname, option.code)}
+            data-locale-option={option.code}
             class:list={[
               "border px-2 py-2 text-center text-xs font-black",
               option.code === locale

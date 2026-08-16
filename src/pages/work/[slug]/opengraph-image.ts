@@ -1,12 +1,12 @@
 import type { APIRoute } from "astro"
-import { getCollection } from "astro:content"
 import { siteMetadata } from "@/data/site"
 import { createOgImage } from "@/lib/og"
+import { getAllWorkItems } from "@/lib/content"
 export async function getStaticPaths() {
-  const work = await getCollection("work")
+  const work = await getAllWorkItems()
   return work.map(item => ({
-    params: { slug: item.id.replace(/\.mdx$/, "") },
-    props: { title: `${item.data.title} @ ${item.data.company}` },
+    params: { slug: item.slug },
+    props: { title: `${item.title} @ ${item.company}` },
   }))
 }
 export const GET: APIRoute = ({ props }) =>

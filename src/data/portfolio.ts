@@ -1,8 +1,8 @@
 export const homeIntroConfig = {
   name: "Daniel Benitez",
   shortName: "Daniel",
-  headline: "I help teams turn messy customer and platform problems into reliable product systems.",
-  availability: "Based in Paraguay · Remote-first · Open to forward-deployed and platform work",
+  headline: "I turn customer insight and business goals into useful, polished software.",
+  availability: "Based in Paraguay · Remote-first · Open to product engineering roles",
   workItemsToShow: 1,
   projectsToShow: 4,
   blogPostsToShow: 3,

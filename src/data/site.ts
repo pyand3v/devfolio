@@ -14,18 +14,19 @@ export type Theme =
 
 export const siteMetadata = {
   theme: "blue" as Theme,
-  title: "Daniel Benitez | Forward Deployed Engineer",
+  title: "Daniel Benitez | Product Engineer",
   description:
-    "Forward Deployed Engineer building thoughtful web, desktop, systems, and platform products.",
+    "Product Engineer building useful, polished software from customer insight to reliable release.",
   keywords: [
-    "Forward Deployed Engineer",
-    "Platform Engineering",
+    "Product Engineer",
+    "Product Development",
+    "User Experience",
     "Astro",
     "TypeScript",
     "Tauri",
     "Rust",
     "Go",
-    "Infrastructure",
+    "Frontend Engineering",
     "Portfolio",
   ],
   author: { name: "Daniel Benitez", url: "https://www.pyan.dev" },

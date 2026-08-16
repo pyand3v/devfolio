@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run content:check && astro build",
+    "content:check": "node scripts/content-check.mjs",
     "start": "astro preview",
     "restart-prod": "astro build && astro preview",
     "format:check": "prettier --check .",
@@ -56,6 +57,7 @@
     "schema-dts": "2.0.0",
     "tailwindcss": "4.3.3",
     "typescript": "6.0.3",
+    "vite": "8.2.0",
     "vitest": "4.1.10"
   },
   "lint-staged": {

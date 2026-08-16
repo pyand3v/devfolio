@@ -1,7 +1,6 @@
 import type { APIRoute } from "astro"
 import { siteMetadata } from "@/data/site"
 import { getAllBlogPosts, getAllProjects, getAllWorkItems } from "@/lib/content"
-import { locales } from "@/lib/i18n"
 import { escapeXml } from "@/lib/utils"
 
 type SitemapEntry = {
@@ -18,11 +17,10 @@ const xmlEntry = ({ path, lastmod, changefreq, priority }: SitemapEntry) => {
 }
 
 export const GET: APIRoute = async () => {
-  const [posts, workItems, projects, localizedPosts] = await Promise.all([
-    getAllBlogPosts(),
+  const [posts, workItems, projects] = await Promise.all([
+    getAllBlogPosts("en", { featuredOnly: false }),
     getAllWorkItems(),
     getAllProjects(),
-    Promise.all(locales.filter(locale => locale !== "en").map(locale => getAllBlogPosts(locale))),
   ])
   const tags = [...new Set(posts.flatMap(post => post.tags ?? []))]
   const entries: SitemapEntry[] = [
@@ -41,18 +39,6 @@ export const GET: APIRoute = async () => {
       changefreq: "monthly" as const,
       priority: 0.5,
     })),
-    ...localizedPosts.flatMap((postsForLocale, index) => {
-      const locale = locales.filter(value => value !== "en")[index]
-      return [
-        { path: `/${locale}/blog`, changefreq: "weekly" as const, priority: 0.8 },
-        ...postsForLocale.map(post => ({
-          path: `/${locale}/blog/${post.slug}`,
-          lastmod: new Date(post.updatedAt).toISOString().slice(0, 10),
-          changefreq: "monthly" as const,
-          priority: 0.7,
-        })),
-      ]
-    }),
     ...workItems.map(item => ({
       path: `/work/${item.slug}`,
       changefreq: "monthly" as const,

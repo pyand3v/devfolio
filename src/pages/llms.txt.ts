@@ -5,7 +5,7 @@ import { formatDateRange } from "@/lib/utils"
 
 export const GET: APIRoute = async () => {
   const [posts, projects, work] = await Promise.all([
-    getAllBlogPosts(),
+    getAllBlogPosts("en", { featuredOnly: false }),
     getAllProjects(),
     getAllWorkItems(),
   ])

@@ -1,41 +1,46 @@
 ---
-import { getCollection } from "astro:content"
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import BlogArticleContent from "@/components/BlogArticleContent.astro"
 import { homeIntroConfig } from "@/data/portfolio"
 import { siteMetadata } from "@/data/site"
-import { featuredBlogPostSlugs } from "@/lib/content"
+import { getAllBlogPosts } from "@/lib/content"
 import { locales, type Locale } from "@/lib/i18n"
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog")
-  return posts
-    .filter(
-      post =>
-        post.data.locale !== "en" &&
-        featuredBlogPostSlugs.has(post.data.translationKey) &&
-        locales.includes(post.data.locale)
-    )
-    .map(post => ({ params: { locale: post.data.locale, slug: post.data.slug }, props: { post } }))
+  const paths = await Promise.all(
+    locales
+      .filter(locale => locale !== "en")
+      .map(async locale => {
+        const posts = await getAllBlogPosts(locale, { featuredOnly: false })
+        return posts.map(post => ({ params: { locale, slug: post.slug }, props: { post } }))
+      })
+  )
+  return paths.flat()
 }
 
 const { post } = Astro.props
 const locale = Astro.params.locale as Locale
-const canonical = `/${locale}/blog/${post.data.slug}`
+const canonical = `/blog/${post.slug}`
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: post.data.title,
-  description: post.data.summary,
+  headline: post.title,
+  description: post.summary,
   image: `${siteMetadata.siteUrl}${canonical}/opengraph-image`,
-  datePublished: post.data.publishedAt,
-  dateModified: post.data.updatedAt,
+  datePublished: post.publishedAt,
+  dateModified: post.updatedAt,
   url: `${siteMetadata.siteUrl}${canonical}`,
-  keywords: post.data.tags?.join(", "),
+  keywords: post.tags?.join(", "),
   author: { "@type": "Person", name: homeIntroConfig.name, url: siteMetadata.siteUrl },
 }
 ---
 
-<BaseLayout title={post.data.title} description={post.data.summary} canonical={canonical} isBlogPost jsonLd={jsonLd}>
+<BaseLayout
+  title={post.title}
+  description={post.summary}
+  canonical={canonical}
+  isBlogPost
+  jsonLd={jsonLd}
+>
   <BlogArticleContent post={post} locale={locale} />
 </BaseLayout>

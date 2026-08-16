@@ -1,105 +1,101 @@
 ---
-import { getCollection, render } from "astro:content"
+import { render } from "astro:content"
 import { Icon } from "astro-icon/components"
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import TechBadge from "@/components/TechBadge.astro"
 import { homeIntroConfig } from "@/data/portfolio"
 import { siteMetadata } from "@/data/site"
 import { formatDateRange } from "@/lib/utils"
+import { getAllWorkItems } from "@/lib/content"
 
 export async function getStaticPaths() {
-  const items = await getCollection("work")
-  return items.map(item => ({ params: { slug: item.id.replace(/\.mdx$/, "") }, props: { item } }))
+  const items = await getAllWorkItems()
+  return items.map(item => ({ params: { slug: item.slug }, props: { item } }))
 }
 const { item } = Astro.props
-const { Content, headings } = await render(item)
-const slug = item.id.replace(/\.mdx$/, "")
+const { Content, headings } = await render(item.entry)
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "OrganizationRole",
-  roleName: item.data.title,
-  startDate: item.data.start,
-  endDate: item.data.end,
-  memberOf: { "@type": "Organization", name: item.data.company },
-  url: `${siteMetadata.siteUrl}/work/${slug}`,
+  roleName: item.title,
+  startDate: item.start,
+  endDate: item.end,
+  memberOf: { "@type": "Organization", name: item.company },
+  url: `${siteMetadata.siteUrl}/work/${item.slug}`,
 }
 ---
 
 <BaseLayout
-  title={`${item.data.title} at ${item.data.company}`}
-  description={item.data.description}
-  canonical={`/work/${slug}`}
-  pageTitle={`${item.data.title} @ ${item.data.company}`}
-  pageSubtitle={`${homeIntroConfig.name}'s Work · ${formatDateRange(item.data.start, item.data.end)}`}
+  title={`${item.title} at ${item.company}`}
+  description={item.description}
+  canonical={`/work/${item.slug}`}
+  pageTitle={`${item.title} @ ${item.company}`}
+  pageSubtitle={`${homeIntroConfig.name}'s Work · ${formatDateRange(item.start, item.end)}`}
   jsonLd={jsonLd}
 >
   <section class="dark min-h-screen bg-[#11151b] text-white">
-  <article class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12">
-    <a
-      href="/work"
-      class="mb-8 inline-flex items-center gap-1 text-sm font-semibold text-[#d7df72] transition hover:gap-2 hover:text-white"
-      ><Icon name="lucide:arrow-left" class="size-4" />Back to Work</a
-    ><div class="mb-8 flex items-start gap-4">
-      {
-        item.data.logoUrl && (
-          <img
-            src={item.data.logoUrl}
-            alt={`${item.data.company} logo`}
-            class="size-12 rounded-full"
-          />
-        )
-      }<div>
-        <h1 class="text-3xl font-bold">{item.data.title} @ {item.data.company}</h1><p
-          class="mt-2 text-gray-600 dark:text-gray-300"
-        >
-          {item.data.description}
-        </p>
-      </div>
-    </div><div class="mb-8 flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-300">
-      <span
-        class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-900"
-        ><Icon name="lucide:calendar-days" />{formatDateRange(item.data.start, item.data.end)}</span
-      >{
-        item.data.locations.map(location => (
-          <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-900">
-            <Icon name="lucide:map-pin" />
-            {location}
-          </span>
-        ))
-      }
-    </div>{
-      item.data.techStack && (
-        <section class="mb-8">
-          <>
-            <h2 class="mb-3 text-xl font-semibold">Tech Stack</h2>
-            <div class="flex flex-wrap gap-2">
-              {item.data.techStack.map(name => (
-                <TechBadge name={name} surface="dark" />
-              ))}
-            </div>
-          </>
-        </section>
-      )
-    }{
-      headings.length > 0 && (
-        <details class="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
-          <>
-            <summary class="cursor-pointer font-semibold">Table of contents</summary>
-            <ol class="mt-3 space-y-1 text-sm">
-              {headings
-                .filter(heading => heading.depth <= 3)
-                .map(heading => (
-                  <li>
-                    <a href={`#${heading.slug}`} class="hover:text-accent-600">
-                      {heading.text}
-                    </a>
-                  </li>
+    <article class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12">
+      <a
+        href="/work"
+        class="mb-8 inline-flex items-center gap-1 text-sm font-semibold text-[#d7df72] transition hover:gap-2 hover:text-white"
+        ><Icon name="lucide:arrow-left" class="size-4" />Back to Work</a
+      ><div class="mb-8 flex items-start gap-4">
+        {
+          item.logoUrl && (
+            <img src={item.logoUrl} alt={`${item.company} logo`} class="size-12 rounded-full" />
+          )
+        }<div>
+          <h1 class="text-3xl font-bold">{item.title} @ {item.company}</h1><p
+            class="mt-2 text-gray-600 dark:text-gray-300"
+          >
+            {item.description}
+          </p>
+        </div>
+      </div><div class="mb-8 flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-300">
+        <span
+          class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-900"
+          ><Icon name="lucide:calendar-days" />{formatDateRange(item.start, item.end)}</span
+        >{
+          item.locations.map(location => (
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-900">
+              <Icon name="lucide:map-pin" />
+              {location}
+            </span>
+          ))
+        }
+      </div>{
+        item.techStack && (
+          <section class="mb-8">
+            <>
+              <h2 class="mb-3 text-xl font-semibold">Tech Stack</h2>
+              <div class="flex flex-wrap gap-2">
+                {item.techStack.map(name => (
+                  <TechBadge name={name} surface="dark" />
                 ))}
-            </ol>
-          </>
-        </details>
-      )
-    }<div class="prose prose-invert max-w-full overflow-hidden"><Content /></div>
-  </article>
+              </div>
+            </>
+          </section>
+        )
+      }{
+        headings.length > 0 && (
+          <details class="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+            <>
+              <summary class="cursor-pointer font-semibold">Table of contents</summary>
+              <ol class="mt-3 space-y-1 text-sm">
+                {headings
+                  .filter(heading => heading.depth <= 3)
+                  .map(heading => (
+                    <li>
+                      <a href={`#${heading.slug}`} class="hover:text-accent-600">
+                        {heading.text}
+                      </a>
+                    </li>
+                  ))}
+              </ol>
+            </>
+          </details>
+        )
+      }<div class="prose prose-invert max-w-full overflow-hidden"><Content /></div>
+    </article>
   </section>
 </BaseLayout>

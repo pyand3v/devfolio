@@ -43,6 +43,33 @@ const ready = () => {
     mobileToggle.setAttribute("aria-expanded", String(isOpen))
   })
 
+  document.querySelectorAll<HTMLElement>("[data-locale-option]").forEach(option =>
+    option.addEventListener("click", () => {
+      localStorage.setItem("preferred-locale", option.dataset.localeOption ?? "en")
+    })
+  )
+
+  document.addEventListener("click", event => {
+    const anchor = (event.target as HTMLElement).closest<HTMLAnchorElement>("a[href]")
+    if (
+      !anchor ||
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      anchor.target ||
+      anchor.origin !== window.location.origin
+    )
+      return
+    const preferred = localStorage.getItem("preferred-locale") ?? "en"
+    if (preferred === "en" || !["es", "pt-br"].includes(preferred)) return
+    const path = anchor.pathname.replace(/^\/(es|pt-br)(?=\/|$)/, "") || "/"
+    event.preventDefault()
+    window.location.assign(`/${preferred}${path}${anchor.search}${anchor.hash}`)
+  })
+
   const progress = document.querySelector<HTMLElement>("#scroll-progress")
   const crumbs = document.querySelector<HTMLElement>(".header-crumbs")
   const headerTitle = document.querySelector<HTMLElement>(".header-title")

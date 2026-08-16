@@ -1,7 +1,7 @@
 ---
 import fs from "node:fs"
 import path from "node:path"
-import { getCollection, render } from "astro:content"
+import { render } from "astro:content"
 import { Icon } from "astro-icon/components"
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import ProjectGallery from "@/components/ProjectGallery.astro"
@@ -9,129 +9,127 @@ import TechBadge from "@/components/TechBadge.astro"
 import { homeIntroConfig } from "@/data/portfolio"
 import { siteMetadata } from "@/data/site"
 import { formatDuration } from "@/lib/utils"
+import { getAllProjects } from "@/lib/content"
 
 export async function getStaticPaths() {
-  const projects = await getCollection("projects")
+  const projects = await getAllProjects()
   return projects.map(project => ({
-    params: { slug: project.id.replace(/\.mdx$/, "") },
+    params: { slug: project.slug },
     props: { project },
   }))
 }
 const { project } = Astro.props
-const { Content, headings } = await render(project)
-const slug = project.id.replace(/\.mdx$/, "")
-const imageDir = path.join(process.cwd(), "public", "projects", slug)
+const { Content, headings } = await render(project.entry)
+const imageDir = path.join(process.cwd(), "public", "projects", project.assetKey)
 const allowed = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".bmp"])
 const images = fs.existsSync(imageDir)
   ? fs
       .readdirSync(imageDir)
       .filter(file => allowed.has(path.extname(file).toLowerCase()))
       .map((file, index) => ({
-        src: `/projects/${slug}/${file}`,
-        alt: `${project.data.title} ${index + 1}`,
+        src: `/projects/${project.assetKey}/${file}`,
+        alt: `${project.title} ${index + 1}`,
       }))
   : []
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "CreativeWork",
-  name: project.data.title,
-  description: project.data.description,
-  url: `${siteMetadata.siteUrl}/projects/${slug}`,
-  dateCreated: project.data.startDate,
-  dateModified: project.data.endDate,
-  keywords: project.data.techStack.join(", "),
-  codeRepository: project.data.githubUrl,
+  name: project.title,
+  description: project.description,
+  url: `${siteMetadata.siteUrl}/projects/${project.slug}`,
+  dateCreated: project.startDate,
+  dateModified: project.endDate,
+  keywords: project.techStack.join(", "),
+  codeRepository: project.githubUrl,
   author: { "@type": "Person", name: homeIntroConfig.name, url: siteMetadata.siteUrl },
 }
 ---
 
 <BaseLayout
-  title={project.data.title}
-  description={project.data.description}
-  canonical={`/projects/${slug}`}
-  pageTitle={project.data.title}
-  pageSubtitle={`${homeIntroConfig.name}'s Projects · ${formatDuration(project.data.startDate, project.data.endDate)}`}
+  title={project.title}
+  description={project.description}
+  canonical={`/projects/${project.slug}`}
+  pageTitle={project.title}
+  pageSubtitle={`${homeIntroConfig.name}'s Projects · ${formatDuration(project.startDate, project.endDate)}`}
   jsonLd={jsonLd}
 >
   <section class="dark min-h-screen bg-[#11151b] text-white">
-  <article class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12">
-    <a
-      href="/projects"
-      class="mb-8 inline-flex items-center gap-1 text-sm font-semibold text-[#d7df72] transition hover:gap-2 hover:text-white"
-      ><Icon name="lucide:arrow-left" class="size-4" />Back to Projects</a
-    ><h1 class="display-type mb-3 text-4xl leading-[0.95]">{project.data.title}</h1><p
-      class="mb-4 text-lg text-gray-600 dark:text-gray-400"
-    >
-      {project.data.description}
-    </p><div class="mb-8 flex flex-wrap items-center gap-3 text-sm">
-      <span
-        class="inline-flex items-center gap-2 rounded-full bg-purple-100 px-3 py-1 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200"
-        ><Icon name="lucide:clock" />{
-          formatDuration(project.data.startDate, project.data.endDate)
-        }</span
-      >{
-        project.data.teamSize && (
-          <span class="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200">
-            <Icon name="lucide:users" />
-            Team Size: {project.data.teamSize}
-          </span>
+    <article class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12">
+      <a
+        href="/projects"
+        class="mb-8 inline-flex items-center gap-1 text-sm font-semibold text-[#d7df72] transition hover:gap-2 hover:text-white"
+        ><Icon name="lucide:arrow-left" class="size-4" />Back to Projects</a
+      ><h1 class="display-type mb-3 text-4xl leading-[0.95]">{project.title}</h1><p
+        class="mb-4 text-lg text-gray-600 dark:text-gray-400"
+      >
+        {project.description}
+      </p><div class="mb-8 flex flex-wrap items-center gap-3 text-sm">
+        <span
+          class="inline-flex items-center gap-2 rounded-full bg-purple-100 px-3 py-1 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200"
+          ><Icon name="lucide:clock" />{formatDuration(project.startDate, project.endDate)}</span
+        >{
+          project.teamSize && (
+            <span class="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200">
+              <Icon name="lucide:users" />
+              Team Size: {project.teamSize}
+            </span>
+          )
+        }{
+          project.role && (
+            <span class="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-green-800 dark:bg-green-900/30 dark:text-green-200">
+              <Icon name="lucide:briefcase-business" />
+              Role: {project.role}
+            </span>
+          )
+        }{
+          project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 transition hover:bg-accent-500/10 dark:bg-gray-800"
+            >
+              <Icon name="fa6-brands:github" />
+              View on GitHub
+            </a>
+          )
+        }{
+          project.paperUrl && (
+            <a
+              href={project.paperUrl}
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 transition hover:bg-accent-500/10 dark:bg-gray-800"
+            >
+              <Icon name="lucide:book-open" />
+              Read Paper
+            </a>
+          )
+        }
+      </div><section class="mb-8">
+        <h2 class="mb-3 flex items-center gap-2 text-xl font-semibold">
+          <Icon name="lucide:layers-3" />Tech Stack
+        </h2><div class="flex flex-wrap gap-3">
+          {project.techStack.map(name => <TechBadge name={name} surface="dark" />)}
+        </div>
+      </section><ProjectGallery images={images} />{
+        headings.length > 0 && (
+          <details class="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+            <>
+              <summary class="cursor-pointer font-semibold">Table of contents</summary>
+              <ol class="mt-3 space-y-1 text-sm">
+                {headings
+                  .filter(heading => heading.depth <= 3)
+                  .map(heading => (
+                    <li>
+                      <a href={`#${heading.slug}`} class="hover:text-accent-600">
+                        {heading.text}
+                      </a>
+                    </li>
+                  ))}
+              </ol>
+            </>
+          </details>
         )
-      }{
-        project.data.role && (
-          <span class="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-green-800 dark:bg-green-900/30 dark:text-green-200">
-            <Icon name="lucide:briefcase-business" />
-            Role: {project.data.role}
-          </span>
-        )
-      }{
-        project.data.githubUrl && (
-          <a
-            href={project.data.githubUrl}
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 transition hover:bg-accent-500/10 dark:bg-gray-800"
-          >
-            <Icon name="fa6-brands:github" />
-            View on GitHub
-          </a>
-        )
-      }{
-        project.data.paperUrl && (
-          <a
-            href={project.data.paperUrl}
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 transition hover:bg-accent-500/10 dark:bg-gray-800"
-          >
-            <Icon name="lucide:book-open" />
-            Read Paper
-          </a>
-        )
-      }
-    </div><section class="mb-8">
-      <h2 class="mb-3 flex items-center gap-2 text-xl font-semibold">
-        <Icon name="lucide:layers-3" />Tech Stack
-      </h2><div class="flex flex-wrap gap-3">
-        {project.data.techStack.map(name => <TechBadge name={name} surface="dark" />)}
-      </div>
-    </section><ProjectGallery images={images} />{
-      headings.length > 0 && (
-        <details class="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
-          <>
-            <summary class="cursor-pointer font-semibold">Table of contents</summary>
-            <ol class="mt-3 space-y-1 text-sm">
-              {headings
-                .filter(heading => heading.depth <= 3)
-                .map(heading => (
-                  <li>
-                    <a href={`#${heading.slug}`} class="hover:text-accent-600">
-                      {heading.text}
-                    </a>
-                  </li>
-                ))}
-            </ol>
-          </>
-        </details>
-      )
-    }<div class="prose prose-invert max-w-full overflow-hidden"><Content /></div>
-  </article>
+      }<div class="prose prose-invert max-w-full overflow-hidden"><Content /></div>
+    </article>
   </section>
 </BaseLayout>

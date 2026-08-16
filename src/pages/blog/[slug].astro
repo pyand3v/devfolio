@@ -1,34 +1,37 @@
 ---
-import { getCollection } from "astro:content"
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import BlogArticleContent from "@/components/BlogArticleContent.astro"
 import { homeIntroConfig } from "@/data/portfolio"
 import { siteMetadata } from "@/data/site"
-import { featuredBlogPostSlugs } from "@/lib/content"
+import { getAllBlogPosts } from "@/lib/content"
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog")
-  return posts
-    .filter(post => post.data.locale === "en" && featuredBlogPostSlugs.has(post.data.translationKey))
-    .map(post => ({ params: { slug: post.data.slug }, props: { post } }))
+  const posts = await getAllBlogPosts("en", { featuredOnly: false })
+  return posts.map(post => ({ params: { slug: post.slug }, props: { post } }))
 }
 
 const { post } = Astro.props
-const canonical = `/blog/${post.data.slug}`
+const canonical = `/blog/${post.slug}`
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: post.data.title,
-  description: post.data.summary,
+  headline: post.title,
+  description: post.summary,
   image: `${siteMetadata.siteUrl}${canonical}/opengraph-image`,
-  datePublished: post.data.publishedAt,
-  dateModified: post.data.updatedAt,
+  datePublished: post.publishedAt,
+  dateModified: post.updatedAt,
   url: `${siteMetadata.siteUrl}${canonical}`,
-  keywords: post.data.tags?.join(", "),
+  keywords: post.tags?.join(", "),
   author: { "@type": "Person", name: homeIntroConfig.name, url: siteMetadata.siteUrl },
 }
 ---
 
-<BaseLayout title={post.data.title} description={post.data.summary} canonical={canonical} isBlogPost jsonLd={jsonLd}>
+<BaseLayout
+  title={post.title}
+  description={post.summary}
+  canonical={canonical}
+  isBlogPost
+  jsonLd={jsonLd}
+>
   <BlogArticleContent post={post} locale="en" />
 </BaseLayout>
