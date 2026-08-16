@@ -2,6 +2,7 @@
 import { Icon } from "astro-icon/components"
 import type { BlogPost } from "@/lib/content"
 import type { Locale } from "@/lib/i18n"
+import { getLocalizedPath } from "@/lib/i18n"
 import { formatBlogDate } from "@/lib/utils"
 
 interface Props {
@@ -13,17 +14,18 @@ const { post, locale = "en", surface = "default" } = Astro.props
 const actionLabel = { en: "Read article", es: "Leer artículo", "pt-br": "Ler artigo" }[locale]
 const surfaceClass =
   surface === "contrast" ? "border-[#11151b] bg-[#171b22]" : "border-white/20 bg-white/[0.06]"
+const articlePath = getLocalizedPath(`/blog/${post.slug}`, locale)
 ---
 
 <article
   class={`blog-card group flex h-full flex-col border p-6 text-white transition duration-200 hover:-translate-y-1 hover:border-[#c86d61] ${surfaceClass} ${surface === "default" ? "hover:bg-white/[0.1]" : "hover:bg-[#222832]"}`}
 >
   <h3 class="text-2xl font-bold leading-tight tracking-tight">
-    <a href={`/blog/${post.slug}`}>{post.title}</a>
+    <a href={articlePath}>{post.title}</a>
   </h3>
   <p class="mt-4 grow leading-relaxed text-white/65">{post.summary}</p>
   <div class="mt-6 flex items-center gap-3 text-xs font-bold text-white/50">
-    <time datetime={post.date}>{formatBlogDate(post.date, "short")}</time>
+    <time datetime={post.publishedAt}>{formatBlogDate(post.publishedAt, "short")}</time>
     <span>·</span>
     <span>{post.readingTime} min read</span>
   </div>
@@ -32,7 +34,7 @@ const surfaceClass =
       (post.tags?.length ? post.tags : ["Engineering"]).map(tag => (
         <li>
           <a
-            href={`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`}
+            href={getLocalizedPath(`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`, locale)}
             class="inline-flex border border-[#d7df72]/55 px-2 py-1 text-[0.65rem] leading-none font-black tracking-[0.13em] text-[#d7df72] uppercase transition hover:border-[#c86d61] hover:bg-[#c86d61] hover:text-white focus-visible:border-[#c86d61] focus-visible:bg-[#c86d61] focus-visible:text-white focus-visible:outline-none"
           >
             {tag}
@@ -42,7 +44,7 @@ const surfaceClass =
     }
   </ul>
   <a
-    href={`/blog/${post.slug}`}
+    href={articlePath}
     class="mt-6 inline-flex items-center gap-2 text-xs font-black tracking-[0.14em] text-white uppercase"
     >{actionLabel}
     <Icon name="lucide:arrow-right" class="size-4 transition group-hover:translate-x-1" /></a

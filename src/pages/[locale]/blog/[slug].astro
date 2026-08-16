@@ -5,16 +5,23 @@ import BlogArticleContent from "@/components/BlogArticleContent.astro"
 import { homeIntroConfig } from "@/data/portfolio"
 import { siteMetadata } from "@/data/site"
 import { featuredBlogPostSlugs } from "@/lib/content"
+import { locales, type Locale } from "@/lib/i18n"
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog")
   return posts
-    .filter(post => post.data.locale === "en" && featuredBlogPostSlugs.has(post.data.translationKey))
-    .map(post => ({ params: { slug: post.data.slug }, props: { post } }))
+    .filter(
+      post =>
+        post.data.locale !== "en" &&
+        featuredBlogPostSlugs.has(post.data.translationKey) &&
+        locales.includes(post.data.locale)
+    )
+    .map(post => ({ params: { locale: post.data.locale, slug: post.data.slug }, props: { post } }))
 }
 
 const { post } = Astro.props
-const canonical = `/blog/${post.data.slug}`
+const locale = Astro.params.locale as Locale
+const canonical = `/${locale}/blog/${post.data.slug}`
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -30,5 +37,5 @@ const jsonLd = {
 ---
 
 <BaseLayout title={post.data.title} description={post.data.summary} canonical={canonical} isBlogPost jsonLd={jsonLd}>
-  <BlogArticleContent post={post} locale="en" />
+  <BlogArticleContent post={post} locale={locale} />
 </BaseLayout>

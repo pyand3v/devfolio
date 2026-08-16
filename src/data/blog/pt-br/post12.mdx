@@ -1,0 +1,34 @@
+---
+locale: pt-br
+translationKey: post12
+slug: post12
+title: "Load balancers: visão detalhada"
+summary: "Tipos, algoritmos e trade-offs de load balancers e proxies reversos."
+publishedAt: "2022-03-10T09:00:00-03:00"
+updatedAt: "2026-08-16T12:00:00-03:00"
+tags: [Load balancer, Proxy reverso, Redes, Design de sistemas]
+---
+
+Um load balancer distribui tráfego entre instâncias saudáveis para aumentar disponibilidade e controlar carga.
+
+## Por que usar um load balancer
+
+Ele permite escalar horizontalmente, isolar falhas e retirar instâncias sem interromper usuários.
+
+## Tipos e algoritmos
+
+### Camada 4
+Distribui conexões por IP e porta com pouca inspeção.
+
+### Camada 7
+Entende HTTP e pode rotear por host, caminho, cabeçalho ou cookie.
+
+Round robin, least connections e hashing consistente atendem perfis diferentes; meça afinidade, latência e distribuição.
+
+## Health checks e proxy reverso
+
+Health checks devem representar a capacidade real de atender tráfego. Um proxy reverso termina TLS e roteia requests; um load balancer coordena múltiplos destinos.
+
+## Boas práticas
+
+Defina timeouts, drenagem de conexões, limites, observabilidade e testes de falha.

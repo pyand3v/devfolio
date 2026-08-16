@@ -82,10 +82,23 @@ export function formatDateRange(start: string, end: string): string {
  */
 export function formatBlogDate(date: string, style: "long" | "short" = "long"): string {
   return new Date(date).toLocaleDateString("en-US", {
+    timeZone: "America/Argentina/Buenos_Aires",
     year: "numeric",
     month: style,
     day: "numeric",
   })
+}
+
+export function formatBlogDateTime(date: string, locale: "en" | "es" | "pt-br" = "en"): string {
+  const language = { en: "en-US", es: "es-ES", "pt-br": "pt-BR" }[locale]
+  return new Intl.DateTimeFormat(language, {
+    timeZone: "America/Argentina/Buenos_Aires",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(date))
 }
 
 /**

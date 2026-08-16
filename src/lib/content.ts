@@ -1,9 +1,9 @@
 import { getCollection, type CollectionEntry } from "astro:content"
 import { PRESENT } from "@/lib/constants"
+import type { Locale } from "@/lib/i18n"
 import { getReadingTime } from "@/lib/utils"
 
 export type BlogPost = CollectionEntry<"blog">["data"] & {
-  slug: string
   body: string
   readingTime: number
 }
@@ -21,18 +21,22 @@ export const featuredBlogPostSlugs = new Set([
   "post9",
 ])
 
-export async function getAllBlogPosts(): Promise<BlogPost[]> {
+export async function getAllBlogPosts(locale: Locale = "en"): Promise<BlogPost[]> {
   const posts = await getCollection("blog")
   return posts
-    .filter(post => featuredBlogPostSlugs.has(post.id.replace(/\.mdx$/, "")))
+    .filter(post => post.data.locale === locale && featuredBlogPostSlugs.has(post.data.translationKey))
     .map(post => ({
       ...post.data,
-      slug: post.id.replace(/\.mdx$/, ""),
       body: post.body ?? "",
       tags: post.data.tags?.map(tag => tag.toLowerCase()),
       readingTime: getReadingTime(post.body ?? ""),
     }))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+}
+
+export async function getBlogPost(locale: Locale, slug: string): Promise<BlogPost | undefined> {
+  const posts = await getAllBlogPosts(locale)
+  return posts.find(post => post.slug === slug)
 }
 
 export async function getAllWorkItems(): Promise<WorkItem[]> {

@@ -1,0 +1,37 @@
+---
+locale: pt-br
+translationKey: post14
+slug: post14
+title: "Cache em design de sistemas: Redis, Memcached e mais"
+summary: "Estratégias de cache, Redis, Memcached e seu papel em sistemas escaláveis."
+publishedAt: "2022-03-30T09:00:00-03:00"
+updatedAt: "2026-08-16T12:00:00-03:00"
+tags: [Cache, Redis, Memcached, Performance, Design de sistemas]
+---
+
+Cache reduz latência e carga, mas traz consistência, expiração e invalidação como problemas centrais.
+
+## Por que usar cache
+
+Ele mantém resultados caros perto de quem precisa e protege dependências que não devem receber todas as leituras.
+
+## Estratégias comuns
+
+Cache-aside, write-through e write-behind mudam quando a origem é atualizada. Defina TTL, chaves e comportamento de miss antes de implementá-las.
+
+## Redis e Memcached
+
+Redis oferece estruturas de dados e persistência opcional. Memcached prioriza simplicidade e cache distribuído em memória. Escolha pelas necessidades operacionais.
+
+## Exemplo: cache com Redis
+
+```python
+value = redis.get(key)
+if value is None:
+    value = load_from_database(key)
+    redis.setex(key, 300, value)
+```
+
+## Boas práticas
+
+Meça hit rate, latência e pressão de memória; limite chaves grandes e planeje invalidação.

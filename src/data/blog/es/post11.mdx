@@ -1,0 +1,39 @@
+---
+locale: es
+translationKey: post11
+slug: post11
+title: "Fundamentos de diseño de sistemas"
+summary: "Principios y patrones para construir aplicaciones escalables y confiables."
+publishedAt: "2022-03-01T09:00:00-03:00"
+updatedAt: "2026-08-16T12:00:00-03:00"
+tags: [Diseño de sistemas, Arquitectura, Escalabilidad, Confiabilidad]
+---
+
+El diseño de sistemas convierte requisitos de producto en decisiones explícitas sobre escala, fallos y operación.
+
+## Por qué importa
+
+Una arquitectura clara reduce sorpresas: define límites, dependencias, degradación y la forma de observar el sistema.
+
+## Principios clave
+
+### Escalabilidad
+Escala las partes que tienen presión real y elimina estados compartidos innecesarios.
+
+### Confiabilidad y disponibilidad
+Diseña timeouts, reintentos con límites, idempotencia y rutas de degradación antes de necesitarlos.
+
+### Mantenibilidad y rendimiento
+Mantén contratos simples, mide latencia y prioriza cuellos de botella comprobados.
+
+## Patrones y proceso
+
+Colas, cachés, particionamiento, réplicas y balanceadores son herramientas; elige según requisitos y trade-offs. Empieza por el flujo crítico, estima carga y valida supuestos con métricas.
+
+## Ejemplo: acortador de URL
+
+Define el identificador, almacenamiento, caché, redirección y límites de abuso. Después añade replicación, observabilidad y recuperación ante fallos.
+
+## Conclusión
+
+No existe un diseño universal: una buena solución explica con claridad qué optimiza y qué sacrifica.

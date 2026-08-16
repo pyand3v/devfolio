@@ -16,7 +16,7 @@ const labels = copy[locale][kind]
 const [work, projects, posts] = await Promise.all([
   getAllWorkItems(),
   getAllProjects(),
-  getAllBlogPosts(),
+  getAllBlogPosts(locale),
 ])
 const titleLines = labels.title.split("\n")
 ---

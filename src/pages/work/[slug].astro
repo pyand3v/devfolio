@@ -33,10 +33,11 @@ const jsonLd = {
   pageSubtitle={`${homeIntroConfig.name}'s Work · ${formatDateRange(item.data.start, item.data.end)}`}
   jsonLd={jsonLd}
 >
-  <article class="mx-auto max-w-4xl px-4">
+  <section class="dark min-h-screen bg-[#11151b] text-white">
+  <article class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12">
     <a
       href="/work"
-      class="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-accent-600 transition hover:gap-2 dark:text-accent-400"
+      class="mb-8 inline-flex items-center gap-1 text-sm font-semibold text-[#d7df72] transition hover:gap-2 hover:text-white"
       ><Icon name="lucide:arrow-left" class="size-4" />Back to Work</a
     ><div class="mb-8 flex items-start gap-4">
       {
@@ -73,7 +74,7 @@ const jsonLd = {
             <h2 class="mb-3 text-xl font-semibold">Tech Stack</h2>
             <div class="flex flex-wrap gap-2">
               {item.data.techStack.map(name => (
-                <TechBadge name={name} />
+                <TechBadge name={name} surface="dark" />
               ))}
             </div>
           </>
@@ -98,6 +99,7 @@ const jsonLd = {
           </>
         </details>
       )
-    }<div class="prose max-w-full dark:prose-invert"><Content /></div>
+    }<div class="prose prose-invert max-w-full overflow-hidden"><Content /></div>
   </article>
+  </section>
 </BaseLayout>

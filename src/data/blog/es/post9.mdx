@@ -1,0 +1,61 @@
+---
+locale: es
+translationKey: post9
+slug: post9
+title: "Concurrencia en Java"
+summary: "Aprende los fundamentos y conceptos avanzados de multihilo y concurrencia en Java."
+publishedAt: "2022-04-12T09:00:00-03:00"
+updatedAt: "2026-08-16T12:00:00-03:00"
+tags: [Java, Concurrencia, Hilos, Multihilo]
+---
+
+Java ofrece APIs sólidas para ejecutar trabajo concurrente y aprovechar mejor los recursos del sistema.
+
+## Crear hilos
+
+Extender `Thread` es útil para entender el modelo, aunque en aplicaciones reales suele preferirse separar la tarea de su ejecución.
+
+```java
+public class MyThread extends Thread {
+    public void run() {
+        System.out.println("Running in thread: " + Thread.currentThread().getName());
+    }
+}
+```
+
+### Usar `Runnable`
+
+`Runnable` permite reutilizar la tarea con distintos ejecutores.
+
+```java
+Runnable task = () -> System.out.println("Runnable Task");
+new Thread(task).start();
+```
+
+## Ciclo de vida y sincronización
+
+Un hilo puede estar nuevo, ejecutable, en ejecución, bloqueado o terminado. Cuando varios hilos modifican el mismo estado, protege las secciones críticas.
+
+```java
+public synchronized void increment() {
+    count++;
+}
+```
+
+## Locks y ejecutores
+
+Los `ExecutorService` administran pools de hilos, límites y apagado ordenado. Usa `Lock` cuando necesitas control explícito y libéralo siempre en `finally`.
+
+```java
+ExecutorService executor = Executors.newFixedThreadPool(2);
+executor.submit(() -> doWork());
+executor.shutdown();
+```
+
+## Errores frecuentes
+
+Las condiciones de carrera, los deadlocks y la inanición aparecen cuando el acceso compartido no tiene límites claros. Diseña la propiedad de los datos y mide antes de aumentar el paralelismo.
+
+## Resumen
+
+La concurrencia no es solo ejecutar más tareas: es mantener estado, fallos y recursos bajo control.

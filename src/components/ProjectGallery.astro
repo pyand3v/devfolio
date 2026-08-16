@@ -12,7 +12,7 @@ const { images } = Astro.props
 {
   images.length > 0 && (
     <section class="project-gallery my-8" data-gallery>
-      <div class="relative overflow-hidden rounded-xl border border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-900">
+      <div class="relative overflow-hidden rounded-xl border border-white/20 bg-[#171b22]">
         <div class="gallery-track flex transition-transform duration-300">
           {images.map(image => (
             <img
@@ -49,7 +49,7 @@ const { images } = Astro.props
               type="button"
               class:list={[
                 "gallery-dot size-2.5 rounded-full",
-                index === 0 ? "bg-accent-500" : "bg-gray-300 dark:bg-gray-700",
+                index === 0 ? "bg-[#c86d61]" : "bg-white/25",
               ]}
               data-index={index}
               aria-label={`Show image ${index + 1}`}
@@ -68,8 +68,8 @@ const { images } = Astro.props
     const show = (index: number) => {
       active = (index + dots.length) % dots.length
       if (track) track.style.transform = `translateX(-${active * 100}%)`
-      dots.forEach((dot, i) => dot.classList.toggle("bg-accent-500", i === active))
-      dots.forEach((dot, i) => dot.classList.toggle("bg-gray-300", i !== active))
+      dots.forEach((dot, i) => dot.classList.toggle("bg-[#c86d61]", i === active))
+      dots.forEach((dot, i) => dot.classList.toggle("bg-white/25", i !== active))
     }
     gallery.querySelector(".gallery-prev")?.addEventListener("click", () => show(active - 1))
     gallery.querySelector(".gallery-next")?.addEventListener("click", () => show(active + 1))

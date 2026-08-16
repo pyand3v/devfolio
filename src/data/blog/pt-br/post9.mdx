@@ -1,0 +1,51 @@
+---
+locale: pt-br
+translationKey: post9
+slug: post9
+title: "Concorrência em Java"
+summary: "Aprenda os fundamentos e conceitos avançados de multithreading e concorrência em Java."
+publishedAt: "2022-04-12T09:00:00-03:00"
+updatedAt: "2026-08-16T12:00:00-03:00"
+tags: [Java, Concorrência, Threads, Multithreading]
+---
+
+Java oferece APIs maduras para executar trabalho concorrente e usar melhor os recursos do sistema.
+
+## Criando threads
+
+Estender `Thread` ajuda a entender o modelo, mas aplicações reais normalmente se beneficiam de separar a tarefa da sua execução.
+
+```java
+public class MyThread extends Thread {
+    public void run() {
+        System.out.println("Running in thread: " + Thread.currentThread().getName());
+    }
+}
+```
+
+### Usando `Runnable`
+
+`Runnable` permite reutilizar a mesma tarefa com executores diferentes.
+
+```java
+Runnable task = () -> System.out.println("Runnable Task");
+new Thread(task).start();
+```
+
+## Ciclo de vida e sincronização
+
+Uma thread pode estar nova, executável, em execução, bloqueada ou terminada. Quando várias threads alteram o mesmo estado, proteja as seções críticas.
+
+```java
+public synchronized void increment() {
+    count++;
+}
+```
+
+## Locks e executores
+
+`ExecutorService` administra pools, limites e desligamento ordenado. Use `Lock` quando precisar de controle explícito e libere-o sempre em `finally`.
+
+## Resumo
+
+Concorrência não é apenas executar mais tarefas: é controlar estado, falhas e recursos.

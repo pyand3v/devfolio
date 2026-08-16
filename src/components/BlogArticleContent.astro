@@ -1,0 +1,92 @@
+---
+import { render, type CollectionEntry } from "astro:content"
+import { Icon } from "astro-icon/components"
+import BlogCard from "@/components/BlogCard.astro"
+import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
+import { getAllBlogPosts } from "@/lib/content"
+import type { Locale } from "@/lib/i18n"
+import { getLocalizedPath } from "@/lib/i18n"
+import { formatBlogDateTime, getReadingTime } from "@/lib/utils"
+
+interface Props {
+  post: CollectionEntry<"blog">
+  locale: Locale
+}
+
+const { post, locale } = Astro.props
+const { Content, headings } = await render(post)
+const similar = (await getAllBlogPosts(locale))
+  .filter(
+    entry =>
+      entry.translationKey !== post.data.translationKey &&
+      entry.tags?.some(tag => post.data.tags?.map(value => value.toLowerCase()).includes(tag))
+  )
+  .slice(0, 3)
+const labels = {
+  en: { back: "Back to Blog", published: "Published", edited: "Last edited", related: "Other posts that might interest you" },
+  es: { back: "Volver al blog", published: "Publicado", edited: "Última edición", related: "Otros artículos que podrían interesarte" },
+  "pt-br": { back: "Voltar ao blog", published: "Publicado", edited: "Última edição", related: "Outros artigos que podem interessar você" },
+}[locale]
+---
+
+<section class="min-h-screen bg-[#11151b] text-white">
+  <article class="mx-auto max-w-7xl px-5 py-8 lg:px-8 lg:py-12">
+    <a
+      href={getLocalizedPath("/blog", locale)}
+      class="mb-8 inline-flex items-center gap-1 text-sm font-semibold text-[#d7df72] transition hover:gap-2 hover:text-white"
+      ><Icon name="lucide:arrow-left" class="size-4" />{labels.back}</a
+    >
+    <h1 class="display-type mb-5 text-4xl leading-[0.95] text-white sm:text-5xl">{post.data.title}</h1>
+    <div class="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/55">
+      <span class="inline-flex items-center gap-1.5"
+        ><Icon name="lucide:calendar-days" class="size-4" />{labels.published}: {formatBlogDateTime(post.data.publishedAt, locale)}</span
+      >
+      <span class="inline-flex items-center gap-1.5"
+        ><Icon name="lucide:clock-3" class="size-4" />{labels.edited}: {formatBlogDateTime(post.data.updatedAt, locale)}</span
+      >
+      <span class="inline-flex items-center gap-1.5"
+        ><Icon name="lucide:book-open" class="size-4" />{getReadingTime(post.body ?? "")} min read</span
+      >
+    </div>
+    {
+      post.data.tags && (
+        <div class="mb-8 flex flex-wrap gap-2">
+          {post.data.tags.map(tag => (
+            <a
+              href={getLocalizedPath(`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`, locale)}
+              class="border border-[#d7df72]/50 bg-[#d7df72]/8 px-2.5 py-1 text-sm font-semibold text-[#d7df72] transition hover:border-[#c86d61] hover:bg-[#c86d61] hover:text-white"
+            >
+              <Icon name="lucide:tag" class="mr-1 inline size-3.5" />
+              {tag}
+            </a>
+          ))}
+        </div>
+      )
+    }
+    <div
+      class:list={[
+        "mt-10",
+        headings.length > 0 && "lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[16rem_minmax(0,1fr)]",
+      ]}
+    >
+      <ContentTableOfContents headings={headings} />
+      <div class="min-w-0">
+        <div class="prose prose-invert max-w-full overflow-hidden prose-headings:text-white prose-p:text-white/78 prose-strong:text-white prose-a:text-[#d7df72] prose-a:decoration-[#d7df72]/45 hover:prose-a:text-white">
+          <Content />
+        </div>
+        {
+          similar.length > 0 && (
+            <section class="mt-12">
+              <h2 class="mb-4 text-2xl font-bold text-white">{labels.related}</h2>
+              <div class="grid gap-6">
+                {similar.map(entry => (
+                  <BlogCard post={entry} locale={locale} surface="contrast" />
+                ))}
+              </div>
+            </section>
+          )
+        }
+      </div>
+    </div>
+  </article>
+</section>

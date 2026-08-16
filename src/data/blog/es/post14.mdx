@@ -1,0 +1,37 @@
+---
+locale: es
+translationKey: post14
+slug: post14
+title: "Caché en diseño de sistemas: Redis, Memcached y más"
+summary: "Estrategias de caché, Redis, Memcached y su papel en sistemas escalables."
+publishedAt: "2022-03-30T09:00:00-03:00"
+updatedAt: "2026-08-16T12:00:00-03:00"
+tags: [Caché, Redis, Memcached, Rendimiento, Diseño de sistemas]
+---
+
+Una caché reduce latencia y carga, pero introduce coherencia, expiración e invalidación como problemas de primer nivel.
+
+## Por qué usar caché
+
+Guarda resultados costosos cerca de quien los necesita y protege dependencias que no deben recibir todas las lecturas.
+
+## Estrategias comunes
+
+Cache-aside, write-through y write-behind cambian cuándo se actualiza el origen. Define TTLs, claves y qué ocurre ante un miss antes de implementarlas.
+
+## Redis y Memcached
+
+Redis ofrece estructuras de datos, persistencia opcional y capacidades adicionales. Memcached prioriza simplicidad y caché distribuida en memoria. Elige por necesidades operativas, no por popularidad.
+
+## Ejemplo: caché con Redis
+
+```python
+value = redis.get(key)
+if value is None:
+    value = load_from_database(key)
+    redis.setex(key, 300, value)
+```
+
+## Buenas prácticas
+
+Mide hit rate, latencia y presión de memoria; limita claves grandes y prepara invalidación para cambios de datos.

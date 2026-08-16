@@ -37,7 +37,7 @@ const displayTag = tag?.replaceAll("-", " ") ?? ""
         </p>
       </header>
       <div class="mt-12 grid gap-5 lg:grid-cols-2">
-        {posts.map(post => <BlogCard post={post} />)}
+        {posts.map(post => <BlogCard post={post} locale="en" />)}
       </div>
     </div>
   </section></BaseLayout

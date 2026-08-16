@@ -159,6 +159,7 @@ export const getLocaleSwitchPath = (pathname: string, locale: Locale) => {
   const segments = pathname.split("/").filter(Boolean)
   if (locales.includes(segments[0] as Locale)) segments.shift()
   const topLevel = segments[0]
-  const supported = topLevel === "work" || topLevel === "projects" || topLevel === "blog"
+  if (topLevel === "blog") return getLocalizedPath(`/${segments.join("/")}`, locale)
+  const supported = topLevel === "work" || topLevel === "projects"
   return getLocalizedPath(supported ? `/${topLevel}` : "/", locale)
 }

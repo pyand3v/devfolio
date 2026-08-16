@@ -53,12 +53,13 @@ const jsonLd = {
   pageSubtitle={`${homeIntroConfig.name}'s Projects · ${formatDuration(project.data.startDate, project.data.endDate)}`}
   jsonLd={jsonLd}
 >
-  <article class="mx-auto max-w-4xl px-4">
+  <section class="dark min-h-screen bg-[#11151b] text-white">
+  <article class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12">
     <a
       href="/projects"
-      class="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-accent-600 transition hover:gap-2 dark:text-accent-400"
+      class="mb-8 inline-flex items-center gap-1 text-sm font-semibold text-[#d7df72] transition hover:gap-2 hover:text-white"
       ><Icon name="lucide:arrow-left" class="size-4" />Back to Projects</a
-    ><h1 class="mb-2 text-4xl font-bold">{project.data.title}</h1><p
+    ><h1 class="display-type mb-3 text-4xl leading-[0.95]">{project.data.title}</h1><p
       class="mb-4 text-lg text-gray-600 dark:text-gray-400"
     >
       {project.data.description}
@@ -109,7 +110,7 @@ const jsonLd = {
       <h2 class="mb-3 flex items-center gap-2 text-xl font-semibold">
         <Icon name="lucide:layers-3" />Tech Stack
       </h2><div class="flex flex-wrap gap-3">
-        {project.data.techStack.map(name => <TechBadge name={name} />)}
+        {project.data.techStack.map(name => <TechBadge name={name} surface="dark" />)}
       </div>
     </section><ProjectGallery images={images} />{
       headings.length > 0 && (
@@ -130,6 +131,7 @@ const jsonLd = {
           </>
         </details>
       )
-    }<div class="prose max-w-full dark:prose-invert"><Content /></div>
+    }<div class="prose prose-invert max-w-full overflow-hidden"><Content /></div>
   </article>
+  </section>
 </BaseLayout>

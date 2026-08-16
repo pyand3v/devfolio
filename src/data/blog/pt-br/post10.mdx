@@ -1,0 +1,32 @@
+---
+locale: pt-br
+translationKey: post10
+slug: post10
+title: "Entendendo os internals da JVM"
+summary: "Um mergulho na arquitetura e nos componentes da Máquina Virtual Java."
+publishedAt: "2022-02-20T09:00:00-03:00"
+updatedAt: "2026-08-16T12:00:00-03:00"
+tags: [Java, JVM, Internals, Performance]
+---
+
+A JVM transforma bytecode em execução eficiente e gerencia memória, carregamento de classes e otimização.
+
+## Arquitetura da JVM
+
+Class loader, áreas de memória, mecanismo de execução e interface nativa trabalham juntos para executar aplicações Java de forma portátil.
+
+## Carregamento de classes
+
+A delegação de carregadores evita versões inconsistentes da mesma classe. Entender classpath e loaders customizados é essencial ao investigar deploys.
+
+## Áreas de memória
+
+Heap, stacks por thread, metaspace e registradores têm papéis diferentes. Vazamentos podem estar em classloaders ou pools, não somente no heap.
+
+## Compilador JIT e coleta de lixo
+
+O JIT otimiza caminhos quentes em tempo de execução. O GC equilibra latência e throughput; escolha o coletor com base em métricas da carga real.
+
+## Conclusão
+
+Melhorias de desempenho devem começar por profiling e observabilidade, não por flags escolhidas ao acaso.

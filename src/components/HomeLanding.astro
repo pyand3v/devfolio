@@ -15,7 +15,7 @@ interface Props {
 const { locale } = Astro.props
 const labels = copy[locale].home
 const [blog, work, projects] = await Promise.all([
-  getAllBlogPosts(),
+  getAllBlogPosts(locale),
   getAllWorkItems(),
   getAllProjects(),
 ])
