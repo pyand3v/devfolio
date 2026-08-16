@@ -2,6 +2,7 @@
 import { render } from "astro:content"
 import { Icon } from "astro-icon/components"
 import BaseLayout from "@/layouts/BaseLayout.astro"
+import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
 import TechBadge from "@/components/TechBadge.astro"
 import { homeIntroConfig } from "@/data/portfolio"
 import { siteMetadata } from "@/data/site"
@@ -76,26 +77,19 @@ const jsonLd = {
             </>
           </section>
         )
-      }{
-        headings.length > 0 && (
-          <details class="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
-            <>
-              <summary class="cursor-pointer font-semibold">Table of contents</summary>
-              <ol class="mt-3 space-y-1 text-sm">
-                {headings
-                  .filter(heading => heading.depth <= 3)
-                  .map(heading => (
-                    <li>
-                      <a href={`#${heading.slug}`} class="hover:text-accent-600">
-                        {heading.text}
-                      </a>
-                    </li>
-                  ))}
-              </ol>
-            </>
-          </details>
-        )
-      }<div class="prose prose-invert max-w-full overflow-hidden"><Content /></div>
+      }
+      <div
+        class:list={[
+          "mt-10",
+          headings.length > 0 &&
+            "lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[16rem_minmax(0,1fr)]",
+        ]}
+      >
+        <ContentTableOfContents headings={headings} />
+        <div class="min-w-0">
+          <div class="prose prose-invert max-w-full overflow-hidden"><Content /></div>
+        </div>
+      </div>
     </article>
   </section>
 </BaseLayout>
