@@ -50,6 +50,13 @@ jobs:
           done
           echo "configured=true" >> "$GITHUB_OUTPUT"
 
+      - name: Link Vercel project
+        if: steps.vercel-credentials.outputs.configured == 'true'
+        run: |
+          mkdir -p .vercel
+          printf '{"orgId":"%s","projectId":"%s","projectName":"devfolio"}\n' \
+            "$VERCEL_ORG_ID" "$VERCEL_PROJECT_ID" > .vercel/project.json
+
       - name: Pull Vercel environment
         if: steps.vercel-credentials.outputs.configured == 'true'
         run: |
