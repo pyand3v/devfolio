@@ -1,0 +1,78 @@
+---
+interface Image {
+  src: string
+  alt: string
+}
+interface Props {
+  images: Image[]
+}
+const { images } = Astro.props
+---
+
+{
+  images.length > 0 && (
+    <section class="project-gallery my-8" data-gallery>
+      <div class="relative overflow-hidden rounded-xl border border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-900">
+        <div class="gallery-track flex transition-transform duration-300">
+          {images.map(image => (
+            <img
+              src={image.src}
+              alt={image.alt}
+              class="h-80 min-w-full object-contain"
+              loading="lazy"
+            />
+          ))}
+        </div>
+        {images.length > 1 && (
+          <>
+            <button
+              type="button"
+              class="gallery-prev absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white transition hover:bg-black/80"
+              aria-label="Previous image"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              class="gallery-next absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/60 p-2 text-white transition hover:bg-black/80"
+              aria-label="Next image"
+            >
+              →
+            </button>
+          </>
+        )}
+      </div>
+      {images.length > 1 && (
+        <div class="mt-3 flex justify-center gap-2">
+          {images.map((_, index) => (
+            <button
+              type="button"
+              class:list={[
+                "gallery-dot size-2.5 rounded-full",
+                index === 0 ? "bg-accent-500" : "bg-gray-300 dark:bg-gray-700",
+              ]}
+              data-index={index}
+              aria-label={`Show image ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+<script>
+  document.querySelectorAll<HTMLElement>("[data-gallery]").forEach(gallery => {
+    const track = gallery.querySelector<HTMLElement>(".gallery-track")
+    const dots = [...gallery.querySelectorAll<HTMLButtonElement>(".gallery-dot")]
+    let active = 0
+    const show = (index: number) => {
+      active = (index + dots.length) % dots.length
+      if (track) track.style.transform = `translateX(-${active * 100}%)`
+      dots.forEach((dot, i) => dot.classList.toggle("bg-accent-500", i === active))
+      dots.forEach((dot, i) => dot.classList.toggle("bg-gray-300", i !== active))
+    }
+    gallery.querySelector(".gallery-prev")?.addEventListener("click", () => show(active - 1))
+    gallery.querySelector(".gallery-next")?.addEventListener("click", () => show(active + 1))
+    dots.forEach((dot, index) => dot.addEventListener("click", () => show(index)))
+  })
+</script>

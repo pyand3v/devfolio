@@ -1,0 +1,370 @@
+@import "tailwindcss";
+@import "highlight.js/styles/github-dark.css";
+@plugin "@tailwindcss/typography";
+
+/* ─── Accent color themes ──────────────────────────────────────────────────
+   Set the [data-theme] attribute on <html> (via siteMetadata.theme) to pick
+   one of the available themes. The default (blue) is defined on :root so it
+   works even when no data-theme attribute is present.
+   ─────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Default theme: blue */
+  --accent-400: #60a5fa;
+  --accent-500: #3b82f6;
+  --accent-600: #2563eb;
+  --accent-700: #1d4ed8;
+}
+
+.dark {
+  --background: #171717;
+  --foreground: #ffffff;
+}
+
+[data-theme="blue"] {
+  --accent-400: #60a5fa;
+  --accent-500: #3b82f6;
+  --accent-600: #2563eb;
+  --accent-700: #1d4ed8;
+}
+
+[data-theme="purple"] {
+  --accent-400: #c084fc;
+  --accent-500: #a855f7;
+  --accent-600: #9333ea;
+  --accent-700: #7e22ce;
+}
+
+[data-theme="green"] {
+  --accent-400: #4ade80;
+  --accent-500: #22c55e;
+  --accent-600: #16a34a;
+  --accent-700: #15803d;
+}
+
+[data-theme="orange"] {
+  --accent-400: #fb923c;
+  --accent-500: #f97316;
+  --accent-600: #ea580c;
+  --accent-700: #c2410c;
+}
+
+[data-theme="rose"] {
+  --accent-400: #fb7185;
+  --accent-500: #f43f5e;
+  --accent-600: #e11d48;
+  --accent-700: #be123c;
+}
+
+[data-theme="teal"] {
+  --accent-400: #2dd4bf;
+  --accent-500: #14b8a6;
+  --accent-600: #0d9488;
+  --accent-700: #0f766e;
+}
+
+[data-theme="indigo"] {
+  --accent-400: #818cf8;
+  --accent-500: #6366f1;
+  --accent-600: #4f46e5;
+  --accent-700: #4338ca;
+}
+
+[data-theme="amber"] {
+  --accent-400: #fbbf24;
+  --accent-500: #f59e0b;
+  --accent-600: #d97706;
+  --accent-700: #b45309;
+}
+
+[data-theme="cyan"] {
+  --accent-400: #22d3ee;
+  --accent-500: #06b6d4;
+  --accent-600: #0891b2;
+  --accent-700: #0e7490;
+}
+
+[data-theme="violet"] {
+  --accent-400: #a78bfa;
+  --accent-500: #8b5cf6;
+  --accent-600: #7c3aed;
+  --accent-700: #6d28d9;
+}
+
+[data-theme="pink"] {
+  --accent-400: #f472b6;
+  --accent-500: #ec4899;
+  --accent-600: #db2777;
+  --accent-700: #be185d;
+}
+
+[data-theme="lime"] {
+  --accent-400: #a3e635;
+  --accent-500: #84cc16;
+  --accent-600: #65a30d;
+  --accent-700: #4d7c0f;
+}
+
+/* Expose accent variables as Tailwind utility colors (text-accent-*, etc.) */
+@theme inline {
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+  --color-accent-700: var(--accent-700);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* View transition: disable default crossfade so the circle reveal animation takes over */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar {
+  overflow: auto;
+  scrollbar-color: hsl(215 15% 80%) transparent;
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(215 15% 80%);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(215 15% 70%);
+  background-clip: padding-box;
+}
+
+/* Dark mode support */
+.dark .custom-scrollbar {
+  scrollbar-color: hsl(215 27.9% 10.9%) transparent;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(215 27.9% 10.9%);
+}
+
+/* Heading anchor links (rehype-autolink-headings), added via src/lib/mdx-plugins.ts */
+.prose :where(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 6rem;
+}
+
+.prose :where(h1, h2, h3, h4, h5, h6) .anchor-link {
+  margin-left: 0.5rem;
+  font-weight: 400;
+  color: var(--accent-500);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.prose :where(h1, h2, h3, h4, h5, h6):hover .anchor-link,
+.prose :where(h1, h2, h3, h4, h5, h6) .anchor-link:focus-visible {
+  opacity: 1;
+}
+
+/* Tailwind Typography adds literal backticks around inline `code` via CSS
+   content; our InlineCode component already renders a styled pill, so drop
+   the plugin's own backticks (fenced blocks inside `pre` are unaffected). */
+.prose code::before,
+.prose code::after {
+  content: none;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(215 20% 25%);
+}
+
+/* Blog list density is user-selectable through the compact-list control. */
+[data-collection-items="blog"].collection-compact {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+[data-collection-items="blog"].collection-compact .blog-card {
+  min-height: 0;
+  padding: 1rem 1rem 1rem 1.25rem;
+}
+
+[data-collection-items="blog"].collection-compact .blog-card-topic,
+[data-collection-items="blog"].collection-compact .blog-card-tags,
+[data-collection-items="blog"].collection-compact .blog-card-summary {
+  display: none;
+}
+
+[data-collection-items="blog"].collection-compact .blog-card-meta {
+  margin-top: 0.25rem;
+}
+
+[data-collection-items="blog"].collection-compact .blog-card-cta {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  margin-top: 0;
+}
+
+@media (max-width: 40rem) {
+  [data-collection-items="blog"].collection-compact .blog-card-cta {
+    position: static;
+    margin-top: 0.75rem;
+  }
+}
+
+/* ─── Print stylesheet ──────────────────────────────────────────────────────
+   Forces white-on-black rendering so dark-mode users get readable printouts.
+   Hides all navigation chrome and decorative elements.
+   ─────────────────────────────────────────────────────────────────────── */
+
+@media print {
+  /* Force light colour scheme regardless of OS/user preference */
+  :root,
+  .dark {
+    --background: #ffffff;
+    --foreground: #000000;
+    color-scheme: light;
+  }
+
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Page margins */
+  @page {
+    margin: 1.5cm 2cm;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  /* Hide site chrome */
+  header,
+  footer,
+  nav,
+  [role="progressbar"],
+  [aria-label="Scroll progress"] {
+    display: none !important;
+  }
+
+  /* Hide the decorative dot-grid background layer */
+  body > div:first-of-type,
+  [class*="fixed inset-0"] {
+    display: none !important;
+  }
+
+  /* Hide interactive controls */
+  button,
+  [role="button"] {
+    display: none !important;
+  }
+
+  /* Never print the full-screen image lightbox, even if left open */
+  .mdx-lightbox-overlay {
+    display: none !important;
+  }
+
+  /* Keep links legible — show URL after linked text */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #444 !important;
+    word-break: break-all;
+  }
+
+  /* But not internal anchors or icon-only links */
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after {
+    content: "";
+  }
+
+  /* Code blocks: light background, dark text */
+  pre,
+  code,
+  pre *,
+  code * {
+    background: #f5f5f5 !important;
+    color: #111 !important;
+    border: 1px solid #ddd !important;
+  }
+
+  pre {
+    padding: 0.75em 1em !important;
+    border-radius: 4px !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    page-break-inside: avoid;
+  }
+
+  /* Avoid breaking headings and code from their following content */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    page-break-after: avoid;
+    color: #000 !important;
+  }
+
+  /* Avoid orphaned images */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Prose/typography overrides */
+  .prose,
+  .prose * {
+    color: #000 !important;
+  }
+
+  .prose a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  .prose a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #444 !important;
+  }
+
+  .prose a[href^="#"]::after {
+    content: "";
+  }
+}

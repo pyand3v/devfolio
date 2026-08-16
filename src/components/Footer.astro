@@ -1,0 +1,60 @@
+---
+import { Icon } from "astro-icon/components"
+import packageJson from "../../package.json"
+import { footerConfig } from "@/data/portfolio"
+---
+
+<footer
+  id="footerPortfolio"
+  class="relative mt-6 border-t border-gray-200 bg-zinc-50/80 px-4 py-6 text-center text-sm text-gray-600 backdrop-blur-sm dark:border-gray-900 dark:bg-zinc-950/80 dark:text-gray-400"
+>
+  <div class="mb-4 flex flex-wrap justify-center gap-4">
+    {
+      footerConfig.socialLinks.map(link => (
+        <a
+          href={link.href}
+          aria-label={link.label}
+          class="group flex size-11 items-center justify-center rounded-lg border border-gray-300 bg-gray-100 text-gray-700 transition-all duration-200 hover:scale-110 hover:border-accent-500 hover:bg-accent-500/10 hover:text-accent-600 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-accent-400 dark:hover:text-accent-400"
+        >
+          <Icon name={link.icon} class="size-5" />
+        </a>
+      ))
+    }
+  </div>
+  <div
+    class="mx-auto mb-4 h-px max-w-xs bg-linear-to-r from-transparent via-gray-300 to-transparent dark:via-gray-700"
+  >
+  </div>
+  <p class="mb-2">
+    © {new Date().getFullYear()}
+    {footerConfig.copyrightName}. All rights reserved.
+  </p>
+  {
+    footerConfig.showVersionAndAttribution && (
+      <div class="flex flex-col items-center justify-center gap-2 font-mono text-xs text-gray-500 sm:flex-row sm:gap-3">
+        <a
+          href={`https://github.com/alemoraru/nextjs-portofolio-website/releases/tag/v${packageJson.version}`}
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-gray-200 px-3 py-1.5 transition hover:border-accent-500 hover:bg-accent-500/10 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-accent-400"
+        >
+          <>
+            <Icon name="lucide:git-branch" class="size-3" />
+            <span class="font-semibold text-accent-600 dark:text-accent-400">
+              {packageJson.version}
+            </span>
+          </>
+        </a>
+        <span>
+          built by{" "}
+          <a
+            href="https://github.com/alemoraru"
+            rel="noopener noreferrer"
+            class="font-semibold hover:text-accent-500"
+          >
+            @alemoraru
+          </a>
+        </span>
+      </div>
+    )
+  }
+</footer>

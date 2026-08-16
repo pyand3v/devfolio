@@ -1,0 +1,32 @@
+---
+import { getCollection } from "astro:content"
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import BlogCard from "@/components/BlogCard.astro"
+import { getAllBlogPosts } from "@/lib/content"
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog")
+  const tags = [
+    ...new Set(posts.flatMap(post => post.data.tags ?? []).map(tag => tag.toLowerCase())),
+  ]
+  return tags.map(tag => ({ params: { tag } }))
+}
+const { tag } = Astro.params
+const posts = (await getAllBlogPosts()).filter(post => post.tags?.includes(tag ?? ""))
+const displayTag = tag?.replaceAll("-", " ") ?? ""
+---
+
+<BaseLayout
+  title={`Posts tagged ${displayTag}`}
+  description={`Posts about ${displayTag}.`}
+  canonical={`/blog/tag/${tag}`}
+  ><section class="mx-auto max-w-4xl px-4">
+    <a
+      href="/blog"
+      class="mb-6 inline-flex text-sm font-semibold text-accent-600 hover:text-accent-500"
+      >← Back to Blog</a
+    ><h1 class="mb-8 text-3xl font-bold">Posts tagged “{displayTag}”</h1><div class="grid gap-6">
+      {posts.map(post => <BlogCard post={post} />)}
+    </div>
+  </section></BaseLayout
+>

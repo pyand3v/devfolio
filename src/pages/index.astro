@@ -1,0 +1,91 @@
+---
+import { Icon } from "astro-icon/components"
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import BlogCard from "@/components/BlogCard.astro"
+import ProjectCard from "@/components/ProjectCard.astro"
+import SectionHeading from "@/components/SectionHeading.astro"
+import WorkCard from "@/components/WorkCard.astro"
+import { homeIntroConfig } from "@/data/portfolio"
+import { siteMetadata } from "@/data/site"
+import { getAllBlogPosts, getAllProjects, getAllWorkItems } from "@/lib/content"
+
+const [blog, work, projects] = await Promise.all([
+  getAllBlogPosts(),
+  getAllWorkItems(),
+  getAllProjects(),
+])
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: siteMetadata.author.name,
+  url: siteMetadata.siteUrl,
+  description: siteMetadata.description,
+  jobTitle: homeIntroConfig.facts[4]?.label,
+  sameAs: [
+    "https://github.com/pyand3v",
+    "https://www.linkedin.com/in/pyandev/",
+    "https://twitter.com/pyandev",
+  ],
+}
+---
+
+<BaseLayout jsonLd={jsonLd}>
+  <section class="mx-auto max-w-4xl px-4">
+    <div class="mt-2 text-center motion-safe:animate-[fade-in_0.5s_ease-out]">
+      <h1 class="mb-4 text-3xl font-bold text-gray-900 sm:text-4xl dark:text-gray-100">
+        Hi, I&apos;m {homeIntroConfig.shortName || homeIntroConfig.name}
+        <span class="inline-block motion-safe:animate-[wave_1.5s_ease-in-out_0.5s]">👋</span>
+      </h1>
+      <div class="mx-auto mb-8 max-w-3xl space-y-4">
+        <p class="text-left text-base leading-relaxed text-gray-600 sm:text-lg dark:text-gray-300">
+          {homeIntroConfig.introParagraphs[0]}
+        </p><p
+          class="text-left text-base leading-relaxed text-gray-600 sm:text-lg dark:text-gray-300"
+        >
+          {homeIntroConfig.introParagraphs[1]}
+        </p>
+      </div>
+    </div>
+    <div class="mb-12 flex flex-wrap justify-center gap-2">
+      {
+        homeIntroConfig.facts.map(fact => (
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
+            <Icon name={fact.icon} class="size-4 text-accent-500" />
+            {fact.label}
+          </span>
+        ))
+      }
+    </div>
+    <section class="mb-12">
+      <SectionHeading
+        title="Work Experience"
+        href="/work"
+        showLink={work.length > homeIntroConfig.workItemsToShow}
+      /><div class="grid gap-6">
+        {work.slice(0, homeIntroConfig.workItemsToShow).map(item => <WorkCard item={item} />)}
+      </div>
+    </section>
+    <section class="mb-12">
+      <SectionHeading
+        title="Projects"
+        href="/projects"
+        showLink={projects.length > homeIntroConfig.projectsToShow}
+      /><div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        {
+          projects
+            .slice(0, homeIntroConfig.projectsToShow)
+            .map((project, index) => <ProjectCard project={project} eager={index === 0} />)
+        }
+      </div>
+    </section>
+    <section class="mb-6">
+      <SectionHeading
+        title="Latest Posts"
+        href="/blog"
+        showLink={blog.length > homeIntroConfig.blogPostsToShow}
+      /><div class="grid gap-6">
+        {blog.slice(0, homeIntroConfig.blogPostsToShow).map(post => <BlogCard post={post} />)}
+      </div>
+    </section>
+  </section>
+</BaseLayout>

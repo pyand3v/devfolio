@@ -1,0 +1,159 @@
+---
+import { Icon } from "astro-icon/components"
+
+interface Filter {
+  name: string
+  count: number
+}
+interface Props {
+  kind: "blog" | "work" | "projects"
+  filters: Filter[]
+  pageSize: number
+  filterLabel: string
+  sortOptions: Array<{ value: string; label: string }>
+  searchPlaceholder?: string
+  enableViewToggle?: boolean
+}
+const { kind, filters, pageSize, filterLabel, sortOptions, searchPlaceholder, enableViewToggle } =
+  Astro.props
+const param = kind === "blog" ? "tags" : kind === "work" ? "company" : "tech"
+---
+
+<div
+  class="collection-browser mb-7"
+  data-collection={kind}
+  data-param={param}
+  data-page-size={pageSize}
+>
+  <div
+    class="rounded-2xl border border-gray-200/90 bg-white/80 p-3 shadow-sm backdrop-blur-sm dark:border-gray-800 dark:bg-gray-900/80"
+  >
+    <div class="flex flex-wrap items-center gap-3">
+      {
+        searchPlaceholder && (
+          <label class="relative min-w-[15rem] grow sm:max-w-sm">
+            <Icon
+              name="lucide:search"
+              class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-gray-400"
+            />
+            <input
+              type="search"
+              class="collection-search w-full rounded-xl border border-gray-300 bg-white py-2.5 pr-3 pl-9 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
+              placeholder={searchPlaceholder}
+              aria-label="Search articles"
+            />
+          </label>
+        )
+      }
+      <details class="group relative">
+        <summary
+          class="flex cursor-pointer list-none items-center justify-between gap-2 rounded-xl border border-gray-300 bg-gray-50 px-3.5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-accent-500 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
+          ><Icon name="lucide:tags" class="size-4 text-accent-600 dark:text-accent-400" /><span
+            >{filterLabel}</span
+          ><span class="text-xs text-gray-500 group-open:rotate-180">⌄</span></summary
+        >
+        <div
+          class="absolute left-0 z-30 mt-2 w-72 rounded-xl border border-gray-200 bg-white p-3 shadow-xl dark:border-gray-700 dark:bg-gray-900"
+        >
+          <div class="max-h-64 space-y-1 overflow-auto custom-scrollbar">
+            {
+              filters.map(filter => (
+                <label class="flex cursor-pointer items-center justify-between gap-3 rounded-md px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-800">
+                  <>
+                    <span class="flex items-center gap-2">
+                      <>
+                        <input
+                          type="checkbox"
+                          value={filter.name}
+                          class="collection-filter accent-[var(--accent-500)]"
+                        />
+                        <span>{filter.name}</span>
+                      </>
+                    </span>
+                    <span class="text-xs text-gray-500">{filter.count}</span>
+                  </>
+                </label>
+              ))
+            }
+          </div>
+          <div class="mt-3 flex justify-between border-t border-gray-200 pt-3 dark:border-gray-700">
+            <button
+              type="button"
+              class="collection-clear text-sm font-semibold text-gray-500 hover:text-accent-600"
+              >Clear</button
+            ><button
+              type="button"
+              class="collection-apply rounded-md bg-accent-600 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-accent-700"
+              >Apply</button
+            >
+          </div>
+        </div>
+      </details>
+      <label
+        class="flex items-center gap-2 rounded-xl border border-gray-300 bg-gray-50 px-3 py-2.5 dark:border-gray-700 dark:bg-gray-950"
+        ><Icon name="lucide:arrow-down-up" class="size-4 text-gray-500" /><span class="sr-only"
+          >Sort</span
+        ><select
+          class="collection-sort bg-transparent text-sm font-semibold text-gray-700 outline-none dark:text-gray-200"
+          ><option value="">Default</option>{
+            sortOptions.map(option => <option value={option.value}>{option.label}</option>)
+          }</select
+        ></label
+      >
+      {
+        enableViewToggle && (
+          <div
+            class="ml-auto inline-flex rounded-xl border border-gray-300 bg-gray-50 p-1 dark:border-gray-700 dark:bg-gray-950"
+            role="group"
+            aria-label="Article layout"
+          >
+            <>
+              <button
+                type="button"
+                class="collection-view rounded-lg p-1.5 text-gray-500 transition hover:text-accent-600 dark:text-gray-400 dark:hover:text-accent-400"
+                data-view="grid"
+                aria-label="Use card grid"
+                title="Card grid"
+              >
+                <Icon name="lucide:layout-grid" class="size-4" />
+              </button>
+              <button
+                type="button"
+                class="collection-view rounded-lg p-1.5 text-gray-500 transition hover:text-accent-600 dark:text-gray-400 dark:hover:text-accent-400"
+                data-view="compact"
+                aria-label="Use compact list"
+                title="Compact list"
+              >
+                <Icon name="lucide:list" class="size-4" />
+              </button>
+            </>
+          </div>
+        )
+      }
+    </div>
+    <div
+      class="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 pt-3 dark:border-gray-800"
+    >
+      <p
+        class="collection-result-count text-sm font-medium text-gray-600 dark:text-gray-300"
+        aria-live="polite"
+      >
+      </p>
+      <div class="collection-active-filters flex flex-wrap justify-end gap-2 empty:hidden"></div>
+    </div>
+  </div>
+  <p
+    class="collection-empty hidden mt-12 text-center text-lg font-semibold text-gray-600 dark:text-gray-300"
+  >
+    No results found. Try changing or clearing your filters.
+  </p>
+  <nav
+    class="collection-pagination mt-8 flex flex-wrap justify-center gap-2"
+    aria-label="Pagination"
+  >
+  </nav>
+</div>
+
+<script>
+  import "@/scripts/collection-browser"
+</script>
