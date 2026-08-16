@@ -7,13 +7,16 @@ import { formatBlogDate } from "@/lib/utils"
 interface Props {
   post: BlogPost
   locale?: Locale
+  surface?: "default" | "contrast"
 }
-const { post, locale = "en" } = Astro.props
+const { post, locale = "en", surface = "default" } = Astro.props
 const actionLabel = { en: "Read article", es: "Leer artículo", "pt-br": "Ler artigo" }[locale]
+const surfaceClass =
+  surface === "contrast" ? "border-[#11151b] bg-[#171b22]" : "border-white/25 bg-white/5"
 ---
 
 <article
-  class="blog-card group flex h-full flex-col border border-white/25 bg-white/5 p-6 text-white transition hover:border-[#c86d61] hover:bg-white/10"
+  class={`blog-card group flex h-full flex-col border p-6 text-white transition hover:border-[#c86d61] ${surfaceClass} ${surface === "default" ? "hover:bg-white/10" : "hover:bg-[#222832]"}`}
 >
   <h3 class="text-2xl font-bold leading-tight tracking-tight">
     <a href={`/blog/${post.slug}`}>{post.title}</a>
