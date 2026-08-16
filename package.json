@@ -61,7 +61,7 @@
     "vitest": "4.1.10"
   },
   "lint-staged": {
-    "*.{js,ts,mjs,cjs,astro}": "eslint --max-warnings=0",
+    "*.{js,ts,mjs,cjs,astro}": "eslint --no-warn-ignored --max-warnings=0",
     "*.{js,ts,mjs,cjs,json,css,md,mdx,yml,yaml,astro}": "prettier --check"
   }
 }

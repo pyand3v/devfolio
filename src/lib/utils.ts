@@ -81,7 +81,8 @@ export function formatDateRange(start: string, end: string): string {
  * @param style - "long" for full month name, "short" for abbreviated month name.
  */
 export function formatBlogDate(date: string, style: "long" | "short" = "long"): string {
-  return new Date(date).toLocaleDateString("en-US", {
+  const normalizedDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T12:00:00-03:00` : date
+  return new Date(normalizedDate).toLocaleDateString("en-US", {
     timeZone: "America/Argentina/Buenos_Aires",
     year: "numeric",
     month: style,

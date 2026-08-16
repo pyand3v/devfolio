@@ -10,7 +10,10 @@ export async function getStaticPaths() {
       .filter(locale => locale !== "en")
       .map(async locale => {
         const posts = await getAllBlogPosts(locale, { featuredOnly: false })
-        return posts.map(post => ({ params: { locale, slug: post.slug }, props: { title: post.title } }))
+        return posts.map(post => ({
+          params: { locale, slug: post.slug },
+          props: { title: post.title },
+        }))
       })
   )
   return paths.flat()

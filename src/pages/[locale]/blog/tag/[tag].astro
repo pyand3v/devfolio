@@ -10,7 +10,9 @@ export async function getStaticPaths() {
       .filter(locale => locale !== "en")
       .map(async locale => {
         const posts = await getAllBlogPosts(locale)
-        const tags = [...new Set(posts.flatMap(post => post.tags ?? []).map(tag => tag.toLowerCase()))]
+        const tags = [
+          ...new Set(posts.flatMap(post => post.tags ?? []).map(tag => tag.toLowerCase())),
+        ]
         return tags.map(tag => ({ params: { locale, tag } }))
       })
   )
@@ -23,14 +25,27 @@ const posts = (await getAllBlogPosts(locale)).filter(post => post.tags?.includes
 const displayTag = tag?.replaceAll("-", " ") ?? ""
 ---
 
-<BaseLayout title={`Posts tagged ${displayTag}`} description={`Posts about ${displayTag}.`} canonical={`/${locale}/blog/tag/${tag}`}>
+<BaseLayout
+  title={`Posts tagged ${displayTag}`}
+  description={`Posts about ${displayTag}.`}
+  canonical={`/${locale}/blog/tag/${tag}`}
+>
   <section class="min-h-screen bg-[#11151b] text-white">
     <div class="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
       <header class="border-b-2 border-[#c86d61] pb-10">
-        <a href={`/${locale}/blog`} class="inline-flex items-center gap-2 text-xs font-black tracking-[0.14em] text-[#d7df72] uppercase transition hover:text-white">&larr; Back to blog</a>
-        <p class="mt-10 text-xs font-black tracking-[0.2em] text-[#c86d61] uppercase">Tag archive</p>
+        <a
+          href={`/${locale}/blog`}
+          class="inline-flex items-center gap-2 text-xs font-black tracking-[0.14em] text-[#d7df72] uppercase transition hover:text-white"
+          >&larr; Back to blog</a
+        >
+        <p class="mt-10 text-xs font-black tracking-[0.2em] text-[#c86d61] uppercase">
+          Tag archive
+        </p>
         <h1 class="display-type mt-5 max-w-4xl text-5xl leading-[0.9] sm:text-7xl">{displayTag}</h1>
-        <p class="mt-6 max-w-2xl text-lg text-white/70">{posts.length} {posts.length === 1 ? "article" : "articles"} filed under this topic.</p>
+        <p class="mt-6 max-w-2xl text-lg text-white/70">
+          {posts.length}
+          {posts.length === 1 ? "article" : "articles"} filed under this topic.
+        </p>
       </header>
       <div class="mt-12 grid gap-5 lg:grid-cols-2">
         {posts.map(post => <BlogCard post={post} locale={locale} />)}
