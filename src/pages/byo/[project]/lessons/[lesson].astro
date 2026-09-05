@@ -1,0 +1,29 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import ByoArticle from "@/components/ByoArticle.astro"
+import { getAllByoProjects } from "@/lib/content"
+export async function getStaticPaths() {
+  return (await getAllByoProjects("en")).flatMap(bundle =>
+    bundle.lessons.map(entry => ({
+      params: { project: bundle.project.data.slug, lesson: entry.data.slug },
+      props: { bundle, entry },
+    }))
+  )
+}
+const { bundle, entry } = Astro.props
+const canonical = `/byo/${bundle.project.data.slug}/lessons/${entry.data.slug}`
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  name: entry.data.title,
+  description: entry.data.description,
+  isPartOf: bundle.project.data.title,
+}
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  canonical={canonical}
+  jsonLd={jsonLd}><ByoArticle bundle={bundle} entry={entry} locale="en" /></BaseLayout
+>

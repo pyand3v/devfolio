@@ -1,0 +1,28 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import ByoProjectContent from "@/components/ByoProjectContent.astro"
+import { getAllByoProjects, type ByoProjectBundle } from "@/lib/content"
+import { locales, type Locale } from "@/lib/i18n"
+export async function getStaticPaths() {
+  return (
+    await Promise.all(
+      locales
+        .filter(locale => locale !== "en")
+        .map(async locale =>
+          (await getAllByoProjects(locale)).map(bundle => ({
+            params: { locale, project: bundle.project.data.slug },
+            props: { bundle, locale },
+          }))
+        )
+    )
+  ).flat()
+}
+const { bundle, locale } = Astro.props as { bundle: ByoProjectBundle; locale: Locale }
+const canonical = `/byo/${bundle.project.data.slug}`
+---
+
+<BaseLayout
+  title={bundle.project.data.title}
+  description={bundle.project.data.description}
+  canonical={canonical}><ByoProjectContent bundle={bundle} locale={locale} /></BaseLayout
+>

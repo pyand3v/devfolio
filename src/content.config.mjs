@@ -133,4 +133,68 @@ const projectMetadata = defineCollection({
   }),
 })
 
-export const collections = { blog, blogMetadata, work, workMetadata, projects, projectMetadata }
+const byo = defineCollection({
+  loader: mdxLoader("./src/data/byo"),
+  schema: z.discriminatedUnion("type", [
+    z.object({
+      type: z.literal("project"),
+      locale: z.enum(["en", "es", "pt-br"]),
+      translationKey: z.string(),
+      slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+      title: z.string(),
+      description: z.string(),
+      estimatedMinutes: z.number().int().positive(),
+      chapters: z
+        .array(
+          z.object({
+            order: z.number().int().positive(),
+            title: z.string(),
+            description: z.string(),
+          })
+        )
+        .min(1),
+    }),
+    z.object({
+      type: z.literal("lesson"),
+      locale: z.enum(["en", "es", "pt-br"]),
+      translationKey: z.string(),
+      project: z.string(),
+      slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+      chapter: z.number().int().positive(),
+      order: z.number().int().positive(),
+      title: z.string(),
+      description: z.string(),
+    }),
+    z.object({
+      type: z.literal("guide"),
+      locale: z.enum(["en", "es", "pt-br"]),
+      translationKey: z.string(),
+      project: z.string(),
+      slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+      order: z.number().int().positive(),
+      title: z.string(),
+      description: z.string(),
+    }),
+    z.object({
+      type: z.literal("exercise"),
+      locale: z.enum(["en", "es", "pt-br"]),
+      translationKey: z.string(),
+      project: z.string(),
+      slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+      order: z.number().int().positive(),
+      title: z.string(),
+      description: z.string(),
+      difficulty: z.enum(["easy", "medium", "hard"]),
+    }),
+  ]),
+})
+
+export const collections = {
+  blog,
+  blogMetadata,
+  work,
+  workMetadata,
+  projects,
+  projectMetadata,
+  byo,
+}

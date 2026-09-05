@@ -1,0 +1,133 @@
+---
+import { render } from "astro:content"
+import { Icon } from "astro-icon/components"
+import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
+import type { ByoExercise, ByoGuide, ByoLesson, ByoProjectBundle } from "@/lib/content"
+import type { Locale } from "@/lib/i18n"
+import { getLocalizedPath } from "@/lib/i18n"
+interface Props {
+  bundle: ByoProjectBundle
+  entry: ByoLesson | ByoGuide | ByoExercise
+  locale: Locale
+}
+const { bundle, entry, locale } = Astro.props
+const { Content, headings } = await render(entry)
+const lessonEntry = entry.data.type === "lesson" ? (entry as ByoLesson) : undefined
+const isLesson = Boolean(lessonEntry)
+const lessonIndex = lessonEntry ? bundle.lessons.findIndex(item => item.id === lessonEntry.id) : -1
+const previous = lessonEntry ? bundle.lessons[lessonIndex - 1] : undefined
+const next = lessonEntry ? bundle.lessons[lessonIndex + 1] : undefined
+const chapter = lessonEntry
+  ? bundle.project.data.chapters.find(item => item.order === lessonEntry.data.chapter)
+  : undefined
+const copy = {
+  en: {
+    back: "Back to path",
+    previous: "Previous lesson",
+    next: "Next lesson",
+    lesson: "Lesson",
+    guide: "Guide",
+    exercise: "Exercise",
+    of: "of",
+  },
+  es: {
+    back: "Volver a la ruta",
+    previous: "Lección anterior",
+    next: "Siguiente lección",
+    lesson: "Lección",
+    guide: "Guía",
+    exercise: "Ejercicio",
+    of: "de",
+  },
+  "pt-br": {
+    back: "Voltar à trilha",
+    previous: "Lição anterior",
+    next: "Próxima lição",
+    lesson: "Lição",
+    guide: "Guia",
+    exercise: "Exercício",
+    of: "de",
+  },
+}[locale]
+const label =
+  entry.data.type === "lesson"
+    ? copy.lesson
+    : entry.data.type === "guide"
+      ? copy.guide
+      : copy.exercise
+---
+
+<section class="portfolio-dark-grid min-h-screen text-white">
+  <article class="mx-auto max-w-6xl px-5 py-10 lg:px-8 lg:py-16">
+    <a
+      href={getLocalizedPath(`/byo/${bundle.project.data.slug}`, locale)}
+      class="inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[.12em] text-[#9fc7db] uppercase hover:text-white"
+      ><Icon name="lucide:arrow-left" class="size-4" />{copy.back}</a
+    ><header class="mt-10 border-b border-[#c86d61] pb-8">
+      <p class="font-mono text-xs font-bold tracking-[.15em] text-[#d58376] uppercase">
+        BYO · {bundle.project.data.title} · {label}
+      </p>{
+        isLesson && (
+          <p class="mt-4 font-mono text-xs text-[#9fc7db]">
+            {chapter?.title} · {copy.lesson} {lessonIndex + 1} {copy.of} {bundle.lessons.length}
+          </p>
+        )
+      }<h1 class="display-type mt-5 max-w-4xl text-4xl leading-[.9] sm:text-6xl">
+        {entry.data.title}
+      </h1><p class="mt-5 max-w-3xl text-lg leading-relaxed text-white/70">
+        {entry.data.description}
+      </p>
+    </header><div
+      class:list={[
+        "mt-10",
+        headings.length > 0 && "lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-12",
+      ]}
+    >
+      <ContentTableOfContents headings={headings} /><div class="min-w-0">
+        <div
+          class="prose prose-invert max-w-none prose-headings:font-[Gabarito,Arial,sans-serif] prose-headings:text-white prose-p:text-white/75 prose-a:text-[#d58376] hover:prose-a:text-white"
+        >
+          <Content />
+        </div>{
+          isLesson && (
+            <nav
+              class="mt-14 grid gap-4 border-t border-white/20 pt-6 sm:grid-cols-2"
+              aria-label="Lesson navigation"
+            >
+              {previous ? (
+                <a
+                  href={getLocalizedPath(
+                    `/byo/${bundle.project.data.slug}/lessons/${previous.data.slug}`,
+                    locale
+                  )}
+                  class="border border-white/20 p-4 hover:border-[#c86d61]"
+                >
+                  <span class="font-mono text-[.65rem] text-[#9fc7db] uppercase">
+                    ← {copy.previous}
+                  </span>
+                  <span class="mt-2 block font-bold">{previous.data.title}</span>
+                </a>
+              ) : (
+                <span />
+              )}
+              {next && (
+                <a
+                  href={getLocalizedPath(
+                    `/byo/${bundle.project.data.slug}/lessons/${next.data.slug}`,
+                    locale
+                  )}
+                  class="border border-white/20 p-4 text-right hover:border-[#c86d61]"
+                >
+                  <span class="font-mono text-[.65rem] text-[#9fc7db] uppercase">
+                    {copy.next} →
+                  </span>
+                  <span class="mt-2 block font-bold">{next.data.title}</span>
+                </a>
+              )}
+            </nav>
+          )
+        }
+      </div>
+    </div>
+  </article>
+</section>

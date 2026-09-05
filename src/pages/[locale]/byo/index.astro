@@ -1,0 +1,26 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import ByoCatalog from "@/components/ByoCatalog.astro"
+import { getAllByoProjects } from "@/lib/content"
+import { locales, type Locale } from "@/lib/i18n"
+export async function getStaticPaths() {
+  return Promise.all(
+    locales
+      .filter(locale => locale !== "en")
+      .map(async locale => ({
+        params: { locale },
+        props: { bundles: await getAllByoProjects(locale), locale },
+      }))
+  )
+}
+const { bundles, locale } = Astro.props as {
+  bundles: Awaited<ReturnType<typeof getAllByoProjects>>
+  locale: Locale
+}
+---
+
+<BaseLayout
+  title="BYO"
+  description="Practical build-alongs for making useful digital products."
+  canonical="/byo"><ByoCatalog bundles={bundles} locale={locale} /></BaseLayout
+>

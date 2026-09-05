@@ -10,7 +10,7 @@ export const localeOptions: Array<{ code: Locale; label: string; flag: string }>
 
 export const copy = {
   en: {
-    nav: { home: "Home", work: "Work", projects: "Projects", blog: "Blog" },
+    nav: { home: "Home", work: "Work", projects: "Projects", blog: "Blog", byo: "BYO" },
     footer: {
       description: "Product engineering for useful software people love to use.",
       explore: "Explore",
@@ -52,7 +52,7 @@ export const copy = {
     },
   },
   es: {
-    nav: { home: "Inicio", work: "Trabajo", projects: "Proyectos", blog: "Blog" },
+    nav: { home: "Inicio", work: "Trabajo", projects: "Proyectos", blog: "Blog", byo: "BYO" },
     footer: {
       description:
         "Ingeniería de producto para crear software útil que las personas disfrutan usar.",
@@ -96,7 +96,7 @@ export const copy = {
     },
   },
   "pt-br": {
-    nav: { home: "Início", work: "Trabalho", projects: "Projetos", blog: "Blog" },
+    nav: { home: "Início", work: "Trabalho", projects: "Projetos", blog: "Blog", byo: "BYO" },
     footer: {
       description: "Engenharia de produto para criar software útil que as pessoas adoram usar.",
       explore: "Explorar",
@@ -156,7 +156,8 @@ export const getLocaleSwitchPath = (pathname: string, locale: Locale) => {
   const segments = pathname.split("/").filter(Boolean)
   if (locales.includes(segments[0] as Locale)) segments.shift()
   const topLevel = segments[0]
-  if (topLevel === "blog") return getLocalizedPath(`/${segments.join("/")}`, locale)
+  if (topLevel === "blog" || topLevel === "byo")
+    return getLocalizedPath(`/${segments.join("/")}`, locale)
   const supported = topLevel === "work" || topLevel === "projects"
   return getLocalizedPath(supported ? `/${topLevel}` : "/", locale)
 }

@@ -3,6 +3,7 @@ import {
   BlogFrontmatterSchema,
   WorkItemFrontmatterSchema,
   ProjectFrontmatterSchema,
+  ByoEntryFrontmatterSchema,
 } from "@/lib/schemas"
 
 describe("BlogFrontmatterSchema", () => {
@@ -162,5 +163,45 @@ describe("ProjectFrontmatterSchema", () => {
 
   it("rejects non-number teamSize", () => {
     expect(ProjectFrontmatterSchema.safeParse({ ...valid, teamSize: "three" }).success).toBe(false)
+  })
+})
+
+describe("ByoEntryFrontmatterSchema", () => {
+  it("parses an ordered lesson with a description", () => {
+    expect(
+      ByoEntryFrontmatterSchema.parse({
+        type: "lesson",
+        title: "Define the outcome",
+        description: "Choose the useful first step.",
+        project: "portfolio",
+        chapter: 1,
+        order: 1,
+      })
+    ).toMatchObject({ type: "lesson", chapter: 1, order: 1 })
+  })
+
+  it("rejects a lesson without a description", () => {
+    expect(
+      ByoEntryFrontmatterSchema.safeParse({
+        type: "lesson",
+        title: "Missing copy",
+        project: "portfolio",
+        chapter: 1,
+        order: 1,
+      }).success
+    ).toBe(false)
+  })
+
+  it("rejects an invalid exercise difficulty", () => {
+    expect(
+      ByoEntryFrontmatterSchema.safeParse({
+        type: "exercise",
+        title: "Try it",
+        description: "Do something useful.",
+        project: "portfolio",
+        order: 1,
+        difficulty: "legendary",
+      }).success
+    ).toBe(false)
   })
 })

@@ -28,6 +28,7 @@ const navigation = [
   { key: "work", path: "/work" },
   { key: "projects", path: "/projects" },
   { key: "blog", path: "/blog" },
+  { key: "byo", path: "/byo" },
 ] as const
 const activePath = `/${crumbs.filter(crumb => !localeOptions.some(item => item.code === crumb))[0] ?? ""}`
 const activeLocale = localeOptions.find(option => option.code === locale) ?? localeOptions[0]

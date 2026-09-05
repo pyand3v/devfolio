@@ -32,6 +32,34 @@ export const ProjectFrontmatterSchema = z.object({
   paperUrl: z.string().optional(),
 })
 
+export const ByoEntryFrontmatterSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("project"), title: z.string(), description: z.string() }),
+  z.object({
+    type: z.literal("lesson"),
+    title: z.string(),
+    description: z.string(),
+    project: z.string(),
+    chapter: z.number().int().positive(),
+    order: z.number().int().positive(),
+  }),
+  z.object({
+    type: z.literal("guide"),
+    title: z.string(),
+    description: z.string(),
+    project: z.string(),
+    order: z.number().int().positive(),
+  }),
+  z.object({
+    type: z.literal("exercise"),
+    title: z.string(),
+    description: z.string(),
+    project: z.string(),
+    order: z.number().int().positive(),
+    difficulty: z.enum(["easy", "medium", "hard"]),
+  }),
+])
+
 export type BlogPostFrontmatter = z.infer<typeof BlogFrontmatterSchema>
 export type WorkItemFrontmatter = z.infer<typeof WorkItemFrontmatterSchema>
 export type ProjectFrontmatter = z.infer<typeof ProjectFrontmatterSchema>
+export type ByoEntryFrontmatter = z.infer<typeof ByoEntryFrontmatterSchema>

@@ -149,6 +149,74 @@ await validateEntryMetadata({
   metadataDirectory: path.join(root, "src", "data", "metadata", "work"),
 })
 
+const byoDirectory = path.join(root, "src", "data", "byo")
+const byoRecords = await Promise.all(
+  (await mdxFiles(byoDirectory)).map(async file => ({ file, data: await frontmatter(file) }))
+)
+const requiredByoFields = ["type", "locale", "translationKey", "title", "description"]
+const byoByKey = new Map()
+const byoProjects = new Map()
+const byoLessonOrders = new Map()
+const byoSlugs = new Set()
+
+for (const record of byoRecords) {
+  const relative = path.relative(root, record.file)
+  for (const field of requiredByoFields)
+    if (!record.data[field]) errors.push(`${relative}: ${field} is required.`)
+  if (!["project", "lesson", "guide", "exercise"].includes(record.data.type)) {
+    errors.push(`${relative}: type must be project, lesson, guide, or exercise.`)
+    continue
+  }
+  if (!supportedLanguages.has(record.data.locale))
+    errors.push(`${relative}: locale is unsupported.`)
+  const translationKey = `${record.data.type}:${record.data.translationKey}`
+  const localized = byoByKey.get(translationKey) ?? new Set()
+  localized.add(record.data.locale)
+  byoByKey.set(translationKey, localized)
+  if (record.data.type === "project") {
+    const projectLocales = byoProjects.get(record.data.translationKey) ?? new Set()
+    projectLocales.add(record.data.locale)
+    byoProjects.set(record.data.translationKey, projectLocales)
+    continue
+  }
+  if (!record.data.project) errors.push(`${relative}: project is required.`)
+  if (!record.data.slug || !validSlug.test(record.data.slug))
+    errors.push(`${relative}: slug must be lowercase kebab-case.`)
+  const slugKey = `${record.data.locale}:${record.data.project}:${record.data.type}:${record.data.slug}`
+  if (byoSlugs.has(slugKey)) errors.push(`${relative}: slug is duplicated within this project.`)
+  byoSlugs.add(slugKey)
+  if (record.data.type === "lesson") {
+    const chapter = Number(record.data.chapter),
+      order = Number(record.data.order)
+    if (!Number.isInteger(chapter) || chapter < 1)
+      errors.push(`${relative}: chapter must be a positive integer.`)
+    if (!Number.isInteger(order) || order < 1)
+      errors.push(`${relative}: order must be a positive integer.`)
+    const lessonKey = `${record.data.locale}:${record.data.project}`
+    const lessonOrders = byoLessonOrders.get(lessonKey) ?? []
+    lessonOrders.push(order)
+    byoLessonOrders.set(lessonKey, lessonOrders)
+  }
+  if (
+    record.data.type === "exercise" &&
+    !["easy", "medium", "hard"].includes(record.data.difficulty)
+  )
+    errors.push(`${relative}: exercise difficulty must be easy, medium, or hard.`)
+}
+for (const [key, localized] of byoByKey)
+  if (localized.size !== supportedLanguages.size)
+    errors.push(`${key}: must have complete en, es, and pt-br translations.`)
+for (const record of byoRecords.filter(record => record.data.type !== "project"))
+  if (!byoProjects.has(record.data.project))
+    errors.push(
+      `${path.relative(root, record.file)}: references unknown project "${record.data.project}".`
+    )
+for (const [key, orders] of byoLessonOrders) {
+  const expected = Array.from({ length: orders.length }, (_, index) => index + 1)
+  if (orders.sort((a, b) => a - b).some((order, index) => order !== expected[index]))
+    errors.push(`${key}: lesson order must be contiguous.`)
+}
+
 if (errors.length) {
   console.error(`Content validation failed:\n- ${errors.join("\n- ")}`)
   process.exit(1)
