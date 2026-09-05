@@ -27,14 +27,14 @@ const { images } = Astro.props
           <>
             <button
               type="button"
-              class="gallery-prev absolute left-3 top-1/2 -translate-y-1/2 border border-white/30 bg-black/60 p-2 text-white transition hover:border-[#c86d61] hover:bg-black/80"
+              class="gallery-prev absolute left-3 top-1/2 -translate-y-1/2 border border-white/30 bg-black/60 p-2 text-white transition hover:border-[#88c0d0] hover:bg-black/80"
               aria-label="Previous image"
             >
               ←
             </button>
             <button
               type="button"
-              class="gallery-next absolute right-3 top-1/2 -translate-y-1/2 border border-white/30 bg-black/60 p-2 text-white transition hover:border-[#c86d61] hover:bg-black/80"
+              class="gallery-next absolute right-3 top-1/2 -translate-y-1/2 border border-white/30 bg-black/60 p-2 text-white transition hover:border-[#88c0d0] hover:bg-black/80"
               aria-label="Next image"
             >
               →
@@ -49,7 +49,7 @@ const { images } = Astro.props
               type="button"
               class:list={[
                 "gallery-dot size-2.5 border border-white/40",
-                index === 0 ? "bg-[#c86d61]" : "bg-white/25",
+                index === 0 ? "bg-[#88c0d0]" : "bg-white/25",
               ]}
               data-index={index}
               aria-label={`Show image ${index + 1}`}
@@ -68,7 +68,7 @@ const { images } = Astro.props
     const show = (index: number) => {
       active = (index + dots.length) % dots.length
       if (track) track.style.transform = `translateX(-${active * 100}%)`
-      dots.forEach((dot, i) => dot.classList.toggle("bg-[#c86d61]", i === active))
+      dots.forEach((dot, i) => dot.classList.toggle("bg-[#88c0d0]", i === active))
       dots.forEach((dot, i) => dot.classList.toggle("bg-white/25", i !== active))
     }
     gallery.querySelector(".gallery-prev")?.addEventListener("click", () => show(active - 1))

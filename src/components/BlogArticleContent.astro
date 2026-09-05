@@ -33,12 +33,12 @@ const labels = {
   <article class="mx-auto max-w-7xl px-5 py-8 lg:px-8 lg:py-12">
     <a
       href={getLocalizedPath("/blog", locale)}
-      class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#9fc7db] uppercase transition hover:gap-3 hover:text-white"
+      class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#8fbcbb] uppercase transition hover:gap-3 hover:text-white"
       ><Icon name="lucide:arrow-left" class="size-4" />{labels.back}</a
     >
     <h1 class="display-type mb-5 text-4xl leading-[0.95] text-white sm:text-5xl">{post.title}</h1>
     <div
-      class="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs text-[#9fc7db] uppercase"
+      class="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs text-[#8fbcbb] uppercase"
     >
       <span class="inline-flex items-center gap-1.5"
         ><Icon name="lucide:calendar-days" class="size-4" />{
@@ -60,7 +60,7 @@ const labels = {
           {post.tags.map(tag => (
             <a
               href={getLocalizedPath(`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`, locale)}
-              class="border border-[#9fc7db]/50 bg-[#9fc7db]/8 px-2.5 py-1 font-mono text-xs font-bold text-[#9fc7db] uppercase transition hover:border-[#c86d61] hover:bg-[#c86d61] hover:text-white"
+              class="border border-[#8fbcbb]/50 bg-[#8fbcbb]/8 px-2.5 py-1 font-mono text-xs font-bold text-[#8fbcbb] uppercase transition hover:border-[#88c0d0] hover:bg-[#88c0d0] hover:text-[#2e3440]"
             >
               <Icon name="lucide:tag" class="mr-1 inline size-3.5" />
               {tag}
@@ -79,7 +79,7 @@ const labels = {
       <ContentTableOfContents headings={headings} />
       <div class="min-w-0">
         <div
-          class="prose prose-invert max-w-full overflow-hidden prose-headings:font-[Gabarito,Arial,sans-serif] prose-headings:text-white prose-p:text-white/78 prose-strong:text-white prose-a:text-[#9fc7db] prose-a:decoration-[#9fc7db]/45 hover:prose-a:text-white"
+          class="prose prose-invert max-w-full overflow-hidden prose-headings:font-[Gabarito,Arial,sans-serif] prose-headings:text-white prose-p:text-white/78 prose-strong:text-white prose-a:text-[#88c0d0] prose-a:decoration-[#88c0d0]/45 hover:prose-a:text-white"
         >
           <Content />
         </div>

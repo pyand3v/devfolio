@@ -15,15 +15,15 @@ const visibleHeadings = headings.filter(heading => heading.depth <= 3)
 
 {
   visibleHeadings.length > 0 && (
-    <aside class="mb-10 border-l-2 border-[#c86d61] pl-5 lg:sticky lg:top-28 lg:mb-0 lg:self-start">
-      <p class="text-xs font-black tracking-[0.16em] text-[#c86d61] uppercase">On this page</p>
+    <aside class="mb-10 border-l-2 border-[#88c0d0] pl-5 lg:sticky lg:top-28 lg:mb-0 lg:self-start">
+      <p class="text-xs font-black tracking-[0.16em] text-[#8fbcbb] uppercase">On this page</p>
       <nav class="mt-4" aria-label="Table of contents">
         <ol class="space-y-2 text-sm leading-snug">
           {visibleHeadings.map(heading => (
             <li class:list={[heading.depth === 3 && "ml-3"]}>
               <a
                 href={`#${heading.slug}`}
-                class="font-mono text-xs text-white/60 transition hover:text-[#9fc7db] focus-visible:text-[#9fc7db] focus-visible:outline-none"
+                class="font-mono text-xs text-white/60 transition hover:text-[#88c0d0] focus-visible:text-[#88c0d0] focus-visible:outline-none"
               >
                 {heading.text}
               </a>

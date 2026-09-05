@@ -58,17 +58,17 @@ const jsonLd = {
     <article class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12">
       <a
         href="/projects"
-        class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#9fc7db] uppercase transition hover:gap-3 hover:text-white"
+        class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#8fbcbb] uppercase transition hover:gap-3 hover:text-white"
         ><Icon name="lucide:arrow-left" class="size-4" />Back to Projects</a
       ><h1 class="display-type mb-3 text-4xl leading-[0.95]">{project.title}</h1><p
         class="mb-4 text-lg text-white/65"
       >
         {project.description}
       </p><div
-        class="mb-8 flex flex-wrap items-center gap-3 font-mono text-xs text-[#9fc7db] uppercase"
+        class="mb-8 flex flex-wrap items-center gap-3 font-mono text-xs text-[#8fbcbb] uppercase"
       >
         <span
-          class="inline-flex items-center gap-2 border border-[#9fc7db]/50 bg-[#9fc7db]/8 px-3 py-1"
+          class="inline-flex items-center gap-2 border border-[#8fbcbb]/50 bg-[#8fbcbb]/8 px-3 py-1"
           ><Icon name="lucide:clock" />{formatDuration(project.startDate, project.endDate)}</span
         >{
           project.teamSize && (
@@ -89,7 +89,7 @@ const jsonLd = {
             <a
               href={project.githubUrl}
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white transition hover:border-[#c86d61]"
+              class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white transition hover:border-[#88c0d0]"
             >
               <Icon name="fa6-brands:github" />
               View on GitHub
@@ -100,7 +100,7 @@ const jsonLd = {
             <a
               href={project.paperUrl}
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white transition hover:border-[#c86d61]"
+              class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white transition hover:border-[#88c0d0]"
             >
               <Icon name="lucide:book-open" />
               Read Paper
@@ -109,7 +109,7 @@ const jsonLd = {
         }
       </div><section class="mb-8">
         <h2
-          class="mb-3 flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-[#d58376] uppercase"
+          class="mb-3 flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase"
         >
           <Icon name="lucide:layers-3" />Tech Stack
         </h2><div class="flex flex-wrap gap-3">

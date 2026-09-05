@@ -20,7 +20,7 @@ export const copy = {
       eyebrow: "Independent by design · Paraguay",
       title: "Building products\npeople want to use.",
       headline: "I turn customer insight and business goals into useful, polished software.",
-      primary: "Explore my work",
+      primary: "View my work",
       availability: "Remote-first · Product engineering",
       featuredLabel: "Featured work",
       featuredTitle: "Close to the customer.\nBuilt for the people using it.",
@@ -64,7 +64,7 @@ export const copy = {
       title: "Productos que las\npersonas quieren usar.",
       headline:
         "Transformo las necesidades de clientes y objetivos de negocio en software útil y cuidado.",
-      primary: "Explorar mi trabajo",
+      primary: "Ver mi trabajo",
       availability: "Remoto primero · Ingeniería de producto",
       featuredLabel: "Trabajo destacado",
       featuredTitle: "Cerca del cliente.\nHecho para quien lo usa.",
@@ -107,7 +107,7 @@ export const copy = {
       title: "Produtos que as\npessoas querem usar.",
       headline:
         "Transformo as necessidades dos clientes e os objetivos de negócio em software útil e bem acabado.",
-      primary: "Explorar meu trabalho",
+      primary: "Ver meu trabalho",
       availability: "Remoto em primeiro lugar · Engenharia de produto",
       featuredLabel: "Trabalho em destaque",
       featuredTitle: "Perto do cliente.\nFeito para quem usa.",

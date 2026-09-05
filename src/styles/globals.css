@@ -118,15 +118,15 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Studio-inspired portfolio system: intentionally fixed rather than theme-switchable. */
+/* Nord-inspired portfolio system: intentionally fixed rather than theme-switchable. */
 :root,
 [data-theme] {
-  --background: #ece8df;
-  --foreground: #11151b;
-  --accent-400: #d58376;
-  --accent-500: #c86d61;
-  --accent-600: #a95047;
-  --accent-700: #853e37;
+  --background: #2e3440;
+  --foreground: #eceff4;
+  --accent-400: #b9e1eb;
+  --accent-500: #88c0d0;
+  --accent-600: #81a1c1;
+  --accent-700: #5e81ac;
 }
 
 .portfolio-shell {
@@ -135,38 +135,41 @@
 }
 
 .portfolio-shell::selection {
-  background: #c86d61;
-  color: #fff;
+  background: #88c0d0;
+  color: #2e3440;
+}
+
+/* A brighter Frost signal keeps small labels and dates readable over Polar Night grids. */
+.portfolio-shell [class*="text-[#8fbcbb]"] {
+  color: #b9e1eb;
 }
 
 .portfolio-grid {
-  background-color: #0b0b0c;
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0,
-    transparent 14px,
-    rgb(255 255 255 / 0.045) 14px,
-    rgb(255 255 255 / 0.045) 15px
-  );
+  background-color: #2e3440;
+  background-image:
+    linear-gradient(rgb(136 192 208 / 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(136 192 208 / 0.045) 1px, transparent 1px);
+  background-size: 3rem 3rem;
 }
 
 .portfolio-dark-grid {
-  background-color: #0b0b0c;
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0,
-    transparent 14px,
-    rgb(255 255 255 / 0.045) 14px,
-    rgb(255 255 255 / 0.045) 15px
-  );
+  background-color: #2e3440;
+  background-image:
+    linear-gradient(rgb(236 239 244 / 0.027) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(236 239 244 / 0.027) 1px, transparent 1px),
+    radial-gradient(circle at 82% 8%, rgb(94 129 172 / 0.22), transparent 30%);
+  background-size:
+    3rem 3rem,
+    3rem 3rem,
+    auto;
 }
 
 .portfolio-projects-grid {
-  background-color: #0f1a24;
+  background-color: #3b4252;
   background-image:
-    linear-gradient(rgb(159 199 219 / 0.075) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(159 199 219 / 0.075) 1px, transparent 1px),
-    radial-gradient(circle at 88% 12%, rgb(200 109 97 / 0.16), transparent 34%);
+    linear-gradient(rgb(136 192 208 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(136 192 208 / 0.07) 1px, transparent 1px),
+    radial-gradient(circle at 88% 12%, rgb(94 129 172 / 0.3), transparent 34%);
   background-size:
     2.5rem 2.5rem,
     2.5rem 2.5rem,
@@ -174,16 +177,16 @@
 }
 
 .portfolio-desk-grid {
-  background-color: #0b0b0c;
+  background-color: #434c5e;
   background-image:
     repeating-linear-gradient(
       0deg,
       transparent 0,
       transparent 4rem,
-      rgb(255 255 255 / 0.028) 4rem,
-      rgb(255 255 255 / 0.028) calc(4rem + 1px)
+      rgb(236 239 244 / 0.04) 4rem,
+      rgb(236 239 244 / 0.04) calc(4rem + 1px)
     ),
-    radial-gradient(circle at 14% 82%, rgb(200 109 97 / 0.12), transparent 28%);
+    radial-gradient(circle at 14% 82%, rgb(143 188 187 / 0.18), transparent 28%);
 }
 
 .display-type {
