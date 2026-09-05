@@ -38,7 +38,7 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
   id="headerPortfolio"
   class="sticky top-0 z-50 border-b-4 border-[#c86d61] bg-[#0b0b0c] text-white"
 >
-  <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-6 px-5 py-4 lg:px-8">
+  <div class="mx-auto flex min-h-24 max-w-7xl items-center justify-between gap-8 px-5 py-5 lg:px-8">
     <a
       href={getLocalizedPath("/", locale)}
       class="flex items-center gap-3"
@@ -48,17 +48,17 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
         class="grid size-10 place-items-center border-2 border-white text-sm font-black tracking-tighter"
         >{initials}</span
       >
-      <span class="text-xs font-black leading-[0.85] tracking-[0.16em] uppercase sm:text-sm"
+      <span class="text-sm font-black leading-[0.85] tracking-[0.16em] uppercase sm:text-base"
         >Daniel<br />Benitez</span
       >
     </a>
-    <nav class="hidden items-center gap-7 md:flex" aria-label="Main navigation">
+    <nav class="hidden items-center gap-9 md:flex" aria-label="Main navigation">
       {
         navigation.map(item => (
           <a
             href={getLocalizedPath(item.path, locale)}
             class:list={[
-              "relative py-2 text-xs font-black tracking-[0.14em] uppercase transition-colors after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:bg-[#c86d61] after:transition-transform",
+              "relative py-3 text-sm font-black tracking-[0.12em] uppercase transition-colors after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:bg-[#c86d61] after:transition-transform",
               activePath === item.path
                 ? "text-white after:scale-x-100"
                 : "text-white/60 hover:text-white after:scale-x-0 hover:after:scale-x-100",
@@ -72,7 +72,7 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
     <div class="flex items-center gap-3">
       <details class="group relative hidden md:block">
         <summary
-          class="flex cursor-pointer list-none items-center gap-2 border border-[#c86d61] bg-[#171719] px-3 py-2 text-xs font-black text-white transition hover:bg-[#242426] [&::-webkit-details-marker]:hidden"
+          class="flex cursor-pointer list-none items-center gap-2 border border-[#c86d61] bg-[#171719] px-3.5 py-2.5 text-sm font-black text-white transition hover:bg-[#242426] [&::-webkit-details-marker]:hidden"
         >
           <LanguageFlag locale={activeLocale.code} />
           <span>{activeLocale.label}</span>
@@ -103,7 +103,7 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
       </details>
       <button
         id="mobile-menu-toggle"
-        class="inline-flex size-10 items-center justify-center border border-white/30 text-white transition hover:border-[#c86d61] md:hidden"
+        class="inline-flex size-11 items-center justify-center border border-white/30 text-white transition hover:border-[#c86d61] md:hidden"
         aria-label="Toggle navigation"
         aria-expanded="false"
       >

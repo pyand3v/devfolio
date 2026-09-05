@@ -28,6 +28,12 @@ const blogTags = [...new Map(posts.flatMap(post => post.tags ?? []).map(tag => [
   }))
   .sort((a, b) => a.tag.localeCompare(b.tag))
 const groupedBlogTags = groupBlogTags(blogTags, locale)
+const surfaceClass =
+  kind === "projects"
+    ? "portfolio-projects-grid"
+    : kind === "blog"
+      ? "portfolio-desk-grid"
+      : "portfolio-dark-grid"
 const blogFilterCopy = {
   en: {
     label: "Filter by topic",
@@ -68,7 +74,7 @@ const blogFilterCopy = {
 }[locale]
 ---
 
-<section class="portfolio-dark-grid min-h-screen bg-[#0b0b0c] text-white">
+<section class:list={[surfaceClass, "min-h-screen text-white"]}>
   <div class="mx-auto max-w-[90rem] px-5 py-20 lg:px-10 lg:py-28">
     <header
       class="grid gap-10 border-b border-[#c86d61] pb-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16 lg:pb-14"

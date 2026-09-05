@@ -162,25 +162,28 @@
 }
 
 .portfolio-projects-grid {
-  background-color: #0b0b0c;
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0,
-    transparent 14px,
-    rgb(255 255 255 / 0.045) 14px,
-    rgb(255 255 255 / 0.045) 15px
-  );
+  background-color: #0f1a24;
+  background-image:
+    linear-gradient(rgb(159 199 219 / 0.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(159 199 219 / 0.075) 1px, transparent 1px),
+    radial-gradient(circle at 88% 12%, rgb(200 109 97 / 0.16), transparent 34%);
+  background-size:
+    2.5rem 2.5rem,
+    2.5rem 2.5rem,
+    auto;
 }
 
 .portfolio-desk-grid {
   background-color: #0b0b0c;
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0,
-    transparent 14px,
-    rgb(255 255 255 / 0.045) 14px,
-    rgb(255 255 255 / 0.045) 15px
-  );
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 4rem,
+      rgb(255 255 255 / 0.028) 4rem,
+      rgb(255 255 255 / 0.028) calc(4rem + 1px)
+    ),
+    radial-gradient(circle at 14% 82%, rgb(200 109 97 / 0.12), transparent 28%);
 }
 
 .display-type {
