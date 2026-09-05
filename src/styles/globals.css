@@ -123,7 +123,7 @@
 [data-theme] {
   --background: #2e3440;
   --foreground: #eceff4;
-  --accent-400: #8fbcbb;
+  --accent-400: #b9e1eb;
   --accent-500: #88c0d0;
   --accent-600: #81a1c1;
   --accent-700: #5e81ac;
@@ -137,6 +137,11 @@
 .portfolio-shell::selection {
   background: #88c0d0;
   color: #2e3440;
+}
+
+/* A brighter Frost signal keeps small labels and dates readable over Polar Night grids. */
+.portfolio-shell [class*="text-[#8fbcbb]"] {
+  color: #b9e1eb;
 }
 
 .portfolio-grid {
