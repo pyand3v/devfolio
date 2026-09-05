@@ -26,14 +26,14 @@ const isDark = surface === "dark"
     class:list={[
       "flex h-full flex-col overflow-hidden transition duration-200 hover:-translate-y-1",
       isDark
-        ? "border border-white/20 bg-white/[0.06] hover:border-[#c86d61] hover:bg-white/[0.1]"
-        : "border-2 border-[#11151b] bg-[#f7f4ed] shadow-[6px_6px_0_#c86d61] hover:shadow-[10px_10px_0_#c86d61]",
+        ? "border border-white/20 bg-white/[0.06] hover:border-[#88c0d0] hover:bg-white/[0.1]"
+        : "border-2 border-[#3b4252] bg-[#eceff4] shadow-[6px_6px_0_#88c0d0] hover:shadow-[10px_10px_0_#88c0d0]",
     ]}
   >
     <div
       class:list={[
-        "relative h-56 overflow-hidden bg-[#11151b]",
-        isDark ? "border-b border-white/20" : "border-b-2 border-[#11151b]",
+        "relative h-56 overflow-hidden bg-[#2e3440]",
+        isDark ? "border-b border-white/20" : "border-b-2 border-[#3b4252]",
       ]}
     >
       <img
@@ -43,7 +43,7 @@ const isDark = surface === "dark"
         loading={eager ? "eager" : "lazy"}
       />
       <span
-        class="absolute right-4 top-4 bg-[#c86d61] px-2 py-1 text-[0.65rem] font-black tracking-[0.14em] text-white uppercase"
+        class="absolute right-4 top-4 bg-[#88c0d0] px-2 py-1 text-[0.65rem] font-black tracking-[0.14em] text-[#2e3440] uppercase"
         >{labels.type}</span
       >
     </div>
@@ -51,17 +51,17 @@ const isDark = surface === "dark"
       <p
         class:list={[
           "font-mono text-xs font-bold tracking-[0.14em] uppercase",
-          isDark ? "text-[#e17669]" : "text-[#a95047]",
+          isDark ? "text-[#8fbcbb]" : "text-[#5e81ac]",
         ]}
       >
         {formatDateRange(project.startDate, project.endDate)} · {
           calculateDuration(project.startDate, project.endDate)
         }
       </p>
-      <h3 class:list={["display-type mt-4 text-3xl", isDark ? "text-white" : "text-[#11151b]"]}>
+      <h3 class:list={["display-type mt-4 text-3xl", isDark ? "text-white" : "text-[#2e3440]"]}>
         {project.title}
       </h3>
-      <p class:list={["mt-3 grow leading-relaxed", isDark ? "text-white/65" : "text-[#11151b]/70"]}>
+      <p class:list={["mt-3 grow leading-relaxed", isDark ? "text-white/65" : "text-[#2e3440]/70"]}>
         {project.description}
       </p>
       <div class="mt-6 flex flex-wrap gap-2">
@@ -71,7 +71,7 @@ const isDark = surface === "dark"
             <span
               class:list={[
                 "border px-2 py-0.5 text-xs font-bold",
-                isDark ? "border-white/35 text-white/70" : "border-[#11151b]/35 text-[#11151b]/70",
+                isDark ? "border-white/35 text-white/70" : "border-[#3b4252]/35 text-[#3b4252]/70",
               ]}
             >
               + {more}
@@ -82,7 +82,7 @@ const isDark = surface === "dark"
       <span
         class:list={[
           "mt-6 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] uppercase",
-          isDark ? "text-white" : "text-[#11151b]",
+          isDark ? "text-white" : "text-[#2e3440]",
         ]}
         >{labels.action}
         <Icon

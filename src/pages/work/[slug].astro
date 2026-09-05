@@ -38,7 +38,7 @@ const jsonLd = {
     <article class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12">
       <a
         href="/work"
-        class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#9fc7db] uppercase transition hover:gap-3 hover:text-white"
+        class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#8fbcbb] uppercase transition hover:gap-3 hover:text-white"
         ><Icon name="lucide:arrow-left" class="size-4" />Back to Work</a
       ><div class="mb-8 flex items-start gap-4">
         {
@@ -52,9 +52,9 @@ const jsonLd = {
             {item.description}
           </p>
         </div>
-      </div><div class="mb-8 flex flex-wrap gap-3 font-mono text-xs text-[#9fc7db] uppercase">
+      </div><div class="mb-8 flex flex-wrap gap-3 font-mono text-xs text-[#8fbcbb] uppercase">
         <span
-          class="inline-flex items-center gap-1.5 border border-[#9fc7db]/50 bg-[#9fc7db]/8 px-3 py-1"
+          class="inline-flex items-center gap-1.5 border border-[#8fbcbb]/50 bg-[#8fbcbb]/8 px-3 py-1"
           ><Icon name="lucide:calendar-days" />{formatDateRange(item.start, item.end)}</span
         >{
           item.locations.map(location => (
@@ -68,7 +68,7 @@ const jsonLd = {
         item.techStack && (
           <section class="mb-8">
             <>
-              <h2 class="mb-3 font-mono text-xs font-bold tracking-[0.14em] text-[#d58376] uppercase">
+              <h2 class="mb-3 font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase">
                 Tech Stack
               </h2>
               <div class="flex flex-wrap gap-2">

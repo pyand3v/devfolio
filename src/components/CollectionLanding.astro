@@ -77,10 +77,10 @@ const blogFilterCopy = {
 <section class:list={[surfaceClass, "min-h-screen text-white"]}>
   <div class="mx-auto max-w-[90rem] px-5 py-20 lg:px-10 lg:py-28">
     <header
-      class="grid gap-10 border-b border-[#c86d61] pb-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16 lg:pb-14"
+      class="grid gap-10 border-b border-[#88c0d0] pb-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16 lg:pb-14"
     >
       <div>
-        <p class="text-xs font-black tracking-[0.22em] text-[#e17669] uppercase">
+        <p class="text-xs font-black tracking-[0.22em] text-[#8fbcbb] uppercase">
           {labels.eyebrow}
         </p>
         <h1 class="display-type mt-7 text-6xl leading-[0.82] sm:text-7xl lg:text-8xl">
@@ -123,15 +123,15 @@ const blogFilterCopy = {
           >
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div class="flex items-baseline gap-3">
-                <p class="text-xs font-black tracking-[0.18em] text-[#e17669] uppercase">
+                <p class="text-xs font-black tracking-[0.18em] text-[#8fbcbb] uppercase">
                   {blogFilterCopy.label}
                 </p>
                 <p class="blog-filter-count text-xs font-bold text-white/45" aria-live="polite" />
               </div>
               <details class="blog-filter-menu group relative w-full sm:w-auto">
-                <summary class="flex cursor-pointer list-none items-center justify-between gap-3 border border-white/25 bg-white/[0.04] px-4 py-2.5 font-mono text-xs font-bold tracking-[0.13em] text-white uppercase transition hover:border-[#9fc7db] hover:text-[#9fc7db] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9fc7db] sm:min-w-60">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-3 border border-white/25 bg-white/[0.04] px-4 py-2.5 font-mono text-xs font-bold tracking-[0.13em] text-white uppercase transition hover:border-[#88c0d0] hover:text-[#88c0d0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#88c0d0] sm:min-w-60">
                   <span class="flex items-center gap-2">
-                    <Icon name="lucide:tags" class="size-4 text-[#9fc7db]" />
+                    <Icon name="lucide:tags" class="size-4 text-[#88c0d0]" />
                     <span
                       class="blog-filter-summary"
                       data-all-label={blogFilterCopy.all}
@@ -145,7 +145,7 @@ const blogFilterCopy = {
                     class="size-4 text-white/55 transition group-open:rotate-180"
                   />
                 </summary>
-                <div class="absolute right-0 z-20 mt-2 w-[min(34rem,calc(100vw-2.5rem))] border border-white/20 bg-[#11151b] p-3 shadow-2xl shadow-black/40">
+                <div class="absolute right-0 z-20 mt-2 w-[min(34rem,calc(100vw-2.5rem))] border border-white/20 bg-[#2e3440] p-3 shadow-2xl shadow-black/40">
                   <label class="relative block">
                     <Icon
                       name="lucide:search"
@@ -153,7 +153,7 @@ const blogFilterCopy = {
                     />
                     <input
                       type="search"
-                      class="blog-filter-search w-full border border-white/15 bg-black/20 py-2.5 pr-3 pl-9 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#9fc7db] focus:ring-1 focus:ring-[#9fc7db]"
+                      class="blog-filter-search w-full border border-white/15 bg-black/20 py-2.5 pr-3 pl-9 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#88c0d0] focus:ring-1 focus:ring-[#88c0d0]"
                       placeholder={blogFilterCopy.search}
                       aria-label={blogFilterCopy.search}
                     />
@@ -173,7 +173,7 @@ const blogFilterCopy = {
                   <div class="blog-filter-options mt-3 max-h-[24rem] space-y-4 overflow-y-auto pr-1 custom-scrollbar">
                     {groupedBlogTags.map(group => (
                       <section class="blog-filter-group" data-tag-group>
-                        <p class="mb-1.5 px-2 text-[0.65rem] font-black tracking-[0.15em] text-[#e17669]/80 uppercase">
+                        <p class="mb-1.5 px-2 text-[0.65rem] font-black tracking-[0.15em] text-[#8fbcbb]/80 uppercase">
                           {group.label}
                         </p>
                         <div class="grid grid-cols-2 gap-1 md:grid-cols-3">
@@ -185,7 +185,7 @@ const blogFilterCopy = {
                                   value={tag}
                                   class="blog-filter-input peer sr-only"
                                 />
-                                <span class="flex size-4 shrink-0 items-center justify-center border border-white/25 bg-black/20 transition peer-checked:border-[#e17669] peer-checked:bg-[#e17669] peer-checked:[&>svg]:opacity-100">
+                                <span class="flex size-4 shrink-0 items-center justify-center border border-white/25 bg-black/20 transition peer-checked:border-[#88c0d0] peer-checked:bg-[#88c0d0] peer-checked:[&>svg]:opacity-100">
                                   <Icon
                                     name="lucide:check"
                                     class="size-3 text-white opacity-0 transition peer-checked:opacity-100"
@@ -206,7 +206,7 @@ const blogFilterCopy = {
                   <div class="mt-3 flex border-t border-white/15 pt-3">
                     <button
                       type="button"
-                      class="blog-filter-clear border border-white/30 bg-white/[0.07] px-3 py-2 text-[0.65rem] font-black tracking-[0.13em] text-white/80 uppercase transition hover:border-[#e17669] hover:bg-white/[0.12] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e17669]"
+                      class="blog-filter-clear border border-white/30 bg-white/[0.07] px-3 py-2 text-[0.65rem] font-black tracking-[0.13em] text-white/80 uppercase transition hover:border-[#88c0d0] hover:bg-white/[0.12] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#88c0d0]"
                     >
                       {blogFilterCopy.clear}
                     </button>

@@ -13,11 +13,11 @@ const actionLabel = { en: "Read role", es: "Leer rol", "pt-br": "Ler cargo" }[lo
 
 <a href={`/work/${item.slug}`} class="group block">
   <article
-    class="border border-white/25 border-t-4 border-t-[#c86d61] bg-[#11151b] p-6 text-white transition hover:-translate-y-1 hover:border-white/60"
+    class="border border-white/25 border-t-4 border-t-[#88c0d0] bg-[#3b4252] p-6 text-white transition hover:-translate-y-1 hover:border-white/60"
   >
     <div class="flex flex-wrap items-start justify-between gap-5">
       <div>
-        <p class="font-mono text-xs font-bold tracking-[0.14em] text-[#9fc7db] uppercase">
+        <p class="font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase">
           {formatDateRange(item.start, item.end)} · {calculateDuration(item.start, item.end)}
         </p>
         <h3 class="display-type mt-4 text-3xl">{item.title} at {item.company}</h3>
