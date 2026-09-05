@@ -26,8 +26,23 @@ const projectTitleLines = labels.projectsTitle.split("\n")
 const notesTitleLines = labels.notesTitle.split("\n")
 ---
 
-<section class="portfolio-dark-grid border-b border-[#c86d61] text-white">
-  <div class="mx-auto flex min-h-[42rem] max-w-7xl items-end px-5 py-18 lg:px-8 lg:py-24">
+<section class="relative isolate overflow-hidden border-b border-[#c86d61] bg-[#081521] text-white">
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 bg-[radial-gradient(circle_at_74%_28%,rgb(27_80_120_/_0.62)_0%,transparent_31%),radial-gradient(circle_at_28%_105%,rgb(12_49_78_/_0.72)_0%,transparent_44%),linear-gradient(135deg,#091928,#05080c)]"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 bg-[linear-gradient(rgb(159_199_219_/_0.07)_1px,transparent_1px),linear-gradient(90deg,rgb(159_199_219_/_0.07)_1px,transparent_1px)] bg-size-[40px_40px]"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="absolute -right-28 top-32 size-[34rem] rotate-45 border-[26px] border-[#c86d61]/85 shadow-[0_0_0_26px_rgb(200_109_97_/_0.16)] sm:-right-12"
+  >
+  </div>
+  <div class="relative mx-auto flex min-h-[42rem] max-w-7xl items-end px-5 py-18 lg:px-8 lg:py-24">
     <div class="max-w-4xl">
       <p class="mb-7 font-mono text-xs font-bold tracking-[0.22em] text-[#d58376] uppercase">
         {labels.eyebrow}
