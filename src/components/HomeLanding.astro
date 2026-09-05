@@ -26,25 +26,10 @@ const projectTitleLines = labels.projectsTitle.split("\n")
 const notesTitleLines = labels.notesTitle.split("\n")
 ---
 
-<section class="relative isolate overflow-hidden bg-[#061426] text-white">
-  <div
-    aria-hidden="true"
-    class="absolute inset-0 bg-[radial-gradient(circle_at_75%_30%,#174772_0%,transparent_30%),radial-gradient(circle_at_35%_105%,#0d2e4d_0%,transparent_42%),linear-gradient(135deg,#061426,#02070e)]"
-  >
-  </div>
-  <div
-    aria-hidden="true"
-    class="absolute -right-24 top-40 size-[32rem] rotate-45 border-[28px] border-[#c86d61]/85 shadow-[0_0_0_28px_rgb(200_109_97_/_0.16)] sm:-right-10"
-  >
-  </div>
-  <div
-    aria-hidden="true"
-    class="absolute inset-0 bg-[linear-gradient(rgb(255_255_255_/_0.035)_1px,transparent_1px),linear-gradient(90deg,rgb(255_255_255_/_0.035)_1px,transparent_1px)] bg-size-[40px_40px]"
-  >
-  </div>
-  <div class="relative mx-auto flex min-h-[42rem] max-w-7xl items-end px-5 py-18 lg:px-8 lg:py-24">
+<section class="portfolio-dark-grid border-b border-[#c86d61] text-white">
+  <div class="mx-auto flex min-h-[42rem] max-w-7xl items-end px-5 py-18 lg:px-8 lg:py-24">
     <div class="max-w-4xl">
-      <p class="mb-7 text-xs font-black tracking-[0.22em] text-[#d7df72] uppercase">
+      <p class="mb-7 font-mono text-xs font-bold tracking-[0.22em] text-[#d58376] uppercase">
         {labels.eyebrow}
       </p>
       <h1 class="display-type max-w-3xl text-5xl leading-[0.87] sm:text-7xl lg:text-8xl">
@@ -66,7 +51,7 @@ const notesTitleLines = labels.notesTitle.split("\n")
           class="inline-flex items-center gap-3 bg-[#c86d61] px-6 py-4 text-xs font-black tracking-[0.14em] uppercase transition hover:bg-white hover:text-[#11151b]"
           >{labels.primary} <Icon name="lucide:arrow-up-right" class="size-4" /></a
         >
-        <span class="text-xs font-black tracking-[0.14em] text-white/70 uppercase"
+        <span class="font-mono text-xs font-bold tracking-[0.14em] text-[#9fc7db] uppercase"
           >{labels.availability}</span
         >
       </div>
@@ -78,7 +63,7 @@ const notesTitleLines = labels.notesTitle.split("\n")
     <section class="portfolio-dark-grid border-y-4 border-[#c86d61] bg-[#0b0b0c] text-white">
       <div class="mx-auto grid max-w-7xl gap-12 px-5 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:px-8 lg:py-28">
         <div>
-          <p class="text-xs font-black tracking-[0.2em] text-[#c86d61] uppercase">
+          <p class="font-mono text-xs font-bold tracking-[0.2em] text-[#d58376] uppercase">
             {labels.featuredLabel}
           </p>
           <h2 class="display-type mt-6 max-w-3xl text-5xl leading-[0.9] sm:text-6xl">
@@ -91,7 +76,7 @@ const notesTitleLines = labels.notesTitle.split("\n")
           </h2>
         </div>
         <article class="border border-white/25 bg-white/5 p-7 backdrop-blur-sm">
-          <p class="text-xs font-black tracking-[0.14em] text-[#d7df72] uppercase">
+          <p class="font-mono text-xs font-bold tracking-[0.14em] text-[#9fc7db] uppercase">
             {formatDateRange(featuredWork.start, featuredWork.end)} ·{" "}
             {calculateDuration(featuredWork.start, featuredWork.end)}
           </p>
@@ -101,7 +86,7 @@ const notesTitleLines = labels.notesTitle.split("\n")
           <p class="mt-4 leading-relaxed text-white/70">{featuredWork.description}</p>
           <a
             href={`/work/${featuredWork.slug}`}
-            class="mt-7 inline-flex items-center gap-3 border-b-2 border-[#c86d61] pb-2 text-xs font-black tracking-[0.14em] uppercase transition hover:text-[#d7df72]"
+            class="mt-7 inline-flex items-center gap-3 border-b-2 border-[#c86d61] pb-2 font-mono text-xs font-bold tracking-[0.14em] uppercase transition hover:text-[#9fc7db]"
           >
             {labels.story} <Icon name="lucide:arrow-right" class="size-4" />
           </a>
@@ -110,13 +95,13 @@ const notesTitleLines = labels.notesTitle.split("\n")
     </section>
   )
 }
-<section class="portfolio-projects-grid bg-[#101a26] text-white">
+<section class="portfolio-projects-grid border-y border-[#c86d61] text-white">
   <div class="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
     <div
-      class="grid gap-8 border-y border-[#75a8c4]/45 py-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end lg:gap-16 lg:py-10"
+      class="grid gap-8 border-y border-white/20 py-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end lg:gap-16 lg:py-10"
     >
       <div>
-        <p class="text-xs font-black tracking-[0.2em] text-[#9fc7db] uppercase">
+        <p class="font-mono text-xs font-bold tracking-[0.2em] text-[#d58376] uppercase">
           02 · {labels.projectsLabel}
         </p>
       </div>
@@ -133,7 +118,7 @@ const notesTitleLines = labels.notesTitle.split("\n")
         </h2>
         <a
           href={getLocalizedPath("/projects", locale)}
-          class="mt-7 inline-flex items-center gap-2 border-b-2 border-[#9fc7db] pb-2 text-xs font-black tracking-[0.14em] uppercase transition hover:text-[#9fc7db]"
+          class="mt-7 inline-flex items-center gap-2 border-b-2 border-[#c86d61] pb-2 font-mono text-xs font-bold tracking-[0.14em] uppercase transition hover:text-[#9fc7db]"
           >{labels.allProjects} <Icon name="lucide:arrow-right" class="size-4" /></a
         >
       </div>
@@ -149,13 +134,13 @@ const notesTitleLines = labels.notesTitle.split("\n")
     </div>
   </div>
 </section>
-<section class="portfolio-desk-grid bg-[#090c10] text-white">
+<section class="portfolio-desk-grid border-y border-[#c86d61] text-white">
   <div class="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
     <div
-      class="grid gap-8 border-b border-[#9fc7db]/40 pb-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16 lg:pb-12"
+      class="grid gap-8 border-b border-white/20 pb-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16 lg:pb-12"
     >
       <div>
-        <p class="text-xs font-black tracking-[0.2em] text-[#9fc7db] uppercase">
+        <p class="font-mono text-xs font-bold tracking-[0.2em] text-[#d58376] uppercase">
           {labels.notesLabel}
         </p>
         <h2 class="display-type mt-5 text-5xl leading-[0.9] sm:text-6xl">
@@ -172,7 +157,7 @@ const notesTitleLines = labels.notesTitle.split("\n")
       <div class="lg:justify-self-end">
         <a
           href={getLocalizedPath("/blog", locale)}
-          class="inline-flex items-center gap-2 border-b-2 border-[#9fc7db] pb-2 text-xs font-black tracking-[0.14em] uppercase transition hover:text-[#9fc7db]"
+          class="inline-flex items-center gap-2 border-b-2 border-[#c86d61] pb-2 font-mono text-xs font-bold tracking-[0.14em] uppercase transition hover:text-[#9fc7db]"
           >{labels.readBlog} <Icon name="lucide:arrow-right" class="size-4" /></a
         >
       </div>

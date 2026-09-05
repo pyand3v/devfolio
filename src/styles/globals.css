@@ -140,11 +140,14 @@
 }
 
 .portfolio-grid {
-  background-color: #ece8df;
-  background-image:
-    linear-gradient(rgb(17 21 27 / 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(17 21 27 / 0.07) 1px, transparent 1px);
-  background-size: 2rem 2rem;
+  background-color: #0b0b0c;
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 14px,
+    rgb(255 255 255 / 0.045) 14px,
+    rgb(255 255 255 / 0.045) 15px
+  );
 }
 
 .portfolio-dark-grid {
@@ -159,28 +162,25 @@
 }
 
 .portfolio-projects-grid {
-  background-color: #101a26;
-  background-image:
-    linear-gradient(rgb(159 199 219 / 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(159 199 219 / 0.07) 1px, transparent 1px),
-    radial-gradient(circle at 88% 10%, rgb(78 128 151 / 0.22), transparent 30%);
-  background-size:
-    2.5rem 2.5rem,
-    2.5rem 2.5rem,
-    auto;
+  background-color: #0b0b0c;
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 14px,
+    rgb(255 255 255 / 0.045) 14px,
+    rgb(255 255 255 / 0.045) 15px
+  );
 }
 
 .portfolio-desk-grid {
-  background-color: #090c10;
-  background-image:
-    repeating-linear-gradient(
-      45deg,
-      transparent 0,
-      transparent 17px,
-      rgb(159 199 219 / 0.035) 17px,
-      rgb(159 199 219 / 0.035) 18px
-    ),
-    radial-gradient(circle at 12% 84%, rgb(48 78 93 / 0.2), transparent 34%);
+  background-color: #0b0b0c;
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 14px,
+    rgb(255 255 255 / 0.045) 14px,
+    rgb(255 255 255 / 0.045) 15px
+  );
 }
 
 .display-type {
@@ -254,7 +254,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Gabarito, Arial, sans-serif;
 }
 
 /* Custom scrollbar */

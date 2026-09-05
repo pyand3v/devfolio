@@ -54,30 +54,32 @@ const jsonLd = {
   pageSubtitle={`${homeIntroConfig.name}'s Projects · ${formatDuration(project.startDate, project.endDate)}`}
   jsonLd={jsonLd}
 >
-  <section class="dark min-h-screen bg-[#11151b] text-white">
+  <section class="portfolio-dark-grid min-h-screen text-white">
     <article class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12">
       <a
         href="/projects"
-        class="mb-8 inline-flex items-center gap-1 text-sm font-semibold text-[#d7df72] transition hover:gap-2 hover:text-white"
+        class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#9fc7db] uppercase transition hover:gap-3 hover:text-white"
         ><Icon name="lucide:arrow-left" class="size-4" />Back to Projects</a
       ><h1 class="display-type mb-3 text-4xl leading-[0.95]">{project.title}</h1><p
-        class="mb-4 text-lg text-gray-600 dark:text-gray-400"
+        class="mb-4 text-lg text-white/65"
       >
         {project.description}
-      </p><div class="mb-8 flex flex-wrap items-center gap-3 text-sm">
+      </p><div
+        class="mb-8 flex flex-wrap items-center gap-3 font-mono text-xs text-[#9fc7db] uppercase"
+      >
         <span
-          class="inline-flex items-center gap-2 rounded-full bg-purple-100 px-3 py-1 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200"
+          class="inline-flex items-center gap-2 border border-[#9fc7db]/50 bg-[#9fc7db]/8 px-3 py-1"
           ><Icon name="lucide:clock" />{formatDuration(project.startDate, project.endDate)}</span
         >{
           project.teamSize && (
-            <span class="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200">
+            <span class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white/75">
               <Icon name="lucide:users" />
               Team Size: {project.teamSize}
             </span>
           )
         }{
           project.role && (
-            <span class="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-green-800 dark:bg-green-900/30 dark:text-green-200">
+            <span class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white/75">
               <Icon name="lucide:briefcase-business" />
               Role: {project.role}
             </span>
@@ -87,7 +89,7 @@ const jsonLd = {
             <a
               href={project.githubUrl}
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 transition hover:bg-accent-500/10 dark:bg-gray-800"
+              class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white transition hover:border-[#c86d61]"
             >
               <Icon name="fa6-brands:github" />
               View on GitHub
@@ -98,7 +100,7 @@ const jsonLd = {
             <a
               href={project.paperUrl}
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 transition hover:bg-accent-500/10 dark:bg-gray-800"
+              class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white transition hover:border-[#c86d61]"
             >
               <Icon name="lucide:book-open" />
               Read Paper
@@ -106,7 +108,9 @@ const jsonLd = {
           )
         }
       </div><section class="mb-8">
-        <h2 class="mb-3 flex items-center gap-2 text-xl font-semibold">
+        <h2
+          class="mb-3 flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-[#d58376] uppercase"
+        >
           <Icon name="lucide:layers-3" />Tech Stack
         </h2><div class="flex flex-wrap gap-3">
           {project.techStack.map(name => <TechBadge name={name} surface="dark" />)}

@@ -23,7 +23,7 @@ const visibleHeadings = headings.filter(heading => heading.depth <= 3)
             <li class:list={[heading.depth === 3 && "ml-3"]}>
               <a
                 href={`#${heading.slug}`}
-                class="text-white/60 transition hover:text-[#d7df72] focus-visible:text-[#d7df72] focus-visible:outline-none"
+                class="font-mono text-xs text-white/60 transition hover:text-[#9fc7db] focus-visible:text-[#9fc7db] focus-visible:outline-none"
               >
                 {heading.text}
               </a>

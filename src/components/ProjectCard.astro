@@ -10,7 +10,7 @@ interface Props {
   locale?: Locale
   surface?: "light" | "dark"
 }
-const { project, eager = false, locale = "en", surface = "light" } = Astro.props
+const { project, eager = false, locale = "en", surface = "dark" } = Astro.props
 const visibleTech = project.techStack.slice(0, 5)
 const more = project.techStack.length - visibleTech.length
 const labels = {
@@ -50,7 +50,7 @@ const isDark = surface === "dark"
     <div class="flex flex-1 flex-col p-6">
       <p
         class:list={[
-          "text-xs font-black tracking-[0.14em] uppercase",
+          "font-mono text-xs font-bold tracking-[0.14em] uppercase",
           isDark ? "text-[#e17669]" : "text-[#a95047]",
         ]}
       >
@@ -58,12 +58,7 @@ const isDark = surface === "dark"
           calculateDuration(project.startDate, project.endDate)
         }
       </p>
-      <h3
-        class:list={[
-          "mt-4 text-3xl font-bold tracking-tight",
-          isDark ? "text-white" : "text-[#11151b]",
-        ]}
-      >
+      <h3 class:list={["display-type mt-4 text-3xl", isDark ? "text-white" : "text-[#11151b]"]}>
         {project.title}
       </h3>
       <p class:list={["mt-3 grow leading-relaxed", isDark ? "text-white/65" : "text-[#11151b]/70"]}>
@@ -86,7 +81,7 @@ const isDark = surface === "dark"
       </div>
       <span
         class:list={[
-          "mt-6 inline-flex items-center gap-2 text-xs font-black tracking-[0.14em] uppercase",
+          "mt-6 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] uppercase",
           isDark ? "text-white" : "text-[#11151b]",
         ]}
         >{labels.action}

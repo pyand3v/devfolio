@@ -20,11 +20,11 @@ const articlePath = getLocalizedPath(`/blog/${post.slug}`, locale)
 <article
   class={`blog-card group flex h-full flex-col border p-6 text-white transition duration-200 hover:-translate-y-1 hover:border-[#c86d61] ${surfaceClass} ${surface === "default" ? "hover:bg-white/[0.1]" : "hover:bg-[#222832]"}`}
 >
-  <h3 class="text-2xl font-bold leading-tight tracking-tight">
+  <h3 class="display-type text-2xl leading-tight">
     <a href={articlePath}>{post.title}</a>
   </h3>
   <p class="mt-4 grow leading-relaxed text-white/65">{post.summary}</p>
-  <div class="mt-6 flex items-center gap-3 text-xs font-bold text-white/50">
+  <div class="mt-6 flex items-center gap-3 font-mono text-xs font-bold text-[#9fc7db] uppercase">
     <time datetime={post.publishedAt}>{formatBlogDate(post.publishedAt, "short")}</time>
     <span>·</span>
     <span>{post.readingTime} min read</span>
@@ -35,7 +35,7 @@ const articlePath = getLocalizedPath(`/blog/${post.slug}`, locale)
         <li>
           <a
             href={getLocalizedPath(`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`, locale)}
-            class="inline-flex border border-[#d7df72]/55 px-2 py-1 text-[0.65rem] leading-none font-black tracking-[0.13em] text-[#d7df72] uppercase transition hover:border-[#c86d61] hover:bg-[#c86d61] hover:text-white focus-visible:border-[#c86d61] focus-visible:bg-[#c86d61] focus-visible:text-white focus-visible:outline-none"
+            class="inline-flex border border-[#9fc7db]/55 px-2 py-1 font-mono text-[0.65rem] leading-none font-bold tracking-[0.13em] text-[#9fc7db] uppercase transition hover:border-[#c86d61] hover:bg-[#c86d61] hover:text-white focus-visible:border-[#c86d61] focus-visible:bg-[#c86d61] focus-visible:text-white focus-visible:outline-none"
           >
             {tag}
           </a>
@@ -45,7 +45,7 @@ const articlePath = getLocalizedPath(`/blog/${post.slug}`, locale)
   </ul>
   <a
     href={articlePath}
-    class="mt-6 inline-flex items-center gap-2 text-xs font-black tracking-[0.14em] text-white uppercase"
+    class="mt-6 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-white uppercase"
     >{actionLabel}
     <Icon name="lucide:arrow-right" class="size-4 transition group-hover:translate-x-1" /></a
   >
