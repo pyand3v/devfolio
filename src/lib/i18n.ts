@@ -20,6 +20,7 @@ export const copy = {
       eyebrow: "Independent by design · Paraguay",
       title: "Building products\npeople want to use.",
       headline: "I turn customer insight and business goals into useful, polished software.",
+      slogan: "Software isn't made with intentions; it's made with actions.",
       primary: "View my work",
       availability: "Remote-first · Product engineering",
       featuredLabel: "Featured work",
@@ -64,6 +65,7 @@ export const copy = {
       title: "Productos que las\npersonas quieren usar.",
       headline:
         "Transformo las necesidades de clientes y objetivos de negocio en software útil y cuidado.",
+      slogan: "El software no se hace con intenciones, se hace con acciones.",
       primary: "Ver mi trabajo",
       availability: "Remoto primero · Ingeniería de producto",
       featuredLabel: "Trabajo destacado",
@@ -107,6 +109,7 @@ export const copy = {
       title: "Produtos que as\npessoas querem usar.",
       headline:
         "Transformo as necessidades dos clientes e os objetivos de negócio em software útil e bem acabado.",
+      slogan: "Software não se faz com intenções; faz-se com ações.",
       primary: "Ver meu trabalho",
       availability: "Remoto em primeiro lugar · Engenharia de produto",
       featuredLabel: "Trabalho em destaque",
