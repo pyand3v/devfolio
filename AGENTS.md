@@ -43,8 +43,8 @@ bypass them with `--no-verify`; fix the underlying issue instead.
 
 - `src/pages/` — routes. The default locale (`en`) lives at the root (`/blog`, `/work`, ...), and
   `src/pages/[locale]/` mirrors it for `es` and `pt-br` via `getStaticPaths`. When adding or changing a route,
-  update both trees. List and detail routes have a sibling `opengraph-image.ts` endpoint that renders a PNG
-  at build time.
+  update both trees: `tests/pages/route-parity.test.ts` fails otherwise, and lists the few English-only pages.
+  List and detail routes have a sibling `opengraph-image.ts` endpoint that renders a PNG at build time.
 - `src/pages/*.ts` — static endpoints: `rss.xml`, `sitemap.xml`, `robots.txt`, `llms.txt`.
 - `src/pages/admin/` + `public/admin/index.html` — the Sveltia CMS at `/admin`: its config (`config.yml`, built
   from `src/lib/cms-config.ts`) and its script, served from the installed `@sveltia/cms` package.
@@ -65,7 +65,8 @@ bypass them with `--no-verify`; fix the underlying issue instead.
 - `scripts/content-check.mjs` — pre-build validation: every file against the schemas, plus translations,
   BYO lesson order and referenced images.
 - `scripts/content.mjs` — the `pnpm content` CLI: scaffolds entries, copies images, opens content PRs.
-- `tests/` — Vitest unit tests (Node environment) for `src/lib`.
+- `tests/` — Vitest unit tests (Node environment) for `src/lib`, `src/scripts` and the static endpoints
+  in `src/pages/*.ts` (`tests/pages/`, with `astro:content` mocked).
 - `docs/SEO.md` — SEO setup notes.
 - `docs/CONTENT.md` — how content is structured and how to write it (CMS, CLI or by hand).
 - `e2e/` — Playwright specs run by `pnpm test:e2e` against the built site (`playwright.config.ts`): axe

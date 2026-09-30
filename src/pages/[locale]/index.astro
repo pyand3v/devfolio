@@ -2,6 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import HomeLanding from "@/components/HomeLanding.astro"
 import { locales, type Locale } from "@/lib/i18n"
+import { homeGraph } from "@/lib/structured-data"
 
 export function getStaticPaths() {
   return locales.filter(locale => locale !== "en").map(locale => ({ params: { locale } }))
@@ -10,6 +11,6 @@ export function getStaticPaths() {
 const locale = Astro.params.locale as Locale
 ---
 
-<BaseLayout>
+<BaseLayout jsonLd={homeGraph()}>
   <HomeLanding locale={locale} />
 </BaseLayout>

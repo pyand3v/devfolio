@@ -18,9 +18,10 @@ const themes: Record<string, { accent: string; soft: string }> = {
   lime: { accent: "#65a30d", soft: "#ecfccb" },
 }
 
-export async function createOgImage(title: string, subtitle: string, theme = "blue") {
-  const colors = themes[theme] ?? themes.blue
-  const font = fs.readFileSync(
+// Every image in a build uses the same font, so it's read once
+let font: Buffer | undefined
+const loadFont = () =>
+  (font ??= fs.readFileSync(
     path.join(
       process.cwd(),
       "node_modules",
@@ -29,7 +30,10 @@ export async function createOgImage(title: string, subtitle: string, theme = "bl
       "files",
       "gabarito-latin-400-normal.woff"
     )
-  )
+  ))
+
+export async function createOgImage(title: string, subtitle: string, theme = "blue") {
+  const colors = themes[theme] ?? themes.blue
   const element = {
     type: "div",
     props: {
@@ -93,9 +97,16 @@ export async function createOgImage(title: string, subtitle: string, theme = "bl
   const svg = await satori(element as unknown as Parameters<typeof satori>[0], {
     width: 1200,
     height: 630,
-    fonts: [{ name: "Gabarito", data: font, weight: 400, style: "normal" }],
+    fonts: [{ name: "Gabarito", data: loadFont(), weight: 400, style: "normal" }],
   })
-  const png = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } }).render().asPng()
+  // satori already turns the text into paths, so resvg needs no fonts. Loading the system's (its default)
+  // took ~350 ms per image, nearly all of the render time.
+  const png = new Resvg(svg, {
+    fitTo: { mode: "width", value: 1200 },
+    font: { loadSystemFonts: false },
+  })
+    .render()
+    .asPng()
   return new Response(Uint8Array.from(png).buffer, {
     headers: {
       "Content-Type": "image/png",
