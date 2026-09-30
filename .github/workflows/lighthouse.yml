@@ -1,0 +1,51 @@
+name: Lighthouse
+
+# Audits key pages of the production build with Lighthouse CI against the budgets in lighthouserc.json:
+# accessibility, best practices and SEO fail the check below their minimum; performance only warns, since it
+# varies between runs. The pages are served from dist/ locally, so the CSP comes from each page's <meta> and
+# Vercel's analytics scripts 404 (that's the one best-practices deduction).
+on:
+  pull_request:
+    branches: [main, preview]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lighthouse-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v6
+
+      - name: Setup pnpm and Node.js
+        uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # pnpm/setup@v3.0.0
+        with:
+          version: 11
+          runtime: node@24
+          cache: true
+          install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build site
+        run: pnpm build
+
+      - name: Run Lighthouse CI
+        run: pnpm dlx @lhci/cli@0.15.1 autorun
+
+      - name: Upload Lighthouse reports
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # actions/upload-artifact@v7.0.1
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          retention-days: 7
