@@ -35,7 +35,7 @@ To get started, follow the steps below.
 5. Make your changes in your local repository, commit them, and then push to your forked repository, e.g.:
    ```bash
    git add .
-   git commit -m "Add your commit message here"
+   git commit -m "feat(scope): describe your change"
    git push origin feature/your-feature-name
    ```
 6. Make sure your changes pass the same checks CI runs before submitting a pull request:
@@ -43,7 +43,9 @@ To get started, follow the steps below.
    pnpm format:check && pnpm lint:check && pnpm types:check && pnpm test && pnpm build
    ```
 7. Open a pull request from your forked repository to the original repository.
-8. Describe your changes in detail in the pull request description (fill in the PR template).
+8. Title the pull request in [Conventional Commits](https://www.conventionalcommits.org/) format, e.g.
+   `feat(blog): add tag filter` or `fix(i18n): translate 404 page` (the **PR Title** check enforces it), and
+   describe your changes in detail in the description (fill in the PR template).
 9. Wait for feedback and make any requested changes. Every PR runs the checks above, gets a Vercel preview
    deployment, and (unless it only touches content or docs) gets an automated review from Claude. Maintainers can also comment `@claude` on a PR or
    issue to ask Claude a question or have it push a fix.
@@ -67,7 +69,7 @@ To set up your development environment after cloning the repository, follow thes
 
 - Follow the existing code style and conventions used in the project. [AGENTS.md](AGENTS.md) documents the
   project layout, commands, and conventions (it's also what AI coding agents such as Claude Code read).
-- Write clear, concise, and descriptive commit messages.
+- Write clear, concise commit messages in the same `type(scope): summary` format as PR titles.
 - Ensure your code is well-documented and includes comments where necessary (do not over-do it, though).
 
 ## Need Help?
