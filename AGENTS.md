@@ -21,6 +21,7 @@ Package manager is **pnpm** (v11, Node 24). Don't use npm/yarn or create other l
 | Dev server (port 4321)  | `pnpm dev`                                              |
 | Production build        | `pnpm build` (runs `content:check`, then Astro build)   |
 | Content validation only | `pnpm content:check`                                    |
+| Scaffold content / PR   | `pnpm content <command>` (see `docs/CONTENT.md`)        |
 | Internal link check     | `pnpm links:check` (after `pnpm build`)                 |
 | Format check / fix      | `pnpm format:check` / `pnpm format:write`               |
 | Lint check (0 warnings) | `pnpm lint:check`                                       |
@@ -44,31 +45,43 @@ bypass them with `--no-verify`; fix the underlying issue instead.
   update both trees. List and detail routes have a sibling `opengraph-image.ts` endpoint that renders a PNG
   at build time.
 - `src/pages/*.ts` — static endpoints: `rss.xml`, `sitemap.xml`, `robots.txt`, `llms.txt`.
+- `src/pages/admin/` + `public/admin/index.html` — the Sveltia CMS at `/admin`: its config (`config.yml`, built
+  from `src/lib/cms-config.ts`) and its script, served from the installed `@sveltia/cms` package.
 - `src/layouts/BaseLayout.astro` — the single page shell: SEO/meta tags, JSON-LD, header/footer, analytics.
 - `src/components/` — `.astro` components; MDX-specific components in `src/components/mdx/`.
 - `src/scripts/` — small client-side TypeScript (filtering, theme, galleries).
 - `src/lib/` — shared logic: `content.ts` (collection queries), `i18n.ts` (locales and all UI copy),
-  `schemas.ts` (Zod frontmatter schemas), `utils.ts`, `og.ts` (satori + resvg OG images), `constants.ts`.
-- `src/content.config.mjs` — content collections, loaded by a custom recursive MDX loader.
+  `schemas.ts` (the content model: Zod schemas and the fields each entry takes from its path),
+  `content-files.ts` (helpers for the `pnpm content` CLI), `cms-config.ts` (Sveltia CMS collections),
+  `dates.ts`, `utils.ts`, `og.ts` (satori + resvg OG images), `constants.ts`.
+- `src/content.config.mjs` — content collections, loaded by a custom recursive MDX loader that adds the
+  path-derived fields (locale, slug, BYO course) before validation.
 - `src/data/` — content and site config:
   - `site.ts` (site metadata/SEO), `portfolio.ts` (profile, navigation), `blog-tags.ts`
-  - `blog/<locale>/*.mdx` + `blog/metadata/*.mdx` (per-post slug, dates, languages, featured flag)
-  - `work/*.mdx` + `metadata/work/`, `projects/*.mdx` + `metadata/projects/`
-  - `byo/<locale>/<project>/` — "Build Your Own" courses (`project`, `lesson-NN`, `guide`, `exercise`)
-- `scripts/content-check.mjs` — pre-build validation of blog metadata, slugs and translations.
+  - `blog/<locale>/<slug>.mdx`, `work/<slug>.mdx`, `projects/<slug>.mdx`
+  - `byo/<locale>/<course>/` — "Build Your Own" courses: `project.mdx` plus one file per lesson, guide and
+    exercise
+- `scripts/content-check.mjs` — pre-build validation: every file against the schemas, plus translations,
+  BYO lesson order and referenced images.
+- `scripts/content.mjs` — the `pnpm content` CLI: scaffolds entries, copies images, opens content PRs.
 - `tests/` — Vitest unit tests (Node environment) for `src/lib`.
 - `docs/SEO.md` — SEO setup notes.
-- `docs/content-generator-handoff.md` — research brief for a future content generator (not built yet).
+- `docs/CONTENT.md` — how content is structured and how to write it (CMS, CLI or by hand).
 
 The `@/` import alias maps to `src/`.
 
 ## Conventions
 
 - **i18n**: locales are `en`, `es`, `pt-br`. All user-facing UI strings go in `copy` in `src/lib/i18n.ts` for
-  every locale; never hard-code English text in components. A blog post is one `metadata/<post>.mdx` plus
-  one file per language listed in its `availableLanguages`, all sharing a `translationKey`.
-- **Content schemas**: frontmatter is validated by Zod in `src/content.config.mjs`. If you change a schema,
-  update `src/lib/schemas.ts`, `scripts/content-check.mjs` and existing content in the same change.
+  every locale; never hard-code English text in components. A blog post is one file per language with the
+  same file name; the `en` file is required and holds the fields translations share (`publishedAt`,
+  `updatedAt`, `featured`). Content is written by people: the tooling scaffolds and validates, it never
+  generates text.
+- **Content schemas**: `src/lib/schemas.ts` is the single source of truth, used by the Astro loader,
+  `scripts/content-check.mjs` and the CLI. The file path supplies `locale`, `slug` and the BYO course, so
+  frontmatter doesn't repeat them. If you change a schema, update `src/lib/cms-config.ts` (a test checks the
+  CMS fields match) and existing content in the same change. `schemas.ts`, `content-files.ts`, `dates.ts`
+  and `i18n.ts` run directly in Node, so they may only use relative imports and erasable TypeScript.
 - **Styling**: Tailwind utilities plus the Nord design tokens in `src/styles/globals.css` (the palette is
   intentionally fixed, not theme-switchable). Use Astro's `class:list` for conditional classes. Pages must
   work at phone width without horizontal scroll.

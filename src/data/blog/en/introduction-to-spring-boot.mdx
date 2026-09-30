@@ -1,0 +1,87 @@
+---
+title: "Introduction to Spring Boot"
+summary: "Learn what Spring Boot is and how it simplifies the development of Java-based web applications."
+tags:
+  - Java
+  - Spring Boot
+  - Backend
+  - Web Development
+featured: false
+publishedAt: "2022-04-01T09:00:00-03:00"
+updatedAt: "2026-08-16T12:00:00-03:00"
+---
+
+**Spring Boot** is a project from the Spring ecosystem that simplifies the creation of stand-alone, production-grade Spring applications.
+
+> 💡 **Spring Boot** eliminates boilerplate configuration and lets you **build applications faster** with minimal setup.
+
+<img
+    src="/blog/introduction-to-spring-boot/spring-boot-docs.png"
+    alt="Spring Boot Docs"
+    width={600}
+    height={400}
+/>
+
+## Why Use Spring Boot?
+
+- Auto Configuration
+- Embedded Web Servers (Tomcat, Jetty)
+- Production-Ready Features (Actuator)
+- Microservices-Friendly
+- Great for REST APIs
+
+## Hello Spring Boot
+
+Create a simple REST controller:
+
+```java
+@RestController
+public class HelloController {
+    @GetMapping("/hello")
+    public String sayHello() {
+        return "Hello from Spring Boot!";
+    }
+}
+```
+
+### Application Entry Point
+
+```java
+@SpringBootApplication
+public class DemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}
+```
+
+## application.properties
+
+```properties
+server.port=8081
+spring.application.name=MySpringApp
+```
+
+## Dependency Management (Maven)
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+</dependencies>
+```
+
+## Key Annotations
+
+- `@RestController`
+- `@SpringBootApplication`
+- `@GetMapping`, `@PostMapping`
+- `@Autowired`
+
+## Conclusion
+
+With Spring Boot, you can go from nothing to a working REST API in minutes. It’s powerful, flexible, and battle-tested.
+
+> 🚀 Ready to take off? Try building your first CRUD app with Spring Boot!

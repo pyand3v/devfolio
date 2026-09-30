@@ -1,28 +1,24 @@
 import { getCollection, type CollectionEntry } from "astro:content"
 import { PRESENT } from "@/lib/constants"
-import type { Locale } from "@/lib/i18n"
+import { defaultLocale, locales, type Locale } from "@/lib/i18n"
 import { getReadingTime } from "@/lib/utils"
 
 export type BlogPost = CollectionEntry<"blog">["data"] & {
   entry: CollectionEntry<"blog">
-  slug: string
+  featured: boolean
   publishedAt: string
   updatedAt: string
   availableLanguages: Locale[]
-  fallbackLanguage: Locale
   body: string
   readingTime: number
 }
 
 export type WorkItem = CollectionEntry<"work">["data"] & {
   entry: CollectionEntry<"work">
-  slug: string
   body: string
 }
 export type Project = CollectionEntry<"projects">["data"] & {
   entry: CollectionEntry<"projects">
-  slug: string
-  assetKey: string
   body: string
 }
 export type ByoEntry = CollectionEntry<"byo">
@@ -39,41 +35,44 @@ export type ByoProjectBundle = {
 }
 
 export async function getAllBlogPosts(
-  locale: Locale = "en",
+  locale: Locale = defaultLocale,
   { featuredOnly = true }: { featuredOnly?: boolean } = {}
 ): Promise<BlogPost[]> {
-  const [posts, metadata] = await Promise.all([
-    getCollection("blog"),
-    getCollection("blogMetadata"),
-  ])
-  const postFor = new Map(
-    posts.map(post => [`${post.data.translationKey}:${post.data.locale}`, post])
-  )
+  const translationsBySlug = new Map<string, Map<Locale, CollectionEntry<"blog">>>()
+  for (const entry of await getCollection("blog")) {
+    const translations = translationsBySlug.get(entry.data.slug) ?? new Map()
+    translations.set(entry.data.locale, entry)
+    translationsBySlug.set(entry.data.slug, translations)
+  }
 
-  return metadata
-    .filter(record => !featuredOnly || record.data.featured)
-    .map(record => {
-      const resolvedLocale = record.data.availableLanguages.includes(locale)
-        ? locale
-        : record.data.fallbackLanguage
-      const entry = postFor.get(`${record.id}:${resolvedLocale}`)
-
-      if (!entry) {
-        throw new Error(
-          `Article metadata "${record.id}" declares ${resolvedLocale}, but no matching MDX file exists.`
-        )
+  return [...translationsBySlug]
+    .map(([slug, translations]) => {
+      const source = translations.get(defaultLocale)
+      if (!source?.data.publishedAt) {
+        throw new Error(`Blog post "${slug}" has no ${defaultLocale} version with publishedAt.`)
       }
+      const entry = translations.get(locale) ?? source
+      const { publishedAt, updatedAt = publishedAt, featured = false } = source.data
 
       return {
         ...entry.data,
-        ...record.data,
+        slug,
+        featured,
+        publishedAt,
+        updatedAt,
+        availableLanguages: locales.filter(code => translations.has(code)),
         entry,
         body: entry.body ?? "",
         tags: entry.data.tags?.map(tag => tag.toLowerCase()),
         readingTime: getReadingTime(entry.body ?? ""),
       }
     })
-    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+    .filter(post => !featuredOnly || post.featured)
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime() ||
+        a.slug.localeCompare(b.slug)
+    )
 }
 
 export async function getBlogPost(locale: Locale, slug: string): Promise<BlogPost | undefined> {
@@ -82,17 +81,9 @@ export async function getBlogPost(locale: Locale, slug: string): Promise<BlogPos
 }
 
 export async function getAllWorkItems(): Promise<WorkItem[]> {
-  const [items, metadata] = await Promise.all([
-    getCollection("work"),
-    getCollection("workMetadata"),
-  ])
-  const metadataByKey = new Map(metadata.map(record => [record.id.toLowerCase(), record]))
+  const items = await getCollection("work")
   return items
-    .map(item => {
-      const record = metadataByKey.get(item.id.toLowerCase())
-      if (!record) throw new Error(`Work entry "${item.id}" has no metadata file.`)
-      return { ...item.data, ...record.data, entry: item, body: item.body ?? "" }
-    })
+    .map(item => ({ ...item.data, entry: item, body: item.body ?? "" }))
     .sort((a, b) => {
       const endA = a.end === PRESENT ? new Date() : new Date(a.end)
       const endB = b.end === PRESENT ? new Date() : new Date(b.end)
@@ -101,23 +92,20 @@ export async function getAllWorkItems(): Promise<WorkItem[]> {
 }
 
 export async function getAllProjects(): Promise<Project[]> {
-  const [projects, metadata] = await Promise.all([
-    getCollection("projects"),
-    getCollection("projectMetadata"),
-  ])
-  const metadataByKey = new Map(metadata.map(record => [record.id.toLowerCase(), record]))
-  return projects.map(project => {
-    const record = metadataByKey.get(project.id.toLowerCase())
-    if (!record) throw new Error(`Project entry "${project.id}" has no metadata file.`)
-    return { ...project.data, ...record.data, entry: project, body: project.body ?? "" }
-  })
+  const projects = await getCollection("projects")
+  // Newest first. startDate is YYYY-MM, so comparing the strings compares the dates
+  return projects
+    .map(project => ({ ...project.data, entry: project, body: project.body ?? "" }))
+    .sort((a, b) => b.startDate.localeCompare(a.startDate) || a.slug.localeCompare(b.slug))
 }
 
 function sortByOrder<T extends { data: { order: number } }>(entries: T[]): T[] {
   return entries.sort((a, b) => a.data.order - b.data.order)
 }
 
-export async function getAllByoProjects(locale: Locale = "en"): Promise<ByoProjectBundle[]> {
+export async function getAllByoProjects(
+  locale: Locale = defaultLocale
+): Promise<ByoProjectBundle[]> {
   const entries = await getCollection("byo", entry => entry.data.locale === locale)
   const projects = entries.filter((entry): entry is ByoProject => entry.data.type === "project")
   const lessons = entries.filter((entry): entry is ByoLesson => entry.data.type === "lesson")
@@ -127,13 +115,9 @@ export async function getAllByoProjects(locale: Locale = "en"): Promise<ByoProje
   return projects
     .map(project => ({
       project,
-      lessons: sortByOrder(
-        lessons.filter(item => item.data.project === project.data.translationKey)
-      ),
-      guides: sortByOrder(guides.filter(item => item.data.project === project.data.translationKey)),
-      exercises: sortByOrder(
-        exercises.filter(item => item.data.project === project.data.translationKey)
-      ),
+      lessons: sortByOrder(lessons.filter(item => item.data.project === project.data.slug)),
+      guides: sortByOrder(guides.filter(item => item.data.project === project.data.slug)),
+      exercises: sortByOrder(exercises.filter(item => item.data.project === project.data.slug)),
     }))
     .sort((a, b) => a.project.data.title.localeCompare(b.project.data.title))
 }

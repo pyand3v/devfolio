@@ -1,6 +1,4 @@
 ---
-import fs from "node:fs"
-import path from "node:path"
 import { render } from "astro:content"
 import { Icon } from "astro-icon/components"
 import BaseLayout from "@/layouts/BaseLayout.astro"
@@ -21,17 +19,7 @@ export async function getStaticPaths() {
 }
 const { project } = Astro.props
 const { Content, headings } = await render(project.entry)
-const imageDir = path.join(process.cwd(), "public", "projects", project.assetKey)
-const allowed = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".bmp"])
-const images = fs.existsSync(imageDir)
-  ? fs
-      .readdirSync(imageDir)
-      .filter(file => allowed.has(path.extname(file).toLowerCase()))
-      .map((file, index) => ({
-        src: `/projects/${project.assetKey}/${file}`,
-        alt: `${project.title} ${index + 1}`,
-      }))
-  : []
+const images = project.gallery ?? []
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "CreativeWork",

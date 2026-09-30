@@ -66,6 +66,9 @@ To set up your development environment after cloning the repository, follow thes
 3. Open your browser and navigate to `http://localhost:4321` to view the website, and start making changes. The server
    will automatically reload when you make changes to the code, so you can see your updates in real-time.
 
+To add or change blog posts, projects, work entries or BYO courses, see [docs/CONTENT.md](docs/CONTENT.md): it
+explains where each file goes and how to use the `pnpm content` CLI and the CMS at `/admin`.
+
 ## Code Style and Guidelines
 
 - Follow the existing code style and conventions used in the project. [AGENTS.md](AGENTS.md) documents the
