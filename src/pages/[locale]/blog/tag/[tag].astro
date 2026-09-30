@@ -9,7 +9,7 @@ export async function getStaticPaths() {
     locales
       .filter(locale => locale !== "en")
       .map(async locale => {
-        const posts = await getAllBlogPosts(locale)
+        const posts = await getAllBlogPosts(locale, { featuredOnly: false })
         const tags = [
           ...new Set(posts.flatMap(post => post.tags ?? []).map(tag => tag.toLowerCase())),
         ]
@@ -21,7 +21,9 @@ export async function getStaticPaths() {
 
 const locale = Astro.params.locale as Locale
 const { tag } = Astro.params
-const posts = (await getAllBlogPosts(locale)).filter(post => post.tags?.includes(tag ?? ""))
+const posts = (await getAllBlogPosts(locale, { featuredOnly: false })).filter(post =>
+  post.tags?.includes(tag ?? "")
+)
 const displayTag = tag?.replaceAll("-", " ") ?? ""
 ---
 
