@@ -64,7 +64,8 @@ bypass them with `--no-verify`; fix the underlying issue instead.
 - `scripts/content-check.mjs` — pre-build validation: every file against the schemas, plus translations,
   BYO lesson order and referenced images.
 - `scripts/content.mjs` — the `pnpm content` CLI: scaffolds entries, copies images, opens content PRs.
-- `tests/` — Vitest unit tests (Node environment) for `src/lib`.
+- `tests/` — Vitest unit tests (Node environment) for `src/lib`, `src/scripts` and the static endpoints
+  in `src/pages/*.ts` (`tests/pages/`, with `astro:content` mocked).
 - `docs/SEO.md` — SEO setup notes.
 - `docs/CONTENT.md` — how content is structured and how to write it (CMS, CLI or by hand).
 
