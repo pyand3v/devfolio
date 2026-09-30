@@ -42,8 +42,8 @@ bypass them with `--no-verify`; fix the underlying issue instead.
 
 - `src/pages/` — routes. The default locale (`en`) lives at the root (`/blog`, `/work`, ...), and
   `src/pages/[locale]/` mirrors it for `es` and `pt-br` via `getStaticPaths`. When adding or changing a route,
-  update both trees. List and detail routes have a sibling `opengraph-image.ts` endpoint that renders a PNG
-  at build time.
+  update both trees: `tests/pages/route-parity.test.ts` fails otherwise, and lists the few English-only pages.
+  List and detail routes have a sibling `opengraph-image.ts` endpoint that renders a PNG at build time.
 - `src/pages/*.ts` — static endpoints: `rss.xml`, `sitemap.xml`, `robots.txt`, `llms.txt`.
 - `src/pages/admin/` + `public/admin/index.html` — the Sveltia CMS at `/admin`: its config (`config.yml`, built
   from `src/lib/cms-config.ts`) and its script, served from the installed `@sveltia/cms` package.
