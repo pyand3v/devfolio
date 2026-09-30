@@ -97,3 +97,7 @@ jobs:
       # Also runs the content check and renders every page and Open Graph image
       - name: Build site
         run: pnpm build
+
+      # Every internal link and #anchor on every built page must resolve (external links aren't checked)
+      - name: Check internal links
+        run: pnpm links:check

@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "npm run content:check && astro build",
     "content:check": "node scripts/content-check.mjs",
+    "links:check": "node scripts/check-links.mjs",
     "start": "astro preview",
     "restart-prod": "astro build && astro preview",
     "format:check": "prettier --check .",

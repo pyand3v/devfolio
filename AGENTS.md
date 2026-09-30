@@ -21,6 +21,7 @@ Package manager is **pnpm** (v11, Node 24). Don't use npm/yarn or create other l
 | Dev server (port 4321)  | `pnpm dev`                                              |
 | Production build        | `pnpm build` (runs `content:check`, then Astro build)   |
 | Content validation only | `pnpm content:check`                                    |
+| Internal link check     | `pnpm links:check` (after `pnpm build`)                 |
 | Format check / fix      | `pnpm format:check` / `pnpm format:write`               |
 | Lint check (0 warnings) | `pnpm lint:check`                                       |
 | Type check              | `pnpm types:check`                                      |
@@ -102,7 +103,7 @@ The `@/` import alias maps to `src/`.
 - Fill in `.github/pull_request_template.md`: summary, type of change, checklist, and screenshots for any UI
   change (desktop and mobile).
 - CI on every PR (`.github/workflows/`): the PR title format, Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
-  production build, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
+  production build with an internal link check, Lighthouse budgets, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
   content/docs-only PRs and for `preview` → `main` promotions). All checks must pass before merging. Commenting `@claude` on an issue or PR asks
   Claude to respond or push a fix; `@claude review` requests another review.
 - There are no versioned releases or tags: every promotion merged into `main` deploys to production on
