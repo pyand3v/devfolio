@@ -90,3 +90,6 @@ if (filters.length && posts.length) {
   window.addEventListener("popstate", () => update(selectedTags(), true))
   update(selectedTags(), true)
 }
+
+// Bundled as an ES module by Astro; this also keeps its top-level names out of the global scope
+export {}

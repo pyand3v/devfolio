@@ -5,6 +5,8 @@ on:
     branches: [ main, preview ]
   push:
     branches: [ main, preview ]
+  # Dispatched by Promote when a merge into preview didn't trigger a push run (e.g. Dependabot auto-merge)
+  workflow_dispatch:
 
 jobs:
   lint-and-format:
@@ -95,3 +97,7 @@ jobs:
       # Also runs the content check and renders every page and Open Graph image
       - name: Build site
         run: pnpm build
+
+      # Every internal link and #anchor on every built page must resolve (external links aren't checked)
+      - name: Check internal links
+        run: pnpm links:check

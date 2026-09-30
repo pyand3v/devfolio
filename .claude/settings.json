@@ -39,7 +39,11 @@
       "Bash(git push origin main:*)",
       "Bash(git push origin HEAD:main:*)",
       "Bash(git push -u origin main:*)",
-      "Bash(git push --set-upstream origin main:*)"
+      "Bash(git push --set-upstream origin main:*)",
+      "Bash(git push origin preview:*)",
+      "Bash(git push origin HEAD:preview:*)",
+      "Bash(git push -u origin preview:*)",
+      "Bash(git push --set-upstream origin preview:*)"
     ]
   }
 }

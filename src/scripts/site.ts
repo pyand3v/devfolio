@@ -1,42 +1,6 @@
 const ready = () => {
-  const root = document.documentElement
-  const toggle = document.querySelector<HTMLButtonElement>("#theme-toggle")
-  const menu = document.querySelector<HTMLElement>("#theme-menu")
   const mobileToggle = document.querySelector<HTMLButtonElement>("#mobile-menu-toggle")
   const mobileMenu = document.querySelector<HTMLElement>("#mobile-menu")
-
-  const applyTheme = (theme: string) => {
-    const isDark =
-      theme === "dark" ||
-      (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)
-    root.classList.toggle("dark", isDark)
-    localStorage.setItem("theme", theme)
-  }
-
-  toggle?.addEventListener("click", event => {
-    event.stopPropagation()
-    const isOpen = menu?.classList.toggle("invisible") === false
-    menu?.classList.toggle("opacity-0", !isOpen)
-    toggle.setAttribute("aria-expanded", String(isOpen))
-  })
-  document
-    .querySelectorAll<HTMLButtonElement>("[data-theme-mode]")
-    .forEach(button =>
-      button.addEventListener("click", () => applyTheme(button.dataset.themeMode ?? "system"))
-    )
-  document.querySelectorAll<HTMLButtonElement>("[data-accent]").forEach(button =>
-    button.addEventListener("click", () => {
-      const accent = button.dataset.accent ?? "blue"
-      root.dataset.theme = accent
-      localStorage.setItem("accent-theme", accent)
-    })
-  )
-  document.addEventListener("click", event => {
-    if (menu && !menu.contains(event.target as Node) && !toggle?.contains(event.target as Node)) {
-      menu.classList.add("invisible", "opacity-0")
-      toggle?.setAttribute("aria-expanded", "false")
-    }
-  })
 
   mobileToggle?.addEventListener("click", () => {
     const isOpen = mobileMenu?.classList.toggle("hidden") === false
@@ -49,6 +13,7 @@ const ready = () => {
     })
   )
 
+  // Keeps visitors in their preferred locale when they follow internal links written without a prefix
   document.addEventListener("click", event => {
     const anchor = (event.target as HTMLElement).closest<HTMLAnchorElement>("a[href]")
     if (
@@ -71,19 +36,10 @@ const ready = () => {
   })
 
   const progress = document.querySelector<HTMLElement>("#scroll-progress")
-  const crumbs = document.querySelector<HTMLElement>(".header-crumbs")
-  const headerTitle = document.querySelector<HTMLElement>(".header-title")
-  const detailPage = Boolean(headerTitle)
   const onScroll = () => {
-    if (progress) {
-      const max = document.documentElement.scrollHeight - window.innerHeight
-      progress.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`
-    }
-    if (detailPage && window.matchMedia("(max-width: 767px)").matches) {
-      const showTitle = window.scrollY > 80
-      crumbs?.classList.toggle("hidden", showTitle)
-      headerTitle?.classList.toggle("hidden", !showTitle)
-    }
+    if (!progress) return
+    const max = document.documentElement.scrollHeight - window.innerHeight
+    progress.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`
   }
   window.addEventListener("scroll", onScroll, { passive: true })
   onScroll()
@@ -109,12 +65,18 @@ const ready = () => {
     wrapper.classList.add("group")
     wrapper.append(button)
   })
+
   document.querySelectorAll<HTMLImageElement>(".prose img").forEach(image =>
     image.addEventListener("click", () => {
       const dialog = document.createElement("dialog")
       dialog.className =
         "m-auto max-h-[95vh] max-w-[95vw] rounded-xl bg-transparent p-0 backdrop:bg-black/80"
-      dialog.innerHTML = `<img src="${image.currentSrc}" alt="${image.alt}" class="max-h-[90vh] max-w-[90vw] rounded-xl" />`
+      // Built with DOM properties, not innerHTML, so alt text can't break out of the attribute
+      const zoomed = document.createElement("img")
+      zoomed.src = image.currentSrc || image.src
+      zoomed.alt = image.alt
+      zoomed.className = "max-h-[90vh] max-w-[90vw] rounded-xl"
+      dialog.append(zoomed)
       dialog.addEventListener("click", () => dialog.close())
       dialog.addEventListener("close", () => dialog.remove())
       document.body.append(dialog)
@@ -124,3 +86,6 @@ const ready = () => {
 }
 
 document.addEventListener("DOMContentLoaded", ready)
+
+// Bundled as an ES module by Astro; this also keeps its top-level names out of the global scope
+export {}

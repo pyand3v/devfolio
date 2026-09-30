@@ -21,6 +21,7 @@ Package manager is **pnpm** (v11, Node 24). Don't use npm/yarn or create other l
 | Dev server (port 4321)  | `pnpm dev`                                              |
 | Production build        | `pnpm build` (runs `content:check`, then Astro build)   |
 | Content validation only | `pnpm content:check`                                    |
+| Internal link check     | `pnpm links:check` (after `pnpm build`)                 |
 | Format check / fix      | `pnpm format:check` / `pnpm format:write`               |
 | Lint check (0 warnings) | `pnpm lint:check`                                       |
 | Type check              | `pnpm types:check`                                      |
@@ -57,6 +58,7 @@ bypass them with `--no-verify`; fix the underlying issue instead.
 - `scripts/content-check.mjs` — pre-build validation of blog metadata, slugs and translations.
 - `tests/` — Vitest unit tests (Node environment) for `src/lib`.
 - `docs/SEO.md` — SEO setup notes.
+- `docs/content-generator-handoff.md` — research brief for a future content generator (not built yet).
 
 The `@/` import alias maps to `src/`.
 
@@ -86,6 +88,8 @@ The `@/` import alias maps to `src/`.
   the two branches' histories diverge), once `preview` looks good on its Vercel deployment. Don't open
   promotion PRs by hand. The Promotion Source check rejects PRs into `main` from any other branch. After a
   release `main` has one merge commit `preview` lacks; that's expected and needs no sync.
+- Dependabot PRs into `preview` auto-merge (squash) once checks pass, except major version updates, which need
+  a manual review. Promote's daily run adds those merges to the release PR.
 - PR titles follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): summary`,
   with a lowercase imperative summary, no trailing period, ideally under 72 characters (e.g.
   `feat(blog): add tag filter`, `fix(i18n): translate 404 page`, `chore(deps): bump astro`). Types: `feat`,
@@ -100,7 +104,7 @@ The `@/` import alias maps to `src/`.
 - Fill in `.github/pull_request_template.md`: summary, type of change, checklist, and screenshots for any UI
   change (desktop and mobile).
 - CI on every PR (`.github/workflows/`): the PR title format, Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
-  production build, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
+  production build with an internal link check, Lighthouse budgets, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
   content/docs-only PRs and for `preview` → `main` promotions). All checks must pass before merging. Commenting `@claude` on an issue or PR asks
   Claude to respond or push a fix; `@claude review` requests another review.
 - There are no versioned releases or tags: every promotion merged into `main` deploys to production on

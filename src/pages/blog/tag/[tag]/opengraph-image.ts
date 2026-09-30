@@ -3,7 +3,7 @@ import { siteMetadata } from "@/data/site"
 import { getAllBlogPosts } from "@/lib/content"
 import { createOgImage } from "@/lib/og"
 export async function getStaticPaths() {
-  const posts = await getAllBlogPosts()
+  const posts = await getAllBlogPosts("en", { featuredOnly: false })
   const tags = [...new Set(posts.flatMap(post => post.tags ?? []).map(tag => tag.toLowerCase()))]
   return tags.map(tag => ({ params: { tag } }))
 }

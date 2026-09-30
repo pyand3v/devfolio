@@ -18,7 +18,17 @@ export default defineConfig({
         "src/pages/**",
         "src/types/**",
         "src/components/ui/**",
+        // Plain configuration objects, no logic
+        "src/data/site.ts",
+        "src/data/portfolio.ts",
       ],
+      // A floor just under current coverage, so it can't quietly drop. Raise it as coverage grows.
+      thresholds: {
+        lines: 95,
+        statements: 95,
+        functions: 95,
+        branches: 85,
+      },
     },
   },
   resolve: {
