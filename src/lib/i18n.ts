@@ -2,6 +2,8 @@ export const locales = ["en", "es", "pt-br"] as const
 
 export type Locale = (typeof locales)[number]
 
+export const defaultLocale: Locale = "en"
+
 export const localeOptions: Array<{ code: Locale; label: string; flag: string }> = [
   { code: "en", label: "English (US)", flag: "🇺🇸" },
   { code: "es", label: "Español (España)", flag: "🇪🇸" },

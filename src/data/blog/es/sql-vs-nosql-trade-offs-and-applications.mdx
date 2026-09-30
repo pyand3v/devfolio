@@ -1,0 +1,31 @@
+---
+title: "SQL vs. NoSQL: trade-offs y aplicaciones"
+summary: "Diferencias, trade-offs y casos de uso de bases de datos SQL y NoSQL."
+tags: [ SQL, NoSQL, Bases de datos, Diseño de sistemas ]
+---
+
+La elección de una base de datos debe seguir el modelo de acceso, consistencia requerida y operación esperada.
+
+## Qué es SQL
+
+Las bases relacionales ofrecen esquemas explícitos, joins y transacciones ACID. Funcionan bien cuando integridad y consultas complejas son centrales.
+
+## Qué es NoSQL
+
+Documentos, key-value, columnas anchas y grafos privilegian modelos y escalado distintos. Su flexibilidad exige disciplina sobre índices, consistencia y evolución de datos.
+
+## Trade-offs
+
+SQL simplifica relaciones y consistencia; NoSQL puede simplificar lecturas distribuidas o modelos específicos. Ninguna opción elimina el trabajo de modelar datos.
+
+## Cuándo usar cada una
+
+Usa SQL para sistemas transaccionales, reportes relacionados y reglas de integridad. Considera NoSQL para documentos flexibles, alto volumen de eventos, grafos o cachés de baja latencia.
+
+## Persistencia políglota
+
+Un sistema puede usar más de una base cuando cada una tiene una responsabilidad clara. Evita duplicar fuentes de verdad sin contratos de sincronización.
+
+## Conclusión
+
+Empieza por las consultas, fallos y límites operativos que tu producto realmente necesita.

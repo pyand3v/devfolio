@@ -1,0 +1,29 @@
+---
+title: "Balanceadores de carga: análisis profundo"
+summary: "Tipos, algoritmos y trade-offs de los balanceadores de carga y proxies inversos."
+tags: [ Balanceador de carga, Proxy inverso, Redes, Diseño de sistemas ]
+---
+
+Un balanceador distribuye tráfico entre instancias sanas para aumentar disponibilidad y controlar la carga.
+
+## Por qué usar un balanceador
+
+Permite crecer horizontalmente, aislar fallos y retirar instancias sin interrumpir a las personas usuarias.
+
+## Tipos y algoritmos
+
+### Capa 4
+Distribuye conexiones por IP y puerto con poca inspección.
+
+### Capa 7
+Entiende HTTP y puede enrutar por host, ruta, cabeceras o cookies.
+
+Round robin, least connections y hashing consistente sirven para perfiles diferentes; mide afinidad, latencia y distribución.
+
+## Health checks y proxy inverso
+
+Los health checks deben representar capacidad real de atender tráfico. Un proxy inverso puede terminar TLS y enrutar solicitudes, mientras que un balanceador coordina varios destinos.
+
+## Buenas prácticas
+
+Define timeouts, drenaje de conexiones, límites, observabilidad y pruebas de caída. La automatización de escalado no sustituye una estrategia de capacidad.
