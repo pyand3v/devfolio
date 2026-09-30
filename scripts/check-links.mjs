@@ -53,7 +53,7 @@ async function anchorsOf(file) {
 
 const references = page => {
   // Script bodies can contain attribute-like strings (e.g. HTML templates) that aren't links
-  const html = page.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, match =>
+  const html = page.replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, match =>
     match.slice(0, match.indexOf(">") + 1)
   )
   const values = [...html.matchAll(/\s(?:href|src)="([^"]*)"/g)].map(match => match[1])
