@@ -4,9 +4,8 @@ import { Icon } from "astro-icon/components"
 import BlogCard from "@/components/BlogCard.astro"
 import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
 import { getAllBlogPosts, type BlogPost } from "@/lib/content"
-import type { Locale } from "@/lib/i18n"
-import { getLocalizedPath } from "@/lib/i18n"
-import { formatBlogDateTime } from "@/lib/utils"
+import { copy, getLocalizedPath, type Locale } from "@/lib/i18n"
+import { formatBlogDateTime, getRelatedPosts } from "@/lib/utils"
 
 interface Props {
   post: BlogPost
@@ -15,18 +14,8 @@ interface Props {
 
 const { post, locale } = Astro.props
 const { Content, headings } = await render(post.entry)
-const similar = (await getAllBlogPosts(locale))
-  .filter(
-    entry =>
-      entry.slug !== post.slug &&
-      entry.tags?.some(tag => post.tags?.map(value => value.toLowerCase()).includes(tag))
-  )
-  .slice(0, 3)
-const labels = {
-  en: { back: "Back to Blog", related: "Other posts that might interest you" },
-  es: { back: "Volver al blog", related: "Otros artículos que podrían interesarte" },
-  "pt-br": { back: "Voltar ao blog", related: "Outros artigos que podem interessar você" },
-}[locale]
+const related = getRelatedPosts(post, await getAllBlogPosts(locale, { featuredOnly: false }))
+const labels = copy[locale].article
 ---
 
 <section class="portfolio-dark-grid min-h-screen text-white">
@@ -50,7 +39,7 @@ const labels = {
       </span>
       <span class="inline-flex items-center gap-1.5">
         <Icon name="lucide:book-open" class="size-4" />
-        {post.readingTime} min read
+        {post.readingTime} {labels.minRead}
       </span>
     </div>
     {post.tags && (
@@ -78,11 +67,11 @@ const labels = {
         <div class="prose prose-invert max-w-full overflow-hidden prose-headings:font-[Gabarito,Arial,sans-serif] prose-headings:text-white prose-p:text-white/78 prose-strong:text-white prose-a:text-[#88c0d0] prose-a:decoration-[#88c0d0]/45 hover:prose-a:text-white">
           <Content />
         </div>
-        {similar.length > 0 && (
+        {related.length > 0 && (
           <section class="mt-12">
             <h2 class="mb-4 text-2xl font-bold text-white">{labels.related}</h2>
             <div class="grid gap-6">
-              {similar.map(entry => (
+              {related.map(entry => (
                 <BlogCard post={entry} locale={locale} surface="contrast" />
               ))}
             </div>

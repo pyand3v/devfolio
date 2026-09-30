@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { blogTagGroups } from "@/data/blog-tags"
 import { DEFAULT_SIMILAR_POSTS_COUNT, PRESENT } from "@/lib/constants"
 import { parseFlexibleDate } from "@/lib/dates"
 import type { BlogPostProps, ProjectProps, WorkItemProps } from "@/lib/types"
@@ -241,6 +242,40 @@ export function getClosestTagPosts(
     .filter(({ bestScore }) => bestScore > 0)
     .sort((a, b) => b.bestScore - a.bestScore)
     .slice(0, maxPosts)
+}
+
+/**
+ * Picks the posts most related to a post by their tags. Each shared tag scores 2 and each shared tag group
+ * from `blogTagGroups` (e.g. "Java & JVM") scores 1, so posts on the same topic surface even when their
+ * exact tags differ. Posts with nothing in common are left out, and ties keep the order of `posts`.
+ *
+ * @param post - The post to find related posts for.
+ * @param posts - Candidate posts, e.g. every post in the locale, newest first. `post` itself is skipped.
+ * @param maxPosts - Maximum number of posts to return (default: {@link DEFAULT_SIMILAR_POSTS_COUNT}).
+ */
+export function getRelatedPosts<T extends { slug: string; tags?: string[] }>(
+  post: T,
+  posts: T[],
+  maxPosts = DEFAULT_SIMILAR_POSTS_COUNT
+): T[] {
+  const normalize = (tags: string[] = []) => tags.map(tag => tag.toLowerCase())
+  const groupsOf = (tags: string[]) =>
+    blogTagGroups.filter(group => group.tags.some(tag => tags.includes(tag))).map(group => group.id)
+  const tags = normalize(post.tags)
+  const groups = groupsOf(tags)
+
+  return posts
+    .filter(other => other.slug !== post.slug)
+    .map(other => {
+      const otherTags = normalize(other.tags)
+      const sharedTags = new Set(otherTags.filter(tag => tags.includes(tag))).size
+      const sharedGroups = groupsOf(otherTags).filter(group => groups.includes(group)).length
+      return { other, score: sharedTags * 2 + sharedGroups }
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, maxPosts)
+    .map(({ other }) => other)
 }
 
 /**
