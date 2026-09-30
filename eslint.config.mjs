@@ -13,6 +13,7 @@ const eslintConfig = defineConfig([
     "node_modules/**",
     "public/**",
     "coverage/**",
+    ".lighthouseci/**",
   ]),
 ])
 
