@@ -63,9 +63,9 @@ jobs:
             2. Static-site guarantees: public pages stay statically rendered; interactivity stays in small
                client scripts or islands.
             3. i18n: new UI strings added to every locale in `src/lib/i18n.ts`; routes changed in both
-               `src/pages/` and `src/pages/[locale]/`; blog translations match their metadata.
-            4. Content schemas: changes kept in sync across `src/content.config.mjs`, `src/lib/schemas.ts`,
-               and `scripts/content-check.mjs`.
+               `src/pages/` and `src/pages/[locale]/`.
+            4. Content schemas: `src/lib/schemas.ts` is the single source of truth; changes kept in sync with
+               `src/lib/cms-config.ts`, `scripts/content-check.mjs` and existing content.
             5. Accessibility, SEO metadata, and mobile layout for UI changes.
             6. Missing or weak tests for logic in `src/lib/`.
 

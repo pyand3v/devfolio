@@ -37,12 +37,14 @@ All UI text lives in `copy` in `src/lib/i18n.ts`, with one entry per locale.
 
 - Site metadata and SEO: `src/data/site.ts`
 - Profile and navigation: `src/data/portfolio.ts`
-- Blog posts: one `src/data/blog/metadata/<post>.mdx` (slug, dates, available languages, featured flag) plus one `src/data/blog/<locale>/<post>.mdx` per language, sharing a `translationKey`
-- Work items: `src/data/work/*.mdx` with metadata in `src/data/metadata/work/`
-- Projects: `src/data/projects/*.mdx` with metadata in `src/data/metadata/projects/`
-- BYO courses: `src/data/byo/<locale>/<project>/` (a `project` entry plus `lesson-NN`, `guide`, and `exercise` entries)
+- Blog posts: `src/data/blog/<locale>/<slug>.mdx`, one file per language; the `en` file holds the dates and featured flag
+- Work items: `src/data/work/<slug>.mdx`
+- Projects: `src/data/projects/<slug>.mdx`, with images in `public/projects/<slug>/`
+- BYO courses: `src/data/byo/<locale>/<course>/` (a `project.mdx` entry plus one file per lesson, guide, and exercise)
 
-Collections are defined in `src/content.config.mjs` and loaded by a custom recursive MDX loader. `pnpm build` runs `scripts/content-check.mjs` first to validate blog metadata, slugs, and translations. Dynamic pages, feeds, and SEO assets are generated at build time; see [docs/SEO.md](docs/SEO.md).
+Content is written by people. To add it, use the CMS at `/admin`, the `pnpm content` CLI, or edit the files directly; see [docs/CONTENT.md](docs/CONTENT.md).
+
+Collections are defined in `src/content.config.mjs` and validated by the schemas in `src/lib/schemas.ts`. `pnpm build` runs `scripts/content-check.mjs` first to validate every entry, its translations, and the images it references. Dynamic pages, feeds, and SEO assets are generated at build time; see [docs/SEO.md](docs/SEO.md).
 
 ## Branches and deployments
 
