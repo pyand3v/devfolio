@@ -47,7 +47,12 @@ labels). The token stays in that browser. "Sign in with GitHub" needs an OAuth a
 
 **Working locally**: run `pnpm dev`, open `http://localhost:4321/admin/index.html` in Chrome or Edge, choose
 **Work with Local Repository** and select the repository folder. Changes are written straight to your working
-copy; commit them yourself or with `pnpm content pr`.
+copy; commit them yourself or with `pnpm content pr`. Nothing touches GitHub, so use this for drafting and
+experiments: signed-in saves on `/admin` always create a `cms/...` branch and PR.
+
+**Cleaning up `cms/...` branches**: they live until their PR is merged or closed. Deleting a draft from the CMS
+**Workflow** tab closes its PR and removes the branch. The repository's **Automatically delete head branches**
+setting removes the branch when a PR is merged.
 
 Things to know:
 
