@@ -77,21 +77,26 @@ The `@/` import alias maps to `src/`.
 
 ## Git and pull requests
 
-- Never commit directly to `main`. Work on a branch (`feat/…`, `fix/…`, `chore/…`, `docs/…`, or the branch
-  your session was started on) and open a PR against `main`. Never push to `main` either: it's protected
-  (a PR plus passing Lint & Format, Tests and Build checks), and only admins may bypass that.
+- Branch flow: feature branch → `preview` → `main`. `preview` is the default branch and the staging
+  environment; `main` is production. Never commit or push directly to either: both are protected (a PR plus
+  passing Lint & Format, Tests and Build checks), and only admins may bypass that. Work on a branch
+  (`feat/…`, `fix/…`, `chore/…`, `docs/…`, or the branch your session was started on) and open a PR against
+  `preview` (squash merge). Once `preview` looks good on its Vercel deployment, open a `preview` → `main` PR
+  titled `chore: promote preview to main` and merge it with a merge commit (not squash, or the two
+  branches' histories diverge). The Promotion Source check rejects PRs into `main` from any other branch.
 - PR titles follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): summary`,
   with a lowercase imperative summary, no trailing period, ideally under 72 characters (e.g.
   `feat(blog): add tag filter`, `fix(i18n): translate 404 page`, `chore(deps): bump astro`). Types: `feat`,
   `fix`, `content`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`; the scope
   is optional (`blog`, `work`, `byo`, `i18n`, `seo`, `deps`, `ci`, ...), and `!` before the colon marks a
-  breaking change. The **PR Title** check enforces this, and squash merges use the title as the commit.
+  breaking change. The **PR Title** check enforces this, and squash merges into `preview` use the title as
+  the commit.
 - Use the same format for commit subjects (e.g. `feat(landing): add localized slogan`).
 - Fill in `.github/pull_request_template.md`: summary, type of change, checklist, and screenshots for any UI
   change (desktop and mobile).
 - CI on every PR (`.github/workflows/`): the PR title format, Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
   production build, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
-  content/docs-only PRs). All checks must pass before merging. Commenting `@claude` on an issue or PR asks
+  content/docs-only PRs and for `preview` → `main` promotions). All checks must pass before merging. Commenting `@claude` on an issue or PR asks
   Claude to respond or push a fix; `@claude review` requests another review.
-- There are no versioned releases or tags: every merge to `main` deploys to production on Vercel, and the
-  commit history is the changelog. Don't bump the version in `package.json`.
+- There are no versioned releases or tags: every promotion merged into `main` deploys to production on
+  Vercel, and the commit history is the changelog. Don't bump the version in `package.json`.

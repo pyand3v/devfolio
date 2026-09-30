@@ -1,0 +1,28 @@
+name: Promotion Source
+
+# Changes land on `preview` first; `main` only accepts promotions from it. Required on `main`.
+# Kept separate from Code Quality so it can also re-run on `edited` (which covers retargeting a PR)
+# without re-running the whole test suite every time a PR description changes. It triggers for every
+# base branch and skips itself unless the base is main, so retargeting away from main clears a failure.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions: {}
+
+jobs:
+  promotion-source:
+    name: Promotion Source
+    if: github.base_ref == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check that the PR comes from preview
+        env:
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [ "$HEAD_REPO" != "$GITHUB_REPOSITORY" ] || [ "$HEAD_REF" != "preview" ]; then
+            echo "::error::Pull requests into main must come from preview. Retarget this PR to preview."
+            exit 1
+          fi
