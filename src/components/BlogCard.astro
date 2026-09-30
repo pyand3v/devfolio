@@ -1,8 +1,7 @@
 ---
 import { Icon } from "astro-icon/components"
 import type { BlogPost } from "@/lib/content"
-import type { Locale } from "@/lib/i18n"
-import { getLocalizedPath } from "@/lib/i18n"
+import { copy, getLocalizedPath, type Locale } from "@/lib/i18n"
 import { formatBlogDate } from "@/lib/utils"
 
 interface Props {
@@ -11,7 +10,7 @@ interface Props {
   surface?: "default" | "contrast"
 }
 const { post, locale = "en", surface = "default" } = Astro.props
-const actionLabel = { en: "Read article", es: "Leer artículo", "pt-br": "Ler artigo" }[locale]
+const labels = copy[locale].article
 const surfaceClass =
   surface === "contrast" ? "border-[#2e3440] bg-[#3b4252]" : "border-white/20 bg-white/[0.06]"
 const articlePath = getLocalizedPath(`/blog/${post.slug}`, locale)
@@ -31,9 +30,11 @@ const contentLang = post.locale !== locale ? post.locale : undefined
   <div class="mt-6 flex items-center gap-3 font-mono text-xs font-bold text-[#8fbcbb] uppercase">
     <time datetime={post.publishedAt}>{formatBlogDate(post.publishedAt, "short")}</time>
     <span>·</span>
-    <span>{post.readingTime} min read</span>
+    <span>
+      {post.readingTime} {labels.minRead}
+    </span>
   </div>
-  <ul class="mt-4 flex flex-wrap gap-2" aria-label="Article tags">
+  <ul class="mt-4 flex flex-wrap gap-2" aria-label={labels.tags}>
     {(post.tags?.length ? post.tags : ["Engineering"]).map(tag => (
       <li>
         <a
@@ -49,7 +50,7 @@ const contentLang = post.locale !== locale ? post.locale : undefined
     href={articlePath}
     class="mt-6 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-white uppercase"
   >
-    {actionLabel}
+    {labels.read}
     <Icon name="lucide:arrow-right" class="size-4 transition group-hover:translate-x-1" />
   </a>
 </article>
