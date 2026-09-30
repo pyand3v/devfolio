@@ -30,23 +30,22 @@ const articlePath = getLocalizedPath(`/blog/${post.slug}`, locale)
     <span>{post.readingTime} min read</span>
   </div>
   <ul class="mt-4 flex flex-wrap gap-2" aria-label="Article tags">
-    {
-      (post.tags?.length ? post.tags : ["Engineering"]).map(tag => (
-        <li>
-          <a
-            href={getLocalizedPath(`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`, locale)}
-            class="inline-flex border border-[#8fbcbb]/55 px-2 py-1 font-mono text-[0.65rem] leading-none font-bold tracking-[0.13em] text-[#8fbcbb] uppercase transition hover:border-[#88c0d0] hover:bg-[#88c0d0] hover:text-[#2e3440] focus-visible:border-[#88c0d0] focus-visible:bg-[#88c0d0] focus-visible:text-[#2e3440] focus-visible:outline-none"
-          >
-            {tag}
-          </a>
-        </li>
-      ))
-    }
+    {(post.tags?.length ? post.tags : ["Engineering"]).map(tag => (
+      <li>
+        <a
+          href={getLocalizedPath(`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`, locale)}
+          class="inline-flex border border-[#8fbcbb]/55 px-2 py-1 font-mono text-[0.65rem] leading-none font-bold tracking-[0.13em] text-[#8fbcbb] uppercase transition hover:border-[#88c0d0] hover:bg-[#88c0d0] hover:text-[#2e3440] focus-visible:border-[#88c0d0] focus-visible:bg-[#88c0d0] focus-visible:text-[#2e3440] focus-visible:outline-none"
+        >
+          {tag}
+        </a>
+      </li>
+    ))}
   </ul>
   <a
     href={articlePath}
     class="mt-6 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-white uppercase"
-    >{actionLabel}
-    <Icon name="lucide:arrow-right" class="size-4 transition group-hover:translate-x-1" /></a
   >
+    {actionLabel}
+    <Icon name="lucide:arrow-right" class="size-4 transition group-hover:translate-x-1" />
+  </a>
 </article>
