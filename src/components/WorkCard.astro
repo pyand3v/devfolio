@@ -12,32 +12,29 @@ const actionLabel = { en: "Read role", es: "Leer rol", "pt-br": "Ler cargo" }[lo
 ---
 
 <a href={`/work/${item.slug}`} class="group block">
-  <article
-    class="border border-white/25 border-t-4 border-t-[#88c0d0] bg-[#3b4252] p-6 text-white transition hover:-translate-y-1 hover:border-white/60"
-  >
+  <article class="border border-white/25 border-t-4 border-t-[#88c0d0] bg-[#3b4252] p-6 text-white transition hover:-translate-y-1 hover:border-white/60">
     <div class="flex flex-wrap items-start justify-between gap-5">
       <div>
         <p class="font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase">
           {formatDateRange(item.start, item.end)} · {calculateDuration(item.start, item.end)}
         </p>
-        <h3 class="display-type mt-4 text-3xl">{item.title} at {item.company}</h3>
+        <h3 class="display-type mt-4 text-3xl">
+          {item.title} at {item.company}
+        </h3>
       </div>
-      {
-        item.locations.length > 0 && (
-          <p class="font-mono text-xs font-bold tracking-wide text-white/55">
-            {item.locations.join(" · ")}
-          </p>
-        )
-      }
+      {item.locations.length > 0 && (
+        <p class="font-mono text-xs font-bold tracking-wide text-white/55">
+          {item.locations.join(" · ")}
+        </p>
+      )}
     </div>
     <p class="mt-5 max-w-3xl leading-relaxed text-white/70">{item.description}</p>
-    <span
-      class="mt-6 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] uppercase"
-      >{actionLabel}
+    <span class="mt-6 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] uppercase">
+      {actionLabel}
       <Icon
         name="lucide:arrow-up-right"
         class="size-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-      /></span
-    >
+      />
+    </span>
   </article>
 </a>

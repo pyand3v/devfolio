@@ -28,16 +28,14 @@ const navigation = [
         {labels.footer.explore}
       </p>
       <div class="mt-4 flex flex-col gap-2">
-        {
-          navigation.map(item => (
-            <a
-              href={getLocalizedPath(item.path, locale)}
-              class="text-sm font-bold text-white/75 hover:text-white"
-            >
-              {labels.nav[item.key]}
-            </a>
-          ))
-        }
+        {navigation.map(item => (
+          <a
+            href={getLocalizedPath(item.path, locale)}
+            class="text-sm font-bold text-white/75 hover:text-white"
+          >
+            {labels.nav[item.key]}
+          </a>
+        ))}
       </div>
     </div>
     <div>
@@ -45,23 +43,19 @@ const navigation = [
         {labels.footer.findMe}
       </p>
       <div class="mt-4 flex gap-3">
-        {
-          footerConfig.socialLinks.map(link => (
-            <a
-              href={link.href}
-              aria-label={link.label}
-              class="grid size-10 place-items-center border border-white/25 text-white transition hover:border-[#88c0d0] hover:bg-[#88c0d0] hover:text-[#2e3440]"
-            >
-              <Icon name={link.icon} class="size-4" />
-            </a>
-          ))
-        }
+        {footerConfig.socialLinks.map(link => (
+          <a
+            href={link.href}
+            aria-label={link.label}
+            class="grid size-10 place-items-center border border-white/25 text-white transition hover:border-[#88c0d0] hover:bg-[#88c0d0] hover:text-[#2e3440]"
+          >
+            <Icon name={link.icon} class="size-4" />
+          </a>
+        ))}
       </div>
     </div>
   </div>
-  <p
-    class="mx-auto mt-12 max-w-7xl border-t border-white/15 pt-5 text-xs font-semibold tracking-wide text-white/45"
-  >
+  <p class="mx-auto mt-12 max-w-7xl border-t border-white/15 pt-5 text-xs font-semibold tracking-wide text-white/45">
     © {new Date().getFullYear()}
     {footerConfig.copyrightName}. All rights reserved.
   </p>

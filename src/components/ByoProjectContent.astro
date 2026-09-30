@@ -66,11 +66,11 @@ const copy = {
     <a
       href={getLocalizedPath("/byo", locale)}
       class="inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#8fbcbb] uppercase transition hover:text-white"
-      ><Icon name="lucide:arrow-left" class="size-4" />{copy.back}</a
     >
-    <header
-      class="mt-10 border-b border-[#88c0d0] pb-10 lg:grid lg:grid-cols-[1.2fr_.8fr] lg:items-end lg:gap-16"
-    >
+      <Icon name="lucide:arrow-left" class="size-4" />
+      {copy.back}
+    </a>
+    <header class="mt-10 border-b border-[#88c0d0] pb-10 lg:grid lg:grid-cols-[1.2fr_.8fr] lg:items-end lg:gap-16">
       <div>
         <p class="font-mono text-xs font-bold tracking-[0.16em] text-[#8fbcbb] uppercase">
           BYO · {project.data.slug}
@@ -78,138 +78,134 @@ const copy = {
         <h1 class="display-type mt-5 text-5xl leading-[0.86] sm:text-7xl">{project.data.title}</h1>
       </div>
       <div class="mt-6 lg:mt-0">
-        <p class="text-lg leading-relaxed text-white/70">{project.data.description}</p><div
-          class="mt-6 flex flex-wrap gap-3 font-mono text-xs text-[#8fbcbb] uppercase"
-        >
-          <span>{project.data.chapters.length} {copy.chapters}</span><span
-            >{lessons.length} {copy.lessons}</span
-          ><span>{project.data.estimatedMinutes} {copy.mins}</span>
+        <p class="text-lg leading-relaxed text-white/70">{project.data.description}</p>
+        <div class="mt-6 flex flex-wrap gap-3 font-mono text-xs text-[#8fbcbb] uppercase">
+          <span>
+            {project.data.chapters.length} {copy.chapters}
+          </span>
+          <span>
+            {lessons.length} {copy.lessons}
+          </span>
+          <span>
+            {project.data.estimatedMinutes} {copy.mins}
+          </span>
         </div>
       </div>
     </header>
-    {
-      firstLesson && (
-        <a
-          href={getLocalizedPath(
-            `/byo/${project.data.slug}/lessons/${firstLesson.data.slug}`,
-            locale
-          )}
-          class="mt-8 inline-flex items-center gap-2 bg-[#88c0d0] px-5 py-3 text-xs font-black tracking-[0.14em] text-[#2e3440] uppercase transition hover:bg-[#8fbcbb]"
-        >
-          <Icon name="lucide:play" class="size-4" />
-          {copy.start}
-        </a>
-      )
-    }
+    {firstLesson && (
+      <a
+        href={getLocalizedPath(
+          `/byo/${project.data.slug}/lessons/${firstLesson.data.slug}`,
+          locale
+        )}
+        class="mt-8 inline-flex items-center gap-2 bg-[#88c0d0] px-5 py-3 text-xs font-black tracking-[0.14em] text-[#2e3440] uppercase transition hover:bg-[#8fbcbb]"
+      >
+        <Icon name="lucide:play" class="size-4" />
+        {copy.start}
+      </a>
+    )}
     <section class="mt-16">
       <p class="font-mono text-xs font-bold tracking-[0.16em] text-[#8fbcbb] uppercase">
         01 · {copy.curriculum}
-      </p><div class="mt-5 space-y-10">
-        {
-          chapterLessons.map(chapter => (
-            <section class="border-t border-white/25 pt-5">
-              <div class="grid gap-4 md:grid-cols-[14rem_1fr]">
-                <>
-                  <div>
-                    <>
-                      <p class="font-mono text-xs text-[#8fbcbb]">
-                        {String(chapter.order).padStart(2, "0")} · {copy.chapter}
-                      </p>
-                      <h2 class="display-type mt-2 text-3xl">{chapter.title}</h2>
-                      <p class="mt-3 text-sm leading-relaxed text-white/60">
-                        {chapter.description}
-                      </p>
-                    </>
-                  </div>
-                  <ol>
-                    {chapter.lessons.map((lesson, index) => (
-                      <li>
-                        <a
-                          href={getLocalizedPath(
-                            `/byo/${project.data.slug}/lessons/${lesson.data.slug}`,
-                            locale
-                          )}
-                          class="group flex items-center gap-4 border-b border-white/15 py-4 transition hover:border-[#88c0d0]"
-                        >
-                          <span class="font-mono text-xs text-[#8fbcbb]">
-                            {String(chapter.order).padStart(2, "0")}.
-                            {String(index + 1).padStart(2, "0")}
+      </p>
+      <div class="mt-5 space-y-10">
+        {chapterLessons.map(chapter => (
+          <section class="border-t border-white/25 pt-5">
+            <div class="grid gap-4 md:grid-cols-[14rem_1fr]">
+              <>
+                <div>
+                  <>
+                    <p class="font-mono text-xs text-[#8fbcbb]">
+                      {String(chapter.order).padStart(2, "0")} · {copy.chapter}
+                    </p>
+                    <h2 class="display-type mt-2 text-3xl">{chapter.title}</h2>
+                    <p class="mt-3 text-sm leading-relaxed text-white/60">{chapter.description}</p>
+                  </>
+                </div>
+                <ol>
+                  {chapter.lessons.map((lesson, index) => (
+                    <li>
+                      <a
+                        href={getLocalizedPath(
+                          `/byo/${project.data.slug}/lessons/${lesson.data.slug}`,
+                          locale
+                        )}
+                        class="group flex items-center gap-4 border-b border-white/15 py-4 transition hover:border-[#88c0d0]"
+                      >
+                        <span class="font-mono text-xs text-[#8fbcbb]">
+                          {String(chapter.order).padStart(2, "0")}.
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span class="flex-1 font-bold text-white/85 group-hover:text-white">
+                          {lesson.data.title}
+                          <span class="mt-1 block text-sm font-normal text-white/50">
+                            {lesson.data.description}
                           </span>
-                          <span class="flex-1 font-bold text-white/85 group-hover:text-white">
-                            {lesson.data.title}
-                            <span class="mt-1 block text-sm font-normal text-white/50">
-                              {lesson.data.description}
-                            </span>
-                          </span>
-                          <Icon name="lucide:arrow-right" class="size-4 text-[#88c0d0]" />
-                        </a>
-                      </li>
-                    ))}
-                  </ol>
-                </>
-              </div>
-            </section>
-          ))
-        }
+                        </span>
+                        <Icon name="lucide:arrow-right" class="size-4 text-[#88c0d0]" />
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </>
+            </div>
+          </section>
+        ))}
       </div>
     </section>
     <div class="mt-16 grid gap-8 lg:grid-cols-2">
       <section>
         <p class="font-mono text-xs font-bold tracking-[0.16em] text-[#8fbcbb] uppercase">
           02 · {copy.guides}
-        </p><div class="mt-5 space-y-3">
-          {
-            guides.map(guide => (
-              <a
-                href={getLocalizedPath(
-                  `/byo/${project.data.slug}/guides/${guide.data.slug}`,
-                  locale
-                )}
-                class="block border border-white/25 bg-white/[0.03] p-5 transition hover:border-[#88c0d0]"
-              >
-                <>
-                  <p class="font-mono text-[.68rem] tracking-[.14em] text-[#8fbcbb] uppercase">
-                    {copy.guide}
-                  </p>
-                  <h2 class="mt-2 text-xl font-bold">{guide.data.title}</h2>
-                  <p class="mt-2 text-sm leading-relaxed text-white/60">{guide.data.description}</p>
-                </>
-              </a>
-            ))
-          }
+        </p>
+        <div class="mt-5 space-y-3">
+          {guides.map(guide => (
+            <a
+              href={getLocalizedPath(`/byo/${project.data.slug}/guides/${guide.data.slug}`, locale)}
+              class="block border border-white/25 bg-white/[0.03] p-5 transition hover:border-[#88c0d0]"
+            >
+              <>
+                <p class="font-mono text-[.68rem] tracking-[.14em] text-[#8fbcbb] uppercase">
+                  {copy.guide}
+                </p>
+                <h2 class="mt-2 text-xl font-bold">{guide.data.title}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-white/60">{guide.data.description}</p>
+              </>
+            </a>
+          ))}
         </div>
-      </section><section>
+      </section>
+      <section>
         <p class="font-mono text-xs font-bold tracking-[0.16em] text-[#8fbcbb] uppercase">
           03 · {copy.exercises}
-        </p><div class="mt-5 space-y-3">
-          {
-            exercises.map(exercise => (
-              <a
-                href={getLocalizedPath(
-                  `/byo/${project.data.slug}/exercises/${exercise.data.slug}`,
-                  locale
-                )}
-                class="block border border-white/25 bg-white/[0.03] p-5 transition hover:border-[#88c0d0]"
-              >
-                <>
-                  <div class="flex items-center justify-between gap-3">
-                    <>
-                      <p class="font-mono text-[.68rem] tracking-[.14em] text-[#8fbcbb] uppercase">
-                        {copy.exercise}
-                      </p>
-                      <span class="border border-[#8fbcbb] px-2 py-1 font-mono text-[.62rem] text-[#8fbcbb] uppercase">
-                        {exercise.data.difficulty}
-                      </span>
-                    </>
-                  </div>
-                  <h2 class="mt-2 text-xl font-bold">{exercise.data.title}</h2>
-                  <p class="mt-2 text-sm leading-relaxed text-white/60">
-                    {exercise.data.description}
-                  </p>
-                </>
-              </a>
-            ))
-          }
+        </p>
+        <div class="mt-5 space-y-3">
+          {exercises.map(exercise => (
+            <a
+              href={getLocalizedPath(
+                `/byo/${project.data.slug}/exercises/${exercise.data.slug}`,
+                locale
+              )}
+              class="block border border-white/25 bg-white/[0.03] p-5 transition hover:border-[#88c0d0]"
+            >
+              <>
+                <div class="flex items-center justify-between gap-3">
+                  <>
+                    <p class="font-mono text-[.68rem] tracking-[.14em] text-[#8fbcbb] uppercase">
+                      {copy.exercise}
+                    </p>
+                    <span class="border border-[#8fbcbb] px-2 py-1 font-mono text-[.62rem] text-[#8fbcbb] uppercase">
+                      {exercise.data.difficulty}
+                    </span>
+                  </>
+                </div>
+                <h2 class="mt-2 text-xl font-bold">{exercise.data.title}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-white/60">
+                  {exercise.data.description}
+                </p>
+              </>
+            </a>
+          ))}
         </div>
       </section>
     </div>

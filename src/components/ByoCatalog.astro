@@ -48,9 +48,7 @@ const copy = {
 
 <section class="portfolio-dark-grid min-h-screen text-white">
   <div class="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
-    <header
-      class="border-b border-[#88c0d0] pb-10 lg:flex lg:items-end lg:justify-between lg:gap-12"
-    >
+    <header class="border-b border-[#88c0d0] pb-10 lg:flex lg:items-end lg:justify-between lg:gap-12">
       <div class="max-w-3xl">
         <p class="font-mono text-xs font-bold tracking-[0.18em] text-[#8fbcbb] uppercase">
           {copy.eyebrow}
@@ -64,44 +62,42 @@ const copy = {
       {copy.paths}
     </p>
     <div class="mt-5 grid gap-5 lg:grid-cols-3">
-      {
-        bundles.map((bundle, index) => (
-          <a
-            href={getLocalizedPath(`/byo/${bundle.project.data.slug}`, locale)}
-            class="group flex min-h-82 flex-col border border-white/25 bg-[#3b4252]/90 p-6 transition hover:-translate-y-1 hover:border-[#88c0d0] hover:bg-[#434c5e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8fbcbb]"
-          >
-            <p class="font-mono text-xs font-bold tracking-[0.16em] text-[#8fbcbb]">
-              BYO-{String(index + 1).padStart(2, "0")}
-            </p>
-            <h2 class="display-type mt-8 text-3xl leading-tight">{bundle.project.data.title}</h2>
-            <p class="mt-4 text-base leading-relaxed text-white/65">
-              {bundle.project.data.description}
-            </p>
-            <div class="mt-auto border-t border-white/15 pt-5 font-mono text-[0.68rem] font-bold tracking-[0.1em] text-[#8fbcbb] uppercase">
-              <div class="flex flex-wrap gap-x-3 gap-y-2">
-                <>
-                  <span>
-                    {bundle.project.data.chapters.length} {copy.chapters}
-                  </span>
-                  <span>
-                    {bundle.lessons.length} {copy.lessons}
-                  </span>
-                  <span>
-                    {bundle.guides.length} {copy.guides}
-                  </span>
-                  <span>
-                    {bundle.exercises.length} {copy.exercises}
-                  </span>
-                </>
-              </div>
-              <span class="mt-6 inline-flex items-center gap-2 text-white group-hover:text-[#88c0d0]">
-                {copy.open}
-                <Icon name="lucide:arrow-up-right" class="size-4" />
-              </span>
+      {bundles.map((bundle, index) => (
+        <a
+          href={getLocalizedPath(`/byo/${bundle.project.data.slug}`, locale)}
+          class="group flex min-h-82 flex-col border border-white/25 bg-[#3b4252]/90 p-6 transition hover:-translate-y-1 hover:border-[#88c0d0] hover:bg-[#434c5e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8fbcbb]"
+        >
+          <p class="font-mono text-xs font-bold tracking-[0.16em] text-[#8fbcbb]">
+            BYO-{String(index + 1).padStart(2, "0")}
+          </p>
+          <h2 class="display-type mt-8 text-3xl leading-tight">{bundle.project.data.title}</h2>
+          <p class="mt-4 text-base leading-relaxed text-white/65">
+            {bundle.project.data.description}
+          </p>
+          <div class="mt-auto border-t border-white/15 pt-5 font-mono text-[0.68rem] font-bold tracking-[0.1em] text-[#8fbcbb] uppercase">
+            <div class="flex flex-wrap gap-x-3 gap-y-2">
+              <>
+                <span>
+                  {bundle.project.data.chapters.length} {copy.chapters}
+                </span>
+                <span>
+                  {bundle.lessons.length} {copy.lessons}
+                </span>
+                <span>
+                  {bundle.guides.length} {copy.guides}
+                </span>
+                <span>
+                  {bundle.exercises.length} {copy.exercises}
+                </span>
+              </>
             </div>
-          </a>
-        ))
-      }
+            <span class="mt-6 inline-flex items-center gap-2 text-white group-hover:text-[#88c0d0]">
+              {copy.open}
+              <Icon name="lucide:arrow-up-right" class="size-4" />
+            </span>
+          </div>
+        </a>
+      ))}
     </div>
   </div>
 </section>

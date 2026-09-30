@@ -24,5 +24,7 @@ const canonical = `/byo/${bundle.project.data.slug}`
 <BaseLayout
   title={bundle.project.data.title}
   description={bundle.project.data.description}
-  canonical={canonical}><ByoProjectContent bundle={bundle} locale={locale} /></BaseLayout
+  canonical={canonical}
 >
+  <ByoProjectContent bundle={bundle} locale={locale} />
+</BaseLayout>
