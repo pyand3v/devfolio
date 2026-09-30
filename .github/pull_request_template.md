@@ -1,6 +1,6 @@
 ## Description
 
-[//]: # "Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context."
+[//]: # "Summarize the change, why it's needed, and link the issue it closes (e.g. Closes #12)."
 
 ## Type of Change
 
@@ -8,22 +8,30 @@
 
 - [ ] Feature
 - [ ] Bugfix
+- [ ] Content (blog, work, projects, BYO)
 - [ ] Refactor
 - [ ] Documentation
+- [ ] CI / tooling
 - [ ] Other
 
 ## Checklist
 
 [//]: # "Please check all that apply"
 
-- [ ] Manually tested by running `pnpm dev` and viewing all pages
-- [ ] It can build a prod build with `pnpm build`
-- [ ] Documentation and comments added
-- [ ] No console warnings or errors
-- [ ] No ESLint warnings or errors
-- [ ] No prettier warnings or errors
-- [ ] No vitest warnings or errors (tests pass with `pnpm test`)
+- [ ] Manually tested with `pnpm dev`, including every locale (`en`, `es`, `pt-br`) the change touches
+- [ ] Production build passes with `pnpm build`
+- [ ] No Prettier issues (`pnpm format:check`)
+- [ ] No ESLint warnings or errors (`pnpm lint:check`)
+- [ ] No type errors (`pnpm types:check`)
+- [ ] Tests pass (`pnpm test`), and new logic in `src/lib/` has tests
+- [ ] New UI text is translated in `src/lib/i18n.ts` for all locales
+- [ ] No console warnings or errors in the browser
+- [ ] `AGENTS.md` / docs updated if commands, structure, or conventions changed
+
+## Screenshots
+
+[//]: # "Required for UI changes: before/after on desktop and mobile. Delete this section otherwise."
 
 ## Supplementary Information
 
-[//]: # "Any other information that is important to this PR, such as screenshots of a UI change"
+[//]: # "Anything else reviewers should know."

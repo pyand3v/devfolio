@@ -1,0 +1,70 @@
+name: Claude Code Review
+
+# Reviews once when a PR is opened, reopened, or marked ready, not on every push, to save usage.
+# Comment `@claude review` on the PR to request another pass after changes.
+on:
+  pull_request:
+    types: [opened, ready_for_review, reopened]
+    # Content and docs are already validated by CI, so PRs touching only these skip the review
+    paths-ignore:
+      - "src/data/**/*.mdx"
+      - "docs/**"
+      - "**/*.md"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: Claude Review
+    # Skip drafts, bot PRs, and forks (repository secrets are not available to fork PRs)
+    if: |
+      !github.event.pull_request.draft &&
+      github.event.pull_request.user.type != 'Bot' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Review pull request
+        uses: anthropics/claude-code-action@fd1c128679612beff4ca259c78021c506e8aa7a7 # anthropics/claude-code-action@v1.0.237
+        with:
+          # Set whichever secret you use: a Claude subscription token (`claude setup-token`)
+          # or an Anthropic API key.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          track_progress: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Review this pull request. Read AGENTS.md first; it describes the project layout and conventions.
+
+            Focus on, in order of importance:
+            1. Bugs and regressions: broken routes, build-time errors, wrong data in rendered pages.
+            2. Static-site guarantees: public pages stay statically rendered; interactivity stays in small
+               client scripts or islands.
+            3. i18n: new UI strings added to every locale in `src/lib/i18n.ts`; routes changed in both
+               `src/pages/` and `src/pages/[locale]/`; blog translations match their metadata.
+            4. Content schemas: changes kept in sync across `src/content.config.mjs`, `src/lib/schemas.ts`,
+               and `scripts/content-check.mjs`.
+            5. Accessibility, SEO metadata, and mobile layout for UI changes.
+            6. Missing or weak tests for logic in `src/lib/`.
+
+            Formatting, linting, and type errors are already enforced by CI, so don't comment on them.
+            Use inline comments for specific issues and one short summary comment. Don't praise or
+            restate the diff; if nothing needs changing, say so in one line.
+          claude_args: |
+            --model claude-sonnet-5-5
+            --max-turns 15
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
