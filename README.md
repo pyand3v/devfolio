@@ -1,6 +1,6 @@
 # devfolio
 
-A static, multilingual developer portfolio built with Astro, TypeScript, Tailwind CSS, and MDX, and deployed on Vercel. Every page is rendered at build time and ships no React or Next.js runtime.
+Source for [pyan.dev](https://www.pyan.dev), Daniel Benitez's static, multilingual developer portfolio, built with Astro, TypeScript, Tailwind CSS, and MDX, and deployed on Vercel. Every page is rendered at build time and ships no React or Next.js runtime.
 
 ## Features
 
@@ -44,6 +44,18 @@ All UI text lives in `copy` in `src/lib/i18n.ts`, with one entry per locale.
 
 Collections are defined in `src/content.config.mjs` and loaded by a custom recursive MDX loader. `pnpm build` runs `scripts/content-check.mjs` first to validate blog metadata, slugs, and translations. Dynamic pages, feeds, and SEO assets are generated at build time; see [docs/SEO.md](docs/SEO.md).
 
+## Branches and deployments
+
+| Branch      | Purpose                                       | Deploys to        |
+| ----------- | --------------------------------------------- | ----------------- |
+| feature/... | One change, opened as a PR against `preview`  | Vercel preview    |
+| `preview`   | Default branch; staging for the next release  | Vercel preview    |
+| `main`      | Production; only accepts PRs from `preview`   | Vercel production |
+
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md). To report a vulnerability, follow [SECURITY.md](SECURITY.md).
+
+## License
+
+[MIT](LICENSE). The site started from an open-source Astro portfolio template by Alexandru Moraru; the original copyright notice is kept in the license.
