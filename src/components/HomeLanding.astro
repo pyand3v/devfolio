@@ -30,96 +30,86 @@ const notesTitleLines = labels.notesTitle.split("\n")
   <div
     aria-hidden="true"
     class="absolute inset-0 bg-[radial-gradient(circle_at_74%_28%,rgb(94_129_172_/_0.5)_0%,transparent_31%),radial-gradient(circle_at_28%_105%,rgb(59_66_82_/_0.86)_0%,transparent_44%),linear-gradient(135deg,#2e3440,#242933)]"
-  >
-  </div>
+  ></div>
   <div
     aria-hidden="true"
     class="absolute inset-0 bg-[linear-gradient(rgb(136_192_208_/_0.07)_1px,transparent_1px),linear-gradient(90deg,rgb(136_192_208_/_0.07)_1px,transparent_1px)] bg-size-[40px_40px]"
-  >
-  </div>
+  ></div>
   <div
     aria-hidden="true"
     class="absolute -right-28 top-32 size-[34rem] rotate-45 border-[26px] border-[#88c0d0]/80 shadow-[0_0_0_26px_rgb(94_129_172_/_0.2)] sm:-right-12"
-  >
-  </div>
+  ></div>
   <div class="relative mx-auto flex min-h-[42rem] max-w-7xl items-end px-5 py-18 lg:px-8 lg:py-24">
     <div class="max-w-4xl">
       <p class="mb-7 font-mono text-xs font-bold tracking-[0.22em] text-[#8fbcbb] uppercase">
         {labels.eyebrow}
       </p>
       <h1 class="display-type max-w-3xl text-5xl leading-[0.87] sm:text-7xl lg:text-8xl">
-        {
-          titleLines.map((line, index) => (
-            <>
-              {line}
-              {index < titleLines.length - 1 && <br />}
-            </>
-          ))
-        }
+        {titleLines.map((line, index) => (
+          <>
+            {line}
+            {index < titleLines.length - 1 && <br />}
+          </>
+        ))}
       </h1>
       <p class="mt-7 max-w-xl text-lg leading-relaxed text-white/75 sm:text-xl">
         {labels.headline}
       </p>
-      <p
-        class="mt-5 max-w-xl border-l-2 border-[#8fbcbb] pl-4 font-mono text-sm leading-relaxed text-[#d8dee9] sm:text-base"
-      >
+      <p class="mt-5 max-w-xl border-l-2 border-[#8fbcbb] pl-4 font-mono text-sm leading-relaxed text-[#d8dee9] sm:text-base">
         “{labels.slogan}”
       </p>
       <div class="mt-8 flex flex-wrap items-center gap-4">
         <a
           href={getLocalizedPath("/work", locale)}
           class="inline-flex items-center gap-3 bg-[#88c0d0] px-6 py-4 text-xs font-black tracking-[0.14em] text-[#164a63] uppercase transition hover:bg-[#b9e1eb]"
-          >{labels.primary} <Icon name="lucide:arrow-up-right" class="size-4" /></a
         >
-        <span class="font-mono text-xs font-bold tracking-[0.14em] text-[#b9e1eb] uppercase"
-          >{labels.availability}</span
-        >
+          {labels.primary} <Icon name="lucide:arrow-up-right" class="size-4" />
+        </a>
+        <span class="font-mono text-xs font-bold tracking-[0.14em] text-[#b9e1eb] uppercase">
+          {labels.availability}
+        </span>
       </div>
     </div>
   </div>
 </section>
-{
-  featuredWork && (
-    <section class="portfolio-dark-grid border-y-4 border-[#88c0d0] text-white">
-      <div class="mx-auto grid max-w-7xl gap-12 px-5 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:px-8 lg:py-28">
-        <div>
-          <p class="font-mono text-xs font-bold tracking-[0.2em] text-[#8fbcbb] uppercase">
-            {labels.featuredLabel}
-          </p>
-          <h2 class="display-type mt-6 max-w-3xl text-5xl leading-[0.9] sm:text-6xl">
-            {featuredTitleLines.map((line, index) => (
-              <>
-                {line}
-                {index < featuredTitleLines.length - 1 && <br />}
-              </>
-            ))}
-          </h2>
-        </div>
-        <article class="border border-white/25 bg-white/5 p-7 backdrop-blur-sm">
-          <p class="font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase">
-            {formatDateRange(featuredWork.start, featuredWork.end)} ·{" "}
-            {calculateDuration(featuredWork.start, featuredWork.end)}
-          </p>
-          <h3 class="mt-4 text-3xl font-bold tracking-tight">
-            {featuredWork.title} at {featuredWork.company}
-          </h3>
-          <p class="mt-4 leading-relaxed text-white/70">{featuredWork.description}</p>
-          <a
-            href={`/work/${featuredWork.slug}`}
-            class="mt-7 inline-flex items-center gap-3 border-b-2 border-[#88c0d0] pb-2 font-mono text-xs font-bold tracking-[0.14em] uppercase transition hover:text-[#8fbcbb]"
-          >
-            {labels.story} <Icon name="lucide:arrow-right" class="size-4" />
-          </a>
-        </article>
+{featuredWork && (
+  <section class="portfolio-dark-grid border-y-4 border-[#88c0d0] text-white">
+    <div class="mx-auto grid max-w-7xl gap-12 px-5 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:px-8 lg:py-28">
+      <div>
+        <p class="font-mono text-xs font-bold tracking-[0.2em] text-[#8fbcbb] uppercase">
+          {labels.featuredLabel}
+        </p>
+        <h2 class="display-type mt-6 max-w-3xl text-5xl leading-[0.9] sm:text-6xl">
+          {featuredTitleLines.map((line, index) => (
+            <>
+              {line}
+              {index < featuredTitleLines.length - 1 && <br />}
+            </>
+          ))}
+        </h2>
       </div>
-    </section>
-  )
-}
+      <article class="border border-white/25 bg-white/5 p-7 backdrop-blur-sm">
+        <p class="font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase">
+          {formatDateRange(featuredWork.start, featuredWork.end)} ·{" "}
+          {calculateDuration(featuredWork.start, featuredWork.end)}
+        </p>
+        <h3 class="mt-4 text-3xl font-bold tracking-tight">
+          {featuredWork.title} at {featuredWork.company}
+        </h3>
+        <p class="mt-4 leading-relaxed text-white/70">{featuredWork.description}</p>
+        <a
+          href={`/work/${featuredWork.slug}`}
+          class="mt-7 inline-flex items-center gap-3 border-b-2 border-[#88c0d0] pb-2 font-mono text-xs font-bold tracking-[0.14em] uppercase transition hover:text-[#8fbcbb]"
+        >
+          {labels.story} <Icon name="lucide:arrow-right" class="size-4" />
+        </a>
+      </article>
+    </div>
+  </section>
+)}
 <section class="portfolio-projects-grid border-y border-[#88c0d0] text-white">
   <div class="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
-    <div
-      class="grid gap-8 border-y border-white/20 py-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end lg:gap-16 lg:py-10"
-    >
+    <div class="grid gap-8 border-y border-white/20 py-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end lg:gap-16 lg:py-10">
       <div>
         <p class="font-mono text-xs font-bold tracking-[0.2em] text-[#8fbcbb] uppercase">
           02 · {labels.projectsLabel}
@@ -127,67 +117,57 @@ const notesTitleLines = labels.notesTitle.split("\n")
       </div>
       <div>
         <h2 class="display-type max-w-3xl text-5xl leading-[0.9] sm:text-6xl">
-          {
-            projectTitleLines.map((line, index) => (
-              <>
-                {line}
-                {index < projectTitleLines.length - 1 && <br />}
-              </>
-            ))
-          }
+          {projectTitleLines.map((line, index) => (
+            <>
+              {line}
+              {index < projectTitleLines.length - 1 && <br />}
+            </>
+          ))}
         </h2>
         <a
           href={getLocalizedPath("/projects", locale)}
           class="mt-7 inline-flex items-center gap-2 border-b-2 border-[#88c0d0] pb-2 font-mono text-xs font-bold tracking-[0.14em] uppercase transition hover:text-[#8fbcbb]"
-          >{labels.allProjects} <Icon name="lucide:arrow-right" class="size-4" /></a
         >
+          {labels.allProjects} <Icon name="lucide:arrow-right" class="size-4" />
+        </a>
       </div>
     </div>
     <div class="mt-14 grid grid-cols-1 gap-7 md:grid-cols-2">
-      {
-        projects
-          .slice(0, homeIntroConfig.projectsToShow)
-          .map((project, index) => (
-            <ProjectCard project={project} eager={index === 0} locale={locale} surface="dark" />
-          ))
-      }
+      {projects.slice(0, homeIntroConfig.projectsToShow).map((project, index) => (
+        <ProjectCard project={project} eager={index === 0} locale={locale} surface="dark" />
+      ))}
     </div>
   </div>
 </section>
 <section class="portfolio-desk-grid border-y border-[#88c0d0] text-white">
   <div class="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
-    <div
-      class="grid gap-8 border-b border-white/20 pb-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16 lg:pb-12"
-    >
+    <div class="grid gap-8 border-b border-white/20 pb-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16 lg:pb-12">
       <div>
         <p class="font-mono text-xs font-bold tracking-[0.2em] text-[#8fbcbb] uppercase">
           {labels.notesLabel}
         </p>
         <h2 class="display-type mt-5 text-5xl leading-[0.9] sm:text-6xl">
-          {
-            notesTitleLines.map((line, index) => (
-              <>
-                {line}
-                {index < notesTitleLines.length - 1 && <br />}
-              </>
-            ))
-          }
+          {notesTitleLines.map((line, index) => (
+            <>
+              {line}
+              {index < notesTitleLines.length - 1 && <br />}
+            </>
+          ))}
         </h2>
       </div>
       <div class="lg:justify-self-end">
         <a
           href={getLocalizedPath("/blog", locale)}
           class="inline-flex items-center gap-2 border-b-2 border-[#88c0d0] pb-2 font-mono text-xs font-bold tracking-[0.14em] uppercase transition hover:text-[#8fbcbb]"
-          >{labels.readBlog} <Icon name="lucide:arrow-right" class="size-4" /></a
         >
+          {labels.readBlog} <Icon name="lucide:arrow-right" class="size-4" />
+        </a>
       </div>
     </div>
     <div class="mt-12 grid gap-5 lg:grid-cols-3">
-      {
-        blog
-          .slice(0, homeIntroConfig.blogPostsToShow)
-          .map(post => <BlogCard post={post} locale={locale} />)
-      }
+      {blog.slice(0, homeIntroConfig.blogPostsToShow).map(post => (
+        <BlogCard post={post} locale={locale} />
+      ))}
     </div>
   </div>
 </section>

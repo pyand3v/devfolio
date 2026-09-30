@@ -42,10 +42,9 @@ const isDark = surface === "dark"
         class="size-full object-cover transition duration-500 group-hover:scale-105 group-hover:opacity-80"
         loading={eager ? "eager" : "lazy"}
       />
-      <span
-        class="absolute right-4 top-4 bg-[#88c0d0] px-2 py-1 text-[0.65rem] font-black tracking-[0.14em] text-[#2e3440] uppercase"
-        >{labels.type}</span
-      >
+      <span class="absolute right-4 top-4 bg-[#88c0d0] px-2 py-1 text-[0.65rem] font-black tracking-[0.14em] text-[#2e3440] uppercase">
+        {labels.type}
+      </span>
     </div>
     <div class="flex flex-1 flex-col p-6">
       <p
@@ -54,9 +53,8 @@ const isDark = surface === "dark"
           isDark ? "text-[#8fbcbb]" : "text-[#5e81ac]",
         ]}
       >
-        {formatDateRange(project.startDate, project.endDate)} · {
-          calculateDuration(project.startDate, project.endDate)
-        }
+        {formatDateRange(project.startDate, project.endDate)} ·{" "}
+        {calculateDuration(project.startDate, project.endDate)}
       </p>
       <h3 class:list={["display-type mt-4 text-3xl", isDark ? "text-white" : "text-[#2e3440]"]}>
         {project.title}
@@ -65,31 +63,32 @@ const isDark = surface === "dark"
         {project.description}
       </p>
       <div class="mt-6 flex flex-wrap gap-2">
-        {visibleTech.map(name => <TechBadge name={name} small surface={surface} />)}
-        {
-          more > 0 && (
-            <span
-              class:list={[
-                "border px-2 py-0.5 text-xs font-bold",
-                isDark ? "border-white/35 text-white/70" : "border-[#3b4252]/35 text-[#3b4252]/70",
-              ]}
-            >
-              + {more}
-            </span>
-          )
-        }
+        {visibleTech.map(name => (
+          <TechBadge name={name} small surface={surface} />
+        ))}
+        {more > 0 && (
+          <span
+            class:list={[
+              "border px-2 py-0.5 text-xs font-bold",
+              isDark ? "border-white/35 text-white/70" : "border-[#3b4252]/35 text-[#3b4252]/70",
+            ]}
+          >
+            + {more}
+          </span>
+        )}
       </div>
       <span
         class:list={[
           "mt-6 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] uppercase",
           isDark ? "text-white" : "text-[#2e3440]",
         ]}
-        >{labels.action}
+      >
+        {labels.action}
         <Icon
           name="lucide:arrow-up-right"
           class="size-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-        /></span
-      >
+        />
+      </span>
     </div>
   </article>
 </a>

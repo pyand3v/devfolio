@@ -10,4 +10,6 @@ export function getStaticPaths() {
 const locale = Astro.params.locale as Locale
 ---
 
-<BaseLayout title="Work"><CollectionLanding locale={locale} kind="work" /></BaseLayout>
+<BaseLayout title="Work">
+  <CollectionLanding locale={locale} kind="work" />
+</BaseLayout>
