@@ -18,11 +18,13 @@ concurrency:
 jobs:
   review:
     name: Claude Review
-    # Skip drafts, bot PRs, and forks (repository secrets are not available to fork PRs)
+    # Skip drafts, bot PRs, forks (repository secrets are not available to fork PRs), and
+    # preview -> main promotions (every change in them was already reviewed on its way into preview)
     if: |
       !github.event.pull_request.draft &&
       github.event.pull_request.user.type != 'Bot' &&
-      github.event.pull_request.head.repo.full_name == github.repository
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      !(github.base_ref == 'main' && github.head_ref == 'preview')
     runs-on: ubuntu-latest
     permissions:
       contents: read

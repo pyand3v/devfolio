@@ -30,8 +30,9 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-          # A PAT is required (not the default GITHUB_TOKEN) so that the
-          # tag pushed below triggers the Build & Release workflow.
+          # A PAT is required (not the default GITHUB_TOKEN) so that the tag pushed below
+          # triggers the Build & Release workflow. Its owner must be able to bypass the
+          # main and preview rulesets, since this job pushes to both directly.
           token: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Setup pnpm and Node.js
@@ -75,6 +76,15 @@ jobs:
         run: |
           git push origin HEAD:main
           git push origin --tags
+
+      # Bring the release commit (and the promotion merges before it) back into preview so the
+      # next preview -> main PR doesn't start behind main
+      - name: Sync preview with main
+        run: |
+          git fetch origin preview
+          git checkout -B preview origin/preview
+          git merge --no-edit main
+          git push origin preview
 
       - name: Output new version
         run: echo "🚀 Released version ${{ steps.bump.outputs.version }}"

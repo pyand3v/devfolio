@@ -77,15 +77,20 @@ The `@/` import alias maps to `src/`.
 
 ## Git and pull requests
 
-- Never commit directly to `main`. Work on a branch (`feat/…`, `fix/…`, `chore/…`, `docs/…`, or the branch
-  your session was started on) and open a PR against `main`.
+- Branch flow: feature branch → `preview` → `main`. `preview` is the default branch and the staging
+  environment; `main` is production. Never commit directly to either. Work on a branch (`feat/…`, `fix/…`,
+  `chore/…`, `docs/…`, or the branch your session was started on) and open a PR against `preview`
+  (squash merge). Once `preview` looks good on its Vercel deployment, open a `preview` → `main` PR and merge
+  it with a merge commit (not squash, or the two branches' histories diverge). CI rejects PRs into `main`
+  from any other branch.
 - Use short imperative commit subjects (e.g. `Add localized slogan to landing page`). `chore(release):` is
   reserved for the Prepare Release workflow.
 - Fill in `.github/pull_request_template.md`: summary, type of change, checklist, and screenshots for any UI
   change (desktop and mobile).
 - CI on every PR (`.github/workflows/`): Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
   production build, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
-  content/docs-only PRs). All checks must pass before merging. Commenting `@claude` on an issue or PR asks
+  content/docs-only PRs and for `preview` → `main` promotions). All checks must pass before merging. Commenting `@claude` on an issue or PR asks
   Claude to respond or push a fix; `@claude review` requests another review.
 - Releases are cut from `main` with the manual **Prepare Release** workflow (bumps `package.json`, tags
-  `vX.Y.Z`), which triggers **Build & Release**. Don't bump the version in feature PRs.
+  `vX.Y.Z`, merges the bump back into `preview`), which triggers **Build & Release**. Don't bump the version
+  in feature PRs.

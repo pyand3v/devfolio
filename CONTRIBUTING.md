@@ -42,7 +42,8 @@ To get started, follow the steps below.
    ```bash
    pnpm format:check && pnpm lint:check && pnpm types:check && pnpm test && pnpm build
    ```
-7. Open a pull request from your forked repository to the original repository.
+7. Open a pull request from your forked repository against the `preview` branch (the default). `main` is
+   production and only accepts promotions from `preview`, so PRs targeting it are rejected by CI.
 8. Describe your changes in detail in the pull request description (fill in the PR template).
 9. Wait for feedback and make any requested changes. Every PR runs the checks above, gets a Vercel preview
    deployment, and (unless it only touches content or docs) gets an automated review from Claude. Maintainers can also comment `@claude` on a PR or
@@ -73,4 +74,5 @@ To set up your development environment after cloning the repository, follow thes
 ## Need Help?
 
 If you have any questions or need assistance, feel free to open an issue on the GitHub repository using
-the issue template provided.
+the issue template provided. To report a security vulnerability, follow [SECURITY.md](SECURITY.md) instead
+of opening a public issue.
