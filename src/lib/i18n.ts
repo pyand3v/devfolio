@@ -54,6 +54,10 @@ export const copy = {
       notesTitle: "Notes on making\nuseful things.",
       readBlog: "Read the blog",
     },
+    untranslated: {
+      notice: "This article isn’t available in your language yet, so it’s shown in English.",
+      link: "Open the English version",
+    },
     work: {
       eyebrow: "01 · Career",
       title: "Work that\nships.",
@@ -118,6 +122,10 @@ export const copy = {
       notesTitle: "Ideas para crear\ncosas útiles.",
       readBlog: "Leer el blog",
     },
+    untranslated: {
+      notice: "Este artículo todavía no está traducido al español, así que se muestra en inglés.",
+      link: "Ver la versión en inglés",
+    },
     work: {
       eyebrow: "01 · Carrera",
       title: "Trabajo que\nllega a producción.",
@@ -180,6 +188,10 @@ export const copy = {
       notesLabel: "Da mesa de trabalho",
       notesTitle: "Ideias para criar\ncoisas úteis.",
       readBlog: "Ler o blog",
+    },
+    untranslated: {
+      notice: "Este artigo ainda não foi traduzido para o português, por isso aparece em inglês.",
+      link: "Ver a versão em inglês",
     },
     work: {
       eyebrow: "01 · Carreira",

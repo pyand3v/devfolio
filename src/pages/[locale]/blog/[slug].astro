@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import BlogArticleContent from "@/components/BlogArticleContent.astro"
-import { homeIntroConfig } from "@/data/portfolio"
 import { siteMetadata } from "@/data/site"
 import { getAllBlogPosts } from "@/lib/content"
+import { blogPosting } from "@/lib/structured-data"
 import { locales, type Locale } from "@/lib/i18n"
 
 export async function getStaticPaths() {
@@ -21,18 +21,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props
 const locale = Astro.params.locale as Locale
 const canonical = `/blog/${post.slug}`
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  headline: post.title,
-  description: post.summary,
-  image: `${siteMetadata.siteUrl}${canonical}/opengraph-image`,
-  datePublished: post.publishedAt,
-  dateModified: post.updatedAt,
-  url: `${siteMetadata.siteUrl}${canonical}`,
-  keywords: post.tags?.join(", "),
-  author: { "@type": "Person", name: homeIntroConfig.name, url: siteMetadata.siteUrl },
-}
+const jsonLd = blogPosting(post, `${siteMetadata.siteUrl}${canonical}`)
 ---
 
 <BaseLayout

@@ -7,6 +7,8 @@ const rootDirectory = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   test: {
     environment: "node",
+    // e2e/ holds the Playwright specs, run by `pnpm test:e2e`
+    include: ["tests/**/*.test.ts"],
     globals: true,
     coverage: {
       provider: "v8",

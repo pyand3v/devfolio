@@ -162,10 +162,6 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
     </div>
   </nav>
   {isBlogPost && (
-    <div
-      id="scroll-progress"
-      class="h-1 origin-left scale-x-0 bg-[#88c0d0]"
-      aria-label="Scroll progress"
-    />
+    <div id="scroll-progress" class="h-1 origin-left scale-x-0 bg-[#88c0d0]" aria-hidden="true" />
   )}
 </header>

@@ -45,6 +45,10 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
   },
   integrations: [mdx(), icon(), pagefind()],
+  markdown: {
+    // github-dark (the default) renders comments below the 4.5:1 contrast WCAG AA asks for
+    shikiConfig: { theme: "github-dark-default" },
+  },
   // Emits a CSP <meta> on every page with hashes for the scripts and styles Astro renders, so neither needs
   // 'unsafe-inline'. frame-ancestors can't be set from a <meta>; vercel.json sends it as a header.
   security: {

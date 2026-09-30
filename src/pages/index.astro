@@ -1,23 +1,9 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import HomeLanding from "@/components/HomeLanding.astro"
-import { siteMetadata } from "@/data/site"
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: siteMetadata.author.name,
-  url: siteMetadata.siteUrl,
-  description: siteMetadata.description,
-  jobTitle: "Product Engineer",
-  sameAs: [
-    "https://github.com/pyand3v",
-    "https://www.linkedin.com/in/danielbenitezpy/",
-    "https://twitter.com/pyandev",
-  ],
-}
+import { homeGraph } from "@/lib/structured-data"
 ---
 
-<BaseLayout jsonLd={jsonLd}>
+<BaseLayout jsonLd={homeGraph()}>
   <HomeLanding locale="en" />
 </BaseLayout>
