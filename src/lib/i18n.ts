@@ -12,11 +12,30 @@ export const localeOptions: Array<{ code: Locale; label: string; flag: string }>
 
 export const copy = {
   en: {
-    nav: { home: "Home", work: "Work", projects: "Projects", blog: "Blog", byo: "BYO" },
+    nav: {
+      home: "Home",
+      work: "Work",
+      projects: "Projects",
+      blog: "Blog",
+      byo: "BYO",
+      search: "Search",
+    },
     footer: {
       description: "Product engineering for useful software people love to use.",
       explore: "Explore",
       findMe: "Find me",
+    },
+    search: {
+      eyebrow: "Search",
+      title: "Find it\nfast.",
+      description: "Search blog posts, work, projects and Build Your Own lessons.",
+      label: "Search the site",
+      placeholder: "Try “concurrency” or “system design”",
+      loading: "Searching…",
+      result: "result for",
+      results: "results for",
+      empty: "No results for",
+      unavailable: "Search couldn’t load. Please try again later.",
     },
     home: {
       eyebrow: "Independent by design · Paraguay",
@@ -35,11 +54,54 @@ export const copy = {
       notesTitle: "Notes on making\nuseful things.",
       readBlog: "Read the blog",
     },
+    untranslated: {
+      notice: "This article isn’t available in your language yet, so it’s shown in English.",
+      link: "Open the English version",
+    },
     work: {
       eyebrow: "01 · Career",
       title: "Work that\nships.",
       description:
         "Selected roles turning customer needs and business goals into thoughtful product experiences.",
+    },
+    pages: {
+      blogDescription:
+        "Read my latest blog posts about software development, technology, and more.",
+      projectsDescription: "Browse my portfolio of projects, side projects, and technical work.",
+      workDescription: "Explore my professional work experience and career journey.",
+      byoTitle: "Build Your Own",
+      byoDescription: "Practical build-alongs for making useful digital products.",
+    },
+    tag: {
+      title: "Posts tagged",
+      description: "Posts about",
+      back: "Back to blog",
+      eyebrow: "Tag archive",
+      countOne: "article filed under this topic.",
+      countOther: "articles filed under this topic.",
+    },
+    notFound: {
+      title: "Page not found",
+      description: "The page you requested does not exist.",
+      body: "The page you requested does not exist or may have moved.",
+      home: "Back home",
+    },
+    detail: {
+      backToWork: "Back to Work",
+      backToProjects: "Back to Projects",
+      techStack: "Tech Stack",
+      teamSize: "Team Size",
+      role: "Role",
+      github: "View on GitHub",
+      paper: "Read Paper",
+    },
+    a11y: {
+      mainNav: "Main navigation",
+      mobileNav: "Mobile navigation",
+      toggleNav: "Toggle navigation",
+      onThisPage: "On this page",
+      toc: "Table of contents",
+      lessonNav: "Lesson navigation",
     },
     projects: {
       eyebrow: "02 · Selected builds",
@@ -53,14 +115,40 @@ export const copy = {
       description:
         "Practical notes on product thinking, delivery, and the engineering behind great experiences.",
     },
+    article: {
+      back: "Back to Blog",
+      related: "Other posts that might interest you",
+      minRead: "min read",
+      read: "Read article",
+      tags: "Article tags",
+    },
   },
   es: {
-    nav: { home: "Inicio", work: "Trabajo", projects: "Proyectos", blog: "Blog", byo: "BYO" },
+    nav: {
+      home: "Inicio",
+      work: "Trabajo",
+      projects: "Proyectos",
+      blog: "Blog",
+      byo: "BYO",
+      search: "Buscar",
+    },
     footer: {
       description:
         "Ingeniería de producto para crear software útil que las personas disfrutan usar.",
       explore: "Explorar",
       findMe: "Encuéntrame",
+    },
+    search: {
+      eyebrow: "Buscar",
+      title: "Encuéntralo\nrápido.",
+      description: "Busca artículos, trabajo, proyectos y lecciones de Build Your Own.",
+      label: "Buscar en el sitio",
+      placeholder: "Prueba con “concurrencia” o “diseño de sistemas”",
+      loading: "Buscando…",
+      result: "resultado para",
+      results: "resultados para",
+      empty: "No hay resultados para",
+      unavailable: "No se pudo cargar la búsqueda. Inténtalo de nuevo más tarde.",
     },
     home: {
       eyebrow: "Independiente por diseño · Paraguay",
@@ -80,11 +168,54 @@ export const copy = {
       notesTitle: "Ideas para crear\ncosas útiles.",
       readBlog: "Leer el blog",
     },
+    untranslated: {
+      notice: "Este artículo todavía no está traducido al español, así que se muestra en inglés.",
+      link: "Ver la versión en inglés",
+    },
     work: {
       eyebrow: "01 · Carrera",
       title: "Trabajo que\nllega a producción.",
       description:
         "Roles seleccionados transformando necesidades de clientes y objetivos de negocio en experiencias de producto.",
+    },
+    pages: {
+      blogDescription: "Lee mis últimos artículos sobre desarrollo de software, tecnología y más.",
+      projectsDescription:
+        "Explora mi portafolio de proyectos, proyectos personales y trabajo técnico.",
+      workDescription: "Conoce mi experiencia profesional y mi trayectoria.",
+      byoTitle: "Build Your Own",
+      byoDescription: "Guías prácticas para construir productos digitales útiles.",
+    },
+    tag: {
+      title: "Artículos sobre",
+      description: "Artículos sobre",
+      back: "Volver al blog",
+      eyebrow: "Archivo de temas",
+      countOne: "artículo sobre este tema.",
+      countOther: "artículos sobre este tema.",
+    },
+    notFound: {
+      title: "Página no encontrada",
+      description: "La página que buscas no existe.",
+      body: "La página que buscas no existe o puede haberse movido.",
+      home: "Volver al inicio",
+    },
+    detail: {
+      backToWork: "Volver a Trabajo",
+      backToProjects: "Volver a Proyectos",
+      techStack: "Tecnologías",
+      teamSize: "Tamaño del equipo",
+      role: "Rol",
+      github: "Ver en GitHub",
+      paper: "Leer el artículo",
+    },
+    a11y: {
+      mainNav: "Navegación principal",
+      mobileNav: "Navegación móvil",
+      toggleNav: "Abrir o cerrar la navegación",
+      onThisPage: "En esta página",
+      toc: "Índice",
+      lessonNav: "Navegación entre lecciones",
     },
     projects: {
       eyebrow: "02 · Proyectos seleccionados",
@@ -98,13 +229,39 @@ export const copy = {
       description:
         "Notas prácticas sobre producto, entrega y la ingeniería detrás de grandes experiencias.",
     },
+    article: {
+      back: "Volver al blog",
+      related: "Otros artículos que podrían interesarte",
+      minRead: "min de lectura",
+      read: "Leer artículo",
+      tags: "Etiquetas del artículo",
+    },
   },
   "pt-br": {
-    nav: { home: "Início", work: "Trabalho", projects: "Projetos", blog: "Blog", byo: "BYO" },
+    nav: {
+      home: "Início",
+      work: "Trabalho",
+      projects: "Projetos",
+      blog: "Blog",
+      byo: "BYO",
+      search: "Buscar",
+    },
     footer: {
       description: "Engenharia de produto para criar software útil que as pessoas adoram usar.",
       explore: "Explorar",
       findMe: "Encontre-me",
+    },
+    search: {
+      eyebrow: "Buscar",
+      title: "Encontre\nrápido.",
+      description: "Pesquise artigos, trabalho, projetos e lições do Build Your Own.",
+      label: "Pesquisar no site",
+      placeholder: "Experimente “concorrência” ou “design de sistemas”",
+      loading: "Buscando…",
+      result: "resultado para",
+      results: "resultados para",
+      empty: "Nenhum resultado para",
+      unavailable: "Não foi possível carregar a busca. Tente novamente mais tarde.",
     },
     home: {
       eyebrow: "Independente por design · Paraguai",
@@ -124,11 +281,55 @@ export const copy = {
       notesTitle: "Ideias para criar\ncoisas úteis.",
       readBlog: "Ler o blog",
     },
+    untranslated: {
+      notice: "Este artigo ainda não foi traduzido para o português, por isso aparece em inglês.",
+      link: "Ver a versão em inglês",
+    },
     work: {
       eyebrow: "01 · Carreira",
       title: "Trabalho que\nchega à produção.",
       description:
         "Funções selecionadas transformando necessidades de clientes e objetivos de negócio em experiências de produto.",
+    },
+    pages: {
+      blogDescription:
+        "Leia meus artigos mais recentes sobre desenvolvimento de software, tecnologia e mais.",
+      projectsDescription:
+        "Explore meu portfólio de projetos, projetos pessoais e trabalho técnico.",
+      workDescription: "Conheça minha experiência profissional e minha trajetória.",
+      byoTitle: "Build Your Own",
+      byoDescription: "Guias práticos para construir produtos digitais úteis.",
+    },
+    tag: {
+      title: "Artigos sobre",
+      description: "Artigos sobre",
+      back: "Voltar ao blog",
+      eyebrow: "Arquivo de temas",
+      countOne: "artigo sobre este tema.",
+      countOther: "artigos sobre este tema.",
+    },
+    notFound: {
+      title: "Página não encontrada",
+      description: "A página que você procura não existe.",
+      body: "A página que você procura não existe ou pode ter sido movida.",
+      home: "Voltar ao início",
+    },
+    detail: {
+      backToWork: "Voltar a Trabalho",
+      backToProjects: "Voltar a Projetos",
+      techStack: "Tecnologias",
+      teamSize: "Tamanho da equipe",
+      role: "Função",
+      github: "Ver no GitHub",
+      paper: "Ler o artigo",
+    },
+    a11y: {
+      mainNav: "Navegação principal",
+      mobileNav: "Navegação móvel",
+      toggleNav: "Abrir ou fechar a navegação",
+      onThisPage: "Nesta página",
+      toc: "Sumário",
+      lessonNav: "Navegação entre lições",
     },
     projects: {
       eyebrow: "02 · Projetos selecionados",
@@ -141,6 +342,13 @@ export const copy = {
       title: "Ideias em\npúblico.",
       description:
         "Notas práticas sobre produto, entrega e a engenharia por trás de grandes experiências.",
+    },
+    article: {
+      back: "Voltar ao blog",
+      related: "Outros artigos que podem interessar você",
+      minRead: "min de leitura",
+      read: "Ler artigo",
+      tags: "Tags do artigo",
     },
   },
 } as const
@@ -161,7 +369,7 @@ export const getLocaleSwitchPath = (pathname: string, locale: Locale) => {
   const segments = pathname.split("/").filter(Boolean)
   if (locales.includes(segments[0] as Locale)) segments.shift()
   const topLevel = segments[0]
-  if (topLevel === "blog" || topLevel === "byo")
+  if (topLevel === "blog" || topLevel === "byo" || topLevel === "search")
     return getLocalizedPath(`/${segments.join("/")}`, locale)
   const supported = topLevel === "work" || topLevel === "projects"
   return getLocalizedPath(supported ? `/${topLevel}` : "/", locale)

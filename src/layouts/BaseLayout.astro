@@ -8,9 +8,12 @@ import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import { siteMetadata } from "@/data/site"
 import { getLocaleFromPathname } from "@/lib/i18n"
+import { rssPath, rssTitle } from "@/lib/rss"
 import Analytics from "@vercel/analytics/astro"
 import SpeedInsights from "@vercel/speed-insights/astro"
 import localeRedirect from "@/scripts/locale-redirect.js?raw"
+import { locales, type Locale } from "@/lib/i18n"
+import { languageAlternates, logicalPath, trimTrailingSlash } from "@/lib/seo"
 
 interface Props {
   title?: string
@@ -23,6 +26,12 @@ interface Props {
   pageSubtitle?: string
   isBlogPost?: boolean
   jsonLd?: object
+  /**
+   * The locales this page exists in, for its hreflang links: at the same path, with each locale's prefix.
+   * Defaults to every locale. Pass [] for pages that aren't translated, such as English-only pages or a
+   * page showing the English text for lack of a translation.
+   */
+  translations?: readonly Locale[]
 }
 
 const {
@@ -33,17 +42,24 @@ const {
   noIndex = false,
   isBlogPost,
   jsonLd,
+  translations = locales,
 } = Astro.props
 const fullTitle = title ? `${title} | ${siteMetadata.title}` : siteMetadata.title
-const url = new URL(canonical, siteMetadata.siteUrl).toString()
+const canonicalPath = trimTrailingSlash(canonical)
+const url = new URL(canonicalPath, siteMetadata.siteUrl).toString()
 const locale = getLocaleFromPathname(Astro.url.pathname)
+// Open Graph images are only rendered for the unprefixed routes, which translations share
+const sharedPath = logicalPath(canonicalPath)
 const socialImage =
   ogImage === null
     ? null
     : new URL(
-        ogImage ?? `${canonical === "/" ? "" : canonical}/opengraph-image`,
+        ogImage ?? `${sharedPath === "/" ? "" : sharedPath}/opengraph-image`,
         siteMetadata.siteUrl
       ).toString()
+const alternates = noIndex
+  ? []
+  : languageAlternates(canonicalPath, translations, siteMetadata.siteUrl)
 ---
 
 <!doctype html>
@@ -67,8 +83,8 @@ const socialImage =
     <link
       rel="alternate"
       type="application/rss+xml"
-      title={`${siteMetadata.title} RSS`}
-      href="/rss.xml"
+      title={`${rssTitle(siteMetadata.title, locale)} RSS`}
+      href={rssPath(locale)}
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
@@ -89,6 +105,9 @@ const socialImage =
     <meta name="twitter:description" content={description} />
     {socialImage && <meta name="twitter:image" content={socialImage} />}
     <title>{fullTitle}</title>
+    {alternates.map(alternate => (
+      <link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />
+    ))}
     {jsonLd && (
       <script
         is:inline

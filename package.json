@@ -1,11 +1,10 @@
 {
   "name": "devfolio",
-  "version": "0.24.0",
   "type": "module",
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run content:check && astro build",
+    "build": "pnpm content:check && astro build",
     "content:check": "node scripts/content-check.mjs",
     "content": "node scripts/content.mjs",
     "links:check": "node scripts/check-links.mjs",
@@ -22,10 +21,11 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
     "prepare": "husky"
   },
   "dependencies": {
-    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/mdx": "^8.0.2",
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource/gabarito": "^5.3.0",
     "@iconify-json/bi": "^1.2.7",
@@ -50,6 +50,8 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/typography": "^0.5.20",
     "@types/node": "26.6.3",
     "@vitest/coverage-v8": "4.1.11",
@@ -59,6 +61,7 @@
     "happy-dom": "20.14.5",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
+    "pagefind": "1.5.2",
     "prettier": "3.9.9",
     "prettier-plugin-astro": "^1.1.0",
     "schema-dts": "2.0.0",

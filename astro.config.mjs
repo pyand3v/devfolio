@@ -12,6 +12,31 @@ const site = process.env.PUBLIC_SITE_URL ?? "https://nextjs-portofolio-website.v
 const localeRedirect = readFileSync(new URL("./src/scripts/locale-redirect.js", import.meta.url))
 const localeRedirectHash = `sha256-${createHash("sha256").update(localeRedirect).digest("base64")}`
 
+/**
+ * Indexes the built pages with Pagefind once the build is done, for the static search at /search. Only
+ * elements marked data-pagefind-body are indexed (blog posts, work, projects and BYO), with one index per
+ * <html lang>.
+ * @returns {import("astro").AstroIntegration}
+ */
+const pagefind = () => ({
+  name: "pagefind",
+  hooks: {
+    "astro:build:done": async ({ dir, logger }) => {
+      const { createIndex, close } = await import("pagefind")
+      const { index, errors } = await createIndex()
+      if (!index) throw new Error(`Pagefind: ${errors.join("\n")}`)
+      const added = await index.addDirectory({ path: fileURLToPath(dir) })
+      if (added.errors.length) throw new Error(`Pagefind: ${added.errors.join("\n")}`)
+      const written = await index.writeFiles({
+        outputPath: fileURLToPath(new URL("pagefind/", dir)),
+      })
+      if (written.errors.length) throw new Error(`Pagefind: ${written.errors.join("\n")}`)
+      await close()
+      logger.info(`Indexed ${added.page_count} pages for search`)
+    },
+  },
+})
+
 export default defineConfig({
   site,
   i18n: {
@@ -19,7 +44,11 @@ export default defineConfig({
     locales: ["en", "es", "pt-br"],
     routing: { prefixDefaultLocale: false },
   },
-  integrations: [mdx(), icon()],
+  integrations: [mdx(), icon(), pagefind()],
+  markdown: {
+    // github-dark (the default) renders comments below the 4.5:1 contrast WCAG AA asks for
+    shikiConfig: { theme: "github-dark-default" },
+  },
   // Emits a CSP <meta> on every page with hashes for the scripts and styles Astro renders, so neither needs
   // 'unsafe-inline'. frame-ancestors can't be set from a <meta>; vercel.json sends it as a header.
   security: {
@@ -35,7 +64,8 @@ export default defineConfig({
         "upgrade-insecure-requests",
       ],
       scriptDirective: {
-        resources: ["'self'", "https://va.vercel-scripts.com"],
+        // Pagefind's search runs as WebAssembly
+        resources: ["'self'", "https://va.vercel-scripts.com", "'wasm-unsafe-eval'"],
         hashes: [localeRedirectHash],
       },
       styleDirective: {

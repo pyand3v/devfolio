@@ -1,26 +1,36 @@
 ---
 import { Icon } from "astro-icon/components"
 import BaseLayout from "@/layouts/BaseLayout.astro"
+import { copy, locales } from "@/lib/i18n"
+
+// One 404.html answers for every locale, so it carries each translation and src/scripts/not-found.ts
+// shows the visitor's
+const labels = copy.en.notFound
 ---
 
-<BaseLayout
-  title="Page not found"
-  description="The page you requested does not exist."
-  noIndex
-  ogImage={null}
->
+<BaseLayout title={labels.title} description={labels.description} noIndex ogImage={null}>
   <section class="mx-auto max-w-xl px-4 py-16 text-center">
     <Icon name="lucide:circle-alert" class="mx-auto mb-5 size-14 text-accent-500" />
-    <h1 class="mb-3 text-3xl font-bold">Page not found</h1>
-    <p class="mb-8 text-gray-600 dark:text-gray-300">
-      The page you requested does not exist or may have moved.
-    </p>
-    <a
-      href="/"
-      class="inline-flex items-center gap-2 rounded-lg bg-accent-600 px-4 py-2 font-semibold text-white transition hover:bg-accent-700"
-    >
-      <Icon name="lucide:arrow-left" class="size-4" />
-      Back home
-    </a>
+    {locales.map(locale => (
+      <div
+        data-not-found={locale}
+        data-title={copy[locale].notFound.title}
+        lang={locale}
+        hidden={locale !== "en"}
+      >
+        <h1 class="mb-3 text-3xl font-bold">{copy[locale].notFound.title}</h1>
+        <p class="mb-8 text-gray-600 dark:text-gray-300">{copy[locale].notFound.body}</p>
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 rounded-lg bg-accent-600 px-4 py-2 font-semibold text-white transition hover:bg-accent-700"
+        >
+          <Icon name="lucide:arrow-left" class="size-4" />
+          {copy[locale].notFound.home}
+        </a>
+      </div>
+    ))}
   </section>
 </BaseLayout>
+<script>
+  import "@/scripts/not-found"
+</script>

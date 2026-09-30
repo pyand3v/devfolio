@@ -39,11 +39,13 @@ const blogFilterCopy = {
     label: "Filter by topic",
     all: "All articles",
     clear: "Clear all",
+    selectedOne: "topic selected",
     selected: "topics selected",
     selectedTopics: "Selected topics",
     search: "Search topics...",
     noMatches: "No topics found.",
     remove: "Remove",
+    result: "article shown",
     results: "articles shown",
     empty: "No articles found for this topic.",
   },
@@ -51,11 +53,13 @@ const blogFilterCopy = {
     label: "Filtrar por tema",
     all: "Todos los art\u00edculos",
     clear: "Limpiar todo",
+    selectedOne: "tema seleccionado",
     selected: "temas seleccionados",
     selectedTopics: "Temas seleccionados",
     search: "Buscar temas...",
     noMatches: "No se encontraron temas.",
     remove: "Quitar",
+    result: "art\u00edculo mostrado",
     results: "art\u00edculos mostrados",
     empty: "No se encontraron art\u00edculos sobre este tema.",
   },
@@ -63,11 +67,13 @@ const blogFilterCopy = {
     label: "Filtrar por tema",
     all: "Todos os artigos",
     clear: "Limpar tudo",
+    selectedOne: "tema selecionado",
     selected: "temas selecionados",
     selectedTopics: "Temas selecionados",
     search: "Buscar temas...",
     noMatches: "Nenhum tema encontrado.",
     remove: "Remover",
+    result: "artigo exibido",
     results: "artigos exibidos",
     empty: "Nenhum artigo encontrado para este tema.",
   },
@@ -117,7 +123,7 @@ const blogFilterCopy = {
               <p class="text-xs font-black tracking-[0.18em] text-[#8fbcbb] uppercase">
                 {blogFilterCopy.label}
               </p>
-              <p class="blog-filter-count text-xs font-bold text-white/45" aria-live="polite" />
+              <p class="blog-filter-count text-xs font-bold text-white/65" aria-live="polite" />
             </div>
             <details class="blog-filter-menu group relative w-full sm:w-auto">
               <summary class="flex cursor-pointer list-none items-center justify-between gap-3 border border-white/25 bg-white/[0.04] px-4 py-2.5 font-mono text-xs font-bold tracking-[0.13em] text-white uppercase transition hover:border-[#88c0d0] hover:text-[#88c0d0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#88c0d0] sm:min-w-60">
@@ -126,6 +132,7 @@ const blogFilterCopy = {
                   <span
                     class="blog-filter-summary"
                     data-all-label={blogFilterCopy.all}
+                    data-selected-one-label={blogFilterCopy.selectedOne}
                     data-selected-label={blogFilterCopy.selected}
                   >
                     {blogFilterCopy.all}
@@ -155,7 +162,7 @@ const blogFilterCopy = {
                   data-remove-label={blogFilterCopy.remove}
                 >
                   <div class="flex items-start gap-3">
-                    <p class="mt-1 text-[0.65rem] font-black tracking-[0.13em] text-white/45 uppercase">
+                    <p class="mt-1 text-[0.65rem] font-black tracking-[0.13em] text-white/65 uppercase">
                       {blogFilterCopy.selectedTopics}
                     </p>
                     <div class="blog-filter-selected flex flex-wrap gap-1.5" />
@@ -190,7 +197,7 @@ const blogFilterCopy = {
                       </div>
                     </section>
                   ))}
-                  <p class="blog-filter-no-matches hidden px-2 py-6 text-center text-sm text-white/45">
+                  <p class="blog-filter-no-matches hidden px-2 py-6 text-center text-sm text-white/65">
                     {blogFilterCopy.noMatches}
                   </p>
                 </div>
@@ -208,6 +215,7 @@ const blogFilterCopy = {
         </section>
         <div
           class="blog-post-grid mt-7 grid gap-5 lg:grid-cols-2"
+          data-result-label={blogFilterCopy.result}
           data-results-label={blogFilterCopy.results}
         >
           {posts.map(post => (

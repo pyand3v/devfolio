@@ -42,7 +42,7 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
     <a
       href={getLocalizedPath("/", locale)}
       class="flex items-center gap-3"
-      aria-label="Daniel Benitez home"
+      aria-label={`${homeIntroConfig.name}, ${labels.nav.home}`}
     >
       <span class="grid size-10 place-items-center border-2 border-[#88c0d0] text-sm font-black tracking-tighter">
         {initials}
@@ -53,7 +53,7 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
         Benitez
       </span>
     </a>
-    <nav class="hidden items-center gap-9 md:flex" aria-label="Main navigation">
+    <nav class="hidden items-center gap-9 md:flex" aria-label={labels.a11y.mainNav}>
       {navigation.map(item => (
         <a
           href={getLocalizedPath(item.path, locale)}
@@ -69,6 +69,14 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
       ))}
     </nav>
     <div class="flex items-center gap-3">
+      <a
+        href={getLocalizedPath("/search", locale)}
+        aria-label={labels.nav.search}
+        aria-current={activePath === "/search" ? "page" : undefined}
+        class="hidden size-11 items-center justify-center border border-[#4c566a] bg-[#3b4252] text-[#eceff4] transition hover:border-[#88c0d0] hover:bg-[#434c5e] md:inline-flex"
+      >
+        <Icon name="lucide:search" class="size-4" />
+      </a>
       <details class="group relative hidden md:block">
         <summary class="flex cursor-pointer list-none items-center gap-2 border border-[#4c566a] bg-[#3b4252] px-3.5 py-2.5 text-sm font-black text-[#eceff4] transition hover:border-[#88c0d0] hover:bg-[#434c5e] [&::-webkit-details-marker]:hidden">
           <LanguageFlag locale={activeLocale.code} />
@@ -97,7 +105,7 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
       <button
         id="mobile-menu-toggle"
         class="inline-flex size-11 items-center justify-center border border-white/30 text-white transition hover:border-[#88c0d0] md:hidden"
-        aria-label="Toggle navigation"
+        aria-label={labels.a11y.toggleNav}
         aria-expanded="false"
       >
         <Icon name="lucide:menu" class="size-5" />
@@ -107,7 +115,7 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
   <nav
     id="mobile-menu"
     class="hidden border-t border-white/15 px-5 py-4 md:hidden"
-    aria-label="Mobile navigation"
+    aria-label={labels.a11y.mobileNav}
   >
     <div class="flex flex-col gap-1">
       <a
@@ -119,7 +127,7 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
       >
         {labels.nav.home}
       </a>
-      {navigation.map(item => (
+      {[...navigation, { key: "search", path: "/search" } as const].map(item => (
         <a
           href={getLocalizedPath(item.path, locale)}
           class:list={[
@@ -154,10 +162,6 @@ const activeLocale = localeOptions.find(option => option.code === locale) ?? loc
     </div>
   </nav>
   {isBlogPost && (
-    <div
-      id="scroll-progress"
-      class="h-1 origin-left scale-x-0 bg-[#88c0d0]"
-      aria-label="Scroll progress"
-    />
+    <div id="scroll-progress" class="h-1 origin-left scale-x-0 bg-[#88c0d0]" aria-hidden="true" />
   )}
 </header>

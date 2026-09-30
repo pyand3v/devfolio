@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest"
+import fs from "node:fs"
+import { describe, it, expect, vi } from "vitest"
 import { createOgImage } from "@/lib/og"
 
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]
@@ -40,5 +41,16 @@ describe("createOgImage", () => {
     ])
     expect(rose.bytes).not.toEqual(blue.bytes)
     expect(unknown.bytes).toEqual(blue.bytes)
+  })
+
+  it("reads the font once for every image", async () => {
+    vi.resetModules()
+    const readFileSync = vi.spyOn(fs, "readFileSync")
+    const { createOgImage: create } = await import("@/lib/og")
+    await create("One", "Blog")
+    await create("Two", "Blog")
+    const fontReads = readFileSync.mock.calls.filter(([file]) => String(file).endsWith(".woff"))
+    expect(fontReads).toHaveLength(1)
+    readFileSync.mockRestore()
   })
 })

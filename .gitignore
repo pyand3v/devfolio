@@ -13,6 +13,8 @@
 # testing
 /coverage
 /.lighthouseci/
+/playwright-report/
+/test-results/
 
 # Astro
 /.astro/

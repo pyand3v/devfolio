@@ -2,7 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import ByoCatalog from "@/components/ByoCatalog.astro"
 import { getAllByoProjects } from "@/lib/content"
-import { locales, type Locale } from "@/lib/i18n"
+import { copy, locales, type Locale } from "@/lib/i18n"
 export async function getStaticPaths() {
   return Promise.all(
     locales
@@ -20,9 +20,9 @@ const { bundles, locale } = Astro.props as {
 ---
 
 <BaseLayout
-  title="BYO"
-  description="Practical build-alongs for making useful digital products."
-  canonical="/byo"
+  title={copy[locale].pages.byoTitle}
+  description={copy[locale].pages.byoDescription}
+  canonical={`/${locale}/byo`}
 >
   <ByoCatalog bundles={bundles} locale={locale} />
 </BaseLayout>

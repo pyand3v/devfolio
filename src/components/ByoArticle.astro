@@ -4,7 +4,7 @@ import { Icon } from "astro-icon/components"
 import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
 import type { ByoExercise, ByoGuide, ByoLesson, ByoProjectBundle } from "@/lib/content"
 import type { Locale } from "@/lib/i18n"
-import { getLocalizedPath } from "@/lib/i18n"
+import { copy as uiCopy, getLocalizedPath } from "@/lib/i18n"
 interface Props {
   bundle: ByoProjectBundle
   entry: ByoLesson | ByoGuide | ByoExercise
@@ -58,8 +58,13 @@ const label =
 ---
 
 <section class="portfolio-dark-grid min-h-screen text-white">
-  <article class="mx-auto max-w-6xl px-5 py-10 lg:px-8 lg:py-16">
+  <article
+    class="mx-auto max-w-6xl px-5 py-10 lg:px-8 lg:py-16"
+    data-pagefind-body
+    data-pagefind-meta={`section:BYO · ${bundle.project.data.title}`}
+  >
     <a
+      data-pagefind-ignore
       href={getLocalizedPath(`/byo/${bundle.project.data.slug}`, locale)}
       class="inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[.12em] text-[#8fbcbb] uppercase hover:text-white"
     >
@@ -93,8 +98,9 @@ const label =
         </div>
         {isLesson && (
           <nav
+            data-pagefind-ignore
             class="mt-14 grid gap-4 border-t border-white/20 pt-6 sm:grid-cols-2"
-            aria-label="Lesson navigation"
+            aria-label={uiCopy[locale].a11y.lessonNav}
           >
             {previous ? (
               <a
