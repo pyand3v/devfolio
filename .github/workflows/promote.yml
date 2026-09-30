@@ -45,8 +45,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          number=$(gh pr list --base main --head preview --state open --json number --jq '.[0].number')
+
+          # E.g. a revert made preview identical to main again: a leftover promotion PR would be empty
           if git diff --quiet origin/main HEAD; then
             echo "preview matches main; nothing to promote"
+            if [ -n "$number" ]; then
+              gh pr close "$number" --comment "Closing: \`preview\` matches \`main\`, so there's nothing to promote."
+            fi
             exit 0
           fi
 
@@ -61,7 +67,6 @@ jobs:
             echo '_Opened and kept up to date by the Promote workflow._'
           )
 
-          number=$(gh pr list --base main --head preview --state open --json number --jq '.[0].number')
           if [ -z "$number" ]; then
             url=$(gh pr create --base main --head preview --title "chore: promote preview to main" --body "$body")
             number="${url##*/}"
