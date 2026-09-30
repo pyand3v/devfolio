@@ -81,9 +81,11 @@ The `@/` import alias maps to `src/`.
   environment; `main` is production. Never commit or push directly to either: both are protected (a PR plus
   passing Lint & Format, Tests and Build checks), and only admins may bypass that. Work on a branch
   (`feat/…`, `fix/…`, `chore/…`, `docs/…`, or the branch your session was started on) and open a PR against
-  `preview` (squash merge). Once `preview` looks good on its Vercel deployment, open a `preview` → `main` PR
-  titled `chore: promote preview to main` and merge it with a merge commit (not squash, or the two
-  branches' histories diverge). The Promotion Source check rejects PRs into `main` from any other branch.
+  `preview` (squash merge). The **Promote** workflow then keeps a `chore: promote preview to main` PR open
+  that lists what production is missing. Releasing is merging that PR, with a merge commit (not squash, or
+  the two branches' histories diverge), once `preview` looks good on its Vercel deployment. Don't open
+  promotion PRs by hand. The Promotion Source check rejects PRs into `main` from any other branch. After a
+  release `main` has one merge commit `preview` lacks; that's expected and needs no sync.
 - PR titles follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): summary`,
   with a lowercase imperative summary, no trailing period, ideally under 72 characters (e.g.
   `feat(blog): add tag filter`, `fix(i18n): translate 404 page`, `chore(deps): bump astro`). Types: `feat`,
