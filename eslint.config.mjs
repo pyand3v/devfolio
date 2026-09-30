@@ -8,6 +8,8 @@ const eslintConfig = defineConfig([
   prettier,
   globalIgnores([
     "dist/**",
+    "playwright-report/**",
+    "test-results/**",
     ".astro/**",
     ".next/**",
     "node_modules/**",
