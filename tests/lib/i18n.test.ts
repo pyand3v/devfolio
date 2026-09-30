@@ -75,6 +75,10 @@ describe("getLocaleSwitchPath", () => {
     expect(getLocaleSwitchPath("/byo/project/lesson-01", "es")).toBe("/byo/project/lesson-01")
   })
 
+  it("stays on the search page", () => {
+    expect(getLocaleSwitchPath("/es/search", "pt-br")).toBe("/search")
+  })
+
   it("goes to the section index for work and projects detail pages", () => {
     expect(getLocaleSwitchPath("/work/acme", "es")).toBe("/work")
     expect(getLocaleSwitchPath("/pt-br/projects/app", "en")).toBe("/projects")

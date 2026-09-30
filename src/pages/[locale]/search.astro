@@ -1,0 +1,20 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import SearchPage from "@/components/SearchPage.astro"
+import { copy, locales, type Locale } from "@/lib/i18n"
+
+export function getStaticPaths() {
+  return locales.filter(locale => locale !== "en").map(locale => ({ params: { locale } }))
+}
+
+const locale = Astro.params.locale as Locale
+---
+
+<BaseLayout
+  title={copy[locale].search.eyebrow}
+  description={copy[locale].search.description}
+  ogImage="/opengraph-image"
+  noIndex
+>
+  <SearchPage locale={locale} />
+</BaseLayout>

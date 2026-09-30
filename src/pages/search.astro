@@ -1,0 +1,14 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import SearchPage from "@/components/SearchPage.astro"
+import { copy } from "@/lib/i18n"
+---
+
+<BaseLayout
+  title={copy.en.search.eyebrow}
+  description={copy.en.search.description}
+  ogImage="/opengraph-image"
+  noIndex
+>
+  <SearchPage locale="en" />
+</BaseLayout>
