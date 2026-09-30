@@ -62,7 +62,23 @@ export async function createOgImage(title: string, subtitle: string, theme = "bl
               fontSize: "28px",
               fontWeight: 700,
             },
-            children: ["●", subtitle],
+            children: [
+              // Drawn rather than typed: the Latin subset of Gabarito has no "●" (U+25CF) glyph
+              {
+                type: "div",
+                props: {
+                  style: {
+                    display: "flex",
+                    width: "18px",
+                    height: "18px",
+                    borderRadius: "999px",
+                    background: colors.accent,
+                  },
+                  children: [],
+                },
+              },
+              subtitle,
+            ],
           },
         },
         {

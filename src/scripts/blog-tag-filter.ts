@@ -9,8 +9,9 @@ const selected = document.querySelector<HTMLElement>(".blog-filter-selected")
 const groups = [...document.querySelectorAll<HTMLElement>("[data-tag-group]")]
 const noMatches = document.querySelector<HTMLElement>(".blog-filter-no-matches")
 const clear = document.querySelector<HTMLButtonElement>(".blog-filter-clear")
-const resultsLabel =
-  document.querySelector<HTMLElement>(".blog-post-grid")?.dataset.resultsLabel ?? "articles shown"
+const grid = document.querySelector<HTMLElement>(".blog-post-grid")
+const resultsLabel = grid?.dataset.resultsLabel ?? "articles shown"
+const resultLabel = grid?.dataset.resultLabel ?? resultsLabel
 
 if (filters.length && posts.length) {
   const selectedTags = () =>
@@ -35,9 +36,9 @@ if (filters.length && posts.length) {
     renderDraft()
     if (summary)
       summary.textContent = tags.length
-        ? `${tags.length} ${summary.dataset.selectedLabel}`
+        ? `${tags.length} ${(tags.length === 1 && summary.dataset.selectedOneLabel) || summary.dataset.selectedLabel}`
         : (summary.dataset.allLabel ?? "All articles")
-    if (count) count.textContent = `${visible} ${resultsLabel}`
+    if (count) count.textContent = `${visible} ${visible === 1 ? resultLabel : resultsLabel}`
     empty?.classList.toggle("hidden", visible !== 0)
   }
 

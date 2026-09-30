@@ -11,6 +11,7 @@ import {
   getReadingTime,
   diceCoefficient,
   getClosestTagPosts,
+  getRelatedPosts,
   filterByValues,
   filterBlogPosts,
   sortBlogPosts,
@@ -1012,5 +1013,36 @@ describe("paginateItems", () => {
     const { items: page, totalPages } = paginateItems(items, -1, 3)
     expect(page).toEqual([])
     expect(totalPages).toBe(4)
+  })
+})
+
+describe("getRelatedPosts", () => {
+  const post = (slug: string, tags?: string[]) => ({ slug, tags })
+  const current = post("current", ["Java", "concurrency"])
+
+  it("ranks shared tags above a shared tag group, and skips the post itself", () => {
+    const posts = [
+      current,
+      post("same-group", ["jvm"]),
+      post("one-tag", ["java", "spring"]),
+      post("two-tags", ["concurrency", "java"]),
+    ]
+    expect(getRelatedPosts(current, posts).map(item => item.slug)).toEqual([
+      "two-tags",
+      "one-tag",
+      "same-group",
+    ])
+  })
+
+  it("leaves out posts with nothing in common, or without tags", () => {
+    const posts = [post("css", ["css"]), post("untagged"), post("jvm", ["threads"])]
+    expect(getRelatedPosts(current, posts).map(item => item.slug)).toEqual(["jvm"])
+    expect(getRelatedPosts(post("untagged"), posts)).toEqual([])
+  })
+
+  it("keeps the given order for ties and limits the count", () => {
+    const posts = ["a", "b", "c", "d"].map(slug => post(slug, ["java"]))
+    expect(getRelatedPosts(current, posts).map(item => item.slug)).toEqual(["a", "b", "c"])
+    expect(getRelatedPosts(current, posts, 2)).toHaveLength(2)
   })
 })

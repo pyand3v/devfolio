@@ -22,7 +22,7 @@ const { bundles, locale } = Astro.props as {
 <BaseLayout
   title={copy[locale].pages.byoTitle}
   description={copy[locale].pages.byoDescription}
-  canonical="/byo"
+  canonical={`/${locale}/byo`}
 >
   <ByoCatalog bundles={bundles} locale={locale} />
 </BaseLayout>

@@ -41,7 +41,14 @@ test.describe("locale redirect", () => {
       await expect(page).toHaveURL(/\/blog\/concurrency-in-java$/)
     })
 
-    test("sends a localized URL back to English", async ({ page }) => {
+    test("keeps a localized URL in its language and remembers it", async ({ page }) => {
+      await page.goto("/es/blog")
+      await expect(page.locator("html")).toHaveAttribute("lang", "es")
+      expect(await page.evaluate(() => localStorage.getItem("preferred-locale"))).toBe("es")
+    })
+
+    test("sends a localized URL to a stored choice", async ({ page }) => {
+      await page.addInitScript(() => localStorage.setItem("preferred-locale", "en"))
       await page.goto("/es/blog")
       await expect(page.locator("html")).toHaveAttribute("lang", "en")
       await expect(page).toHaveURL(/\/blog$/)
@@ -64,7 +71,8 @@ test.describe("language switcher", () => {
     await expect(page.locator("html")).toHaveAttribute("lang", "es")
     expect(await page.evaluate(() => localStorage.getItem("preferred-locale"))).toBe("es")
 
-    await page.locator('header nav[aria-label="Main navigation"] a[href="/work"]').click()
+    // The desktop header nav: its label is translated, so find it by the link instead
+    await page.locator('header nav:visible a[href="/work"]').click()
     await expect(page.locator("html")).toHaveAttribute("lang", "es")
     await expect(page).toHaveURL(/\/work$/)
   })
