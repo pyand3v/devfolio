@@ -332,41 +332,6 @@ body {
   background: hsl(215 20% 25%);
 }
 
-/* Blog list density is user-selectable through the compact-list control. */
-[data-collection-items="blog"].collection-compact {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0.75rem;
-}
-
-[data-collection-items="blog"].collection-compact .blog-card {
-  min-height: 0;
-  padding: 1rem 1rem 1rem 1.25rem;
-}
-
-[data-collection-items="blog"].collection-compact .blog-card-topic,
-[data-collection-items="blog"].collection-compact .blog-card-tags,
-[data-collection-items="blog"].collection-compact .blog-card-summary {
-  display: none;
-}
-
-[data-collection-items="blog"].collection-compact .blog-card-meta {
-  margin-top: 0.25rem;
-}
-
-[data-collection-items="blog"].collection-compact .blog-card-cta {
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  margin-top: 0;
-}
-
-@media (max-width: 40rem) {
-  [data-collection-items="blog"].collection-compact .blog-card-cta {
-    position: static;
-    margin-top: 0.75rem;
-  }
-}
-
 /* ─── Print stylesheet ──────────────────────────────────────────────────────
    Forces white-on-black rendering so dark-mode users get readable printouts.
    Hides all navigation chrome and decorative elements.
