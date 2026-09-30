@@ -3,7 +3,7 @@ import { beforeEach, describe, it, expect, vi } from "vitest"
 
 // The markup blog-tag-filter.ts expects, trimmed to what it reads
 const fixture = `
-  <p class="blog-filter-summary" data-all-label="All articles" data-selected-label="selected"></p>
+  <p class="blog-filter-summary" data-all-label="All articles" data-selected-one-label="topic selected" data-selected-label="topics selected"></p>
   <input class="blog-filter-search" />
   <div class="blog-filter-selection hidden" data-remove-label="Remove"><div class="blog-filter-selected"></div></div>
   <div data-tag-group="frontend">
@@ -17,7 +17,7 @@ const fixture = `
   <button class="blog-filter-clear"></button>
   <p class="blog-filter-count"></p>
   <p class="blog-filter-empty hidden"></p>
-  <ul class="blog-post-grid" data-results-label="articles shown">
+  <ul class="blog-post-grid" data-result-label="article shown" data-results-label="articles shown">
     <li class="blog-post-item" data-tags="css|frontend">CSS</li>
     <li class="blog-post-item" data-tags="java|jvm">JVM</li>
     <li class="blog-post-item" data-tags="java">Java</li>
@@ -59,7 +59,8 @@ describe("blog tag filter", () => {
     await load("/blog?tags=jvm")
     expect(visiblePosts()).toEqual(["JVM"])
     expect(filter("jvm").checked).toBe(true)
-    expect($(".blog-filter-summary").textContent).toBe("1 selected")
+    expect($(".blog-filter-summary").textContent).toBe("1 topic selected")
+    expect($(".blog-filter-count").textContent).toBe("1 article shown")
   })
 
   it("filters posts matching any selected tag and records them in the URL", async () => {
@@ -68,6 +69,8 @@ describe("blog tag filter", () => {
     toggle("jvm")
     expect(visiblePosts()).toEqual(["CSS", "JVM"])
     expect(new URL(window.location.href).searchParams.get("tags")).toBe("css,jvm")
+    expect($(".blog-filter-summary").textContent).toBe("2 topics selected")
+    expect($(".blog-filter-count").textContent).toBe("2 articles shown")
     expect($(".blog-filter-selection").classList.contains("hidden")).toBe(false)
     expect([...$(".blog-filter-selected").children].map(chip => chip.textContent)).toEqual([
       "css ×",

@@ -39,11 +39,13 @@ const blogFilterCopy = {
     label: "Filter by topic",
     all: "All articles",
     clear: "Clear all",
+    selectedOne: "topic selected",
     selected: "topics selected",
     selectedTopics: "Selected topics",
     search: "Search topics...",
     noMatches: "No topics found.",
     remove: "Remove",
+    result: "article shown",
     results: "articles shown",
     empty: "No articles found for this topic.",
   },
@@ -51,11 +53,13 @@ const blogFilterCopy = {
     label: "Filtrar por tema",
     all: "Todos los art\u00edculos",
     clear: "Limpiar todo",
+    selectedOne: "tema seleccionado",
     selected: "temas seleccionados",
     selectedTopics: "Temas seleccionados",
     search: "Buscar temas...",
     noMatches: "No se encontraron temas.",
     remove: "Quitar",
+    result: "art\u00edculo mostrado",
     results: "art\u00edculos mostrados",
     empty: "No se encontraron art\u00edculos sobre este tema.",
   },
@@ -63,11 +67,13 @@ const blogFilterCopy = {
     label: "Filtrar por tema",
     all: "Todos os artigos",
     clear: "Limpar tudo",
+    selectedOne: "tema selecionado",
     selected: "temas selecionados",
     selectedTopics: "Temas selecionados",
     search: "Buscar temas...",
     noMatches: "Nenhum tema encontrado.",
     remove: "Remover",
+    result: "artigo exibido",
     results: "artigos exibidos",
     empty: "Nenhum artigo encontrado para este tema.",
   },
@@ -126,6 +132,7 @@ const blogFilterCopy = {
                   <span
                     class="blog-filter-summary"
                     data-all-label={blogFilterCopy.all}
+                    data-selected-one-label={blogFilterCopy.selectedOne}
                     data-selected-label={blogFilterCopy.selected}
                   >
                     {blogFilterCopy.all}
@@ -208,6 +215,7 @@ const blogFilterCopy = {
         </section>
         <div
           class="blog-post-grid mt-7 grid gap-5 lg:grid-cols-2"
+          data-result-label={blogFilterCopy.result}
           data-results-label={blogFilterCopy.results}
         >
           {posts.map(post => (
