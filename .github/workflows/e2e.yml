@@ -1,8 +1,8 @@
 name: E2E
 
 # Runs the Playwright specs in e2e/ in Chromium against the production build, served from dist/ by
-# `astro preview`: axe audits (WCAG 2.2 A/AA) on key pages and open menus, plus keyboard checks for the
-# language switcher and the blog tag filter.
+# `astro preview`: axe audits (WCAG 2.2 A/AA) on key pages and open menus, keyboard checks for the language
+# switcher and the blog tag filter, and smoke tests for the browser scripts in src/scripts/.
 on:
   pull_request:
     branches: [main, preview]

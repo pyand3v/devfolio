@@ -68,8 +68,9 @@ bypass them with `--no-verify`; fix the underlying issue instead.
 - `tests/` — Vitest unit tests (Node environment) for `src/lib`.
 - `docs/SEO.md` — SEO setup notes.
 - `docs/CONTENT.md` — how content is structured and how to write it (CMS, CLI or by hand).
-- `e2e/` — Playwright specs run by `pnpm test:e2e` against the built site: axe accessibility audits and
-  keyboard checks (`playwright.config.ts`).
+- `e2e/` — Playwright specs run by `pnpm test:e2e` against the built site (`playwright.config.ts`): axe
+  accessibility audits and keyboard checks, and smoke tests for `src/scripts/` (locale redirect, language
+  switcher, tag filter, mobile menu, fixed theme).
 
 The `@/` import alias maps to `src/`.
 
