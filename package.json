@@ -48,7 +48,7 @@
     "@tailwindcss/typography": "^0.5.20",
     "@types/node": "26.6.3",
     "@vitest/coverage-v8": "4.1.10",
-    "eslint": "9.39.5",
+    "eslint": "10.11.0",
     "eslint-config-prettier": "10.1.8",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
