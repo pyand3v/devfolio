@@ -1,0 +1,40 @@
+name: Dependabot Auto-merge
+
+# Dependabot PRs into preview merge by themselves (squash) once the required checks pass, except major version
+# updates, which wait for a person. Nothing reaches production until the release PR from Promote is merged.
+#
+# A merge done by auto-merge enabled with GITHUB_TOKEN doesn't trigger push workflows on preview. Promote's
+# daily run picks those merges up: it updates the release PR and dispatches Code Quality and the preview deploy.
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [preview]
+
+permissions: {}
+
+jobs:
+  auto-merge:
+    name: Enable auto-merge
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Read Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # dependabot/fetch-metadata@v3.1.0
+
+      - name: Enable auto-merge for patch and minor updates
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --squash "$PR_URL"
+
+      - name: Leave major updates for review
+        if: steps.metadata.outputs.update-type == 'version-update:semver-major'
+        env:
+          NAMES: ${{ steps.metadata.outputs.dependency-names }}
+        run: echo "::notice::Major update ($NAMES) needs a manual review and merge."
