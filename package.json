@@ -1,6 +1,5 @@
 {
   "name": "devfolio",
-  "version": "0.24.0",
   "type": "module",
   "private": true,
   "scripts": {
