@@ -1,3 +1,5 @@
+[//]: # "Title format: type(scope): summary, e.g. feat(blog): add tag filter. See AGENTS.md."
+
 ## Description
 
 [//]: # "Summarize the change, why it's needed, and link the issue it closes (e.g. Closes #12)."
@@ -6,13 +8,13 @@
 
 [//]: # "Please select one"
 
-- [ ] Feature
-- [ ] Bugfix
-- [ ] Content (blog, work, projects, BYO)
-- [ ] Refactor
-- [ ] Documentation
-- [ ] CI / tooling
-- [ ] Other
+- [ ] Feature (`feat`)
+- [ ] Bugfix (`fix`)
+- [ ] Content: blog, work, projects, BYO (`content`)
+- [ ] Refactor (`refactor`)
+- [ ] Documentation (`docs`)
+- [ ] CI / tooling / dependencies (`ci`, `build`, `chore`)
+- [ ] Other (`perf`, `test`, `style`, `revert`)
 
 ## Checklist
 
