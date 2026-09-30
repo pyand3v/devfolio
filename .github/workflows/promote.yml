@@ -6,12 +6,16 @@ name: Promote
 # PRs opened with GITHUB_TOKEN don't trigger other workflows, so the promotion PR's `pull_request` checks
 # (PR Title, Promotion Source) wouldn't run when this workflow opens it. The two jobs below check the PR and
 # report those checks on the same commit instead; Lint & Format, Tests and Build come from Code Quality's
-# push run on preview. Later pushes to preview come from people, so the regular PR checks run on them too.
+# push run on preview (dispatched by the last step below when a merge didn't trigger it). Later pushes to
+# preview made by people also run the regular PR checks.
 #
 # Needs "Allow GitHub Actions to create and approve pull requests" (Settings -> Actions -> General).
 on:
   push:
     branches: [preview]
+  # Catches merges that don't trigger push workflows, like Dependabot auto-merge
+  schedule:
+    - cron: "17 6 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -27,6 +31,7 @@ jobs:
     if: github.ref == 'refs/heads/preview'
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: read
       pull-requests: write
     outputs:
@@ -76,6 +81,21 @@ jobs:
             echo "Updated promotion PR #$number"
           fi
           echo "number=$number" >> "$GITHUB_OUTPUT"
+
+      # Merges made with GITHUB_TOKEN (Dependabot auto-merge) don't trigger push workflows, so preview's head
+      # can lack the Lint & Format, Tests and Build checks the release PR needs, and a preview deploy
+      # Only on schedule/manual runs: on push runs Code Quality was triggered too and may just not have started
+      - name: Run missing checks and deploy on preview
+        if: steps.pr.outputs.number != '' && github.event_name != 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          runs=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs?check_name=Build" --jq '.total_count')
+          if [ "$runs" = "0" ]; then
+            echo "No checks on $GITHUB_SHA yet; dispatching Code Quality and Deploy to Vercel"
+            gh workflow run code-quality.yml --ref preview
+            gh workflow run deploy-vercel.yml --ref preview
+          fi
 
   pr-title:
     name: PR Title
