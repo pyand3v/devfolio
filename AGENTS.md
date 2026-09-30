@@ -92,6 +92,9 @@ The `@/` import alias maps to `src/`.
   breaking change. The **PR Title** check enforces this, and squash merges into `preview` use the title as
   the commit.
 - Use the same format for commit subjects (e.g. `feat(landing): add localized slogan`).
+- Every push deploys through `.github/workflows/deploy-vercel.yml`: `main` to production (`pyan.dev`), any
+  other branch to a new Vercel preview URL. The URL shows as "View deployment" on the commit and its PR,
+  and under Deployments on the repo page.
 - Fill in `.github/pull_request_template.md`: summary, type of change, checklist, and screenshots for any UI
   change (desktop and mobile).
 - CI on every PR (`.github/workflows/`): the PR title format, Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
