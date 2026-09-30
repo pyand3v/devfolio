@@ -76,6 +76,13 @@ export const copy = {
       description:
         "Practical notes on product thinking, delivery, and the engineering behind great experiences.",
     },
+    article: {
+      back: "Back to Blog",
+      related: "Other posts that might interest you",
+      minRead: "min read",
+      read: "Read article",
+      tags: "Article tags",
+    },
   },
   es: {
     nav: {
@@ -144,6 +151,13 @@ export const copy = {
       description:
         "Notas prácticas sobre producto, entrega y la ingeniería detrás de grandes experiencias.",
     },
+    article: {
+      back: "Volver al blog",
+      related: "Otros artículos que podrían interesarte",
+      minRead: "min de lectura",
+      read: "Leer artículo",
+      tags: "Etiquetas del artículo",
+    },
   },
   "pt-br": {
     nav: {
@@ -210,6 +224,13 @@ export const copy = {
       title: "Ideias em\npúblico.",
       description:
         "Notas práticas sobre produto, entrega e a engenharia por trás de grandes experiências.",
+    },
+    article: {
+      back: "Voltar ao blog",
+      related: "Outros artigos que podem interessar você",
+      minRead: "min de leitura",
+      read: "Ler artigo",
+      tags: "Tags do artigo",
     },
   },
 } as const

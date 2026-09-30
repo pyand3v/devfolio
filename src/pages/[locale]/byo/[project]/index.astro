@@ -18,7 +18,7 @@ export async function getStaticPaths() {
   ).flat()
 }
 const { bundle, locale } = Astro.props as { bundle: ByoProjectBundle; locale: Locale }
-const canonical = `/byo/${bundle.project.data.slug}`
+const canonical = `/${locale}/byo/${bundle.project.data.slug}`
 ---
 
 <BaseLayout
