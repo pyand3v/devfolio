@@ -83,17 +83,30 @@ jobs:
             pnpm dlx vercel@59.1.3 build --scope="$VERCEL_TEAM" --token="$VERCEL_TOKEN"
           fi
 
-      # `vercel deploy` prints the deployment URL last on stdout; `pnpm dlx` may print install progress first.
-      # Previews get a new URL on every push; production is also aliased to pyan.dev.
+      # Uploads the prebuilt output as one archive instead of file by file: Vercel's free plan allows 5000 file
+      # uploads a day, and every push to every branch deploys. Previews get a new URL on every push;
+      # production is also aliased to pyan.dev.
+      # The step fails unless `vercel deploy` succeeds *and* prints a deployment URL: some errors (like the
+      # upload limit) still exit 0, and their text contains other links, such as one to the docs.
       - name: Deploy
         id: deploy
         if: steps.vercel-credentials.outputs.configured == 'true'
         run: |
+          args=(deploy --prebuilt --archive=tgz --scope="$VERCEL_TEAM" --token="$VERCEL_TOKEN")
           if [ "$GITHUB_REF_NAME" = "main" ]; then
-            url=$(pnpm dlx vercel@59.1.3 deploy --prebuilt --prod --scope="$VERCEL_TEAM" --token="$VERCEL_TOKEN" | grep -Eo 'https://[^ ]+' | tail -n1)
+            args+=(--prod)
+          fi
+          status=0
+          output=$(pnpm dlx vercel@59.1.3 "${args[@]}" 2>&1) || status=$?
+          echo "$output"
+          url=$(echo "$output" | grep -Eo 'https://[a-z0-9.-]+\.vercel\.app' | tail -n1 || true)
+          if [ "$status" -ne 0 ] || [ -z "$url" ]; then
+            echo "::error::vercel deploy failed (exit $status, deployment URL: ${url:-none})"
+            exit 1
+          fi
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
             public_url="https://pyan.dev"
           else
-            url=$(pnpm dlx vercel@59.1.3 deploy --prebuilt --scope="$VERCEL_TEAM" --token="$VERCEL_TOKEN" | grep -Eo 'https://[^ ]+' | tail -n1)
             public_url="$url"
           fi
           echo "url=$public_url" >> "$GITHUB_OUTPUT"
