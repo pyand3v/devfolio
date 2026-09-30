@@ -1,0 +1,61 @@
+---
+import { Icon } from "astro-icon/components"
+import { copy, type Locale } from "@/lib/i18n"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const labels = copy[locale].search
+const titleLines = labels.title.split("\n")
+---
+
+<section class="portfolio-dark-grid min-h-screen text-white">
+  <div class="mx-auto max-w-4xl px-5 py-20 lg:px-10 lg:py-28">
+    <header class="border-b border-[#88c0d0] pb-10">
+      <p class="text-xs font-black tracking-[0.22em] text-[#8fbcbb] uppercase">{labels.eyebrow}</p>
+      <h1 class="display-type mt-7 text-6xl leading-[0.82] sm:text-7xl">
+        {titleLines.map((line, index) => (
+          <>
+            {line}
+            {index < titleLines.length - 1 && <br />}
+          </>
+        ))}
+      </h1>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-white/75">{labels.description}</p>
+    </header>
+    <form
+      class="search-form mt-10"
+      role="search"
+      data-loading={labels.loading}
+      data-result={labels.result}
+      data-results={labels.results}
+      data-empty={labels.empty}
+      data-unavailable={labels.unavailable}
+    >
+      <label for="search-input" class="sr-only">
+        {labels.label}
+      </label>
+      <div class="relative">
+        <Icon
+          name="lucide:search"
+          class="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-white/55"
+        />
+        <input
+          id="search-input"
+          name="q"
+          type="search"
+          autocomplete="off"
+          placeholder={labels.placeholder}
+          class="w-full border border-white/25 bg-black/20 py-4 pr-4 pl-12 text-lg text-white outline-none placeholder:text-white/55 focus:border-[#88c0d0] focus:ring-1 focus:ring-[#88c0d0]"
+        />
+      </div>
+    </form>
+    <p class="search-status mt-6 min-h-5 text-sm font-bold text-white/70" aria-live="polite"></p>
+    <ol class="search-results mt-6 grid gap-4"></ol>
+  </div>
+</section>
+<script>
+  import "@/scripts/search"
+</script>

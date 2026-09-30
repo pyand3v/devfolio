@@ -5,6 +5,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro"
 import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
 import TechBadge from "@/components/TechBadge.astro"
 import { homeIntroConfig } from "@/data/portfolio"
+import { copy } from "@/lib/i18n"
 import { siteMetadata } from "@/data/site"
 import { formatDateRange } from "@/lib/utils"
 import { getAllWorkItems } from "@/lib/content"
@@ -35,8 +36,13 @@ const jsonLd = {
   jsonLd={jsonLd}
 >
   <section class="portfolio-dark-grid min-h-screen text-white">
-    <article class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12">
+    <article
+      class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12"
+      data-pagefind-body
+      data-pagefind-meta={`section:${copy.en.nav.work}`}
+    >
       <a
+        data-pagefind-ignore
         href="/work"
         class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#8fbcbb] uppercase transition hover:gap-3 hover:text-white"
       >
