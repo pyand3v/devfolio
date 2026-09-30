@@ -1,2 +1,7 @@
 allowBuilds:
   esbuild: false
+
+# satori (and its opentype.js fork) resolve fflate to 0.7.3, which can loop forever on malformed ZIP64
+# archives (fixed in 0.7.5). Drop this once satori depends on a patched version.
+overrides:
+  "fflate@<0.7.5": 0.7.5
