@@ -15,15 +15,19 @@ const actionLabel = { en: "Read article", es: "Leer artículo", "pt-br": "Ler ar
 const surfaceClass =
   surface === "contrast" ? "border-[#2e3440] bg-[#3b4252]" : "border-white/20 bg-white/[0.06]"
 const articlePath = getLocalizedPath(`/blog/${post.slug}`, locale)
+// Untranslated posts are listed in English, so mark their text as such for screen readers and translators
+const contentLang = post.locale !== locale ? post.locale : undefined
 ---
 
 <article
   class={`blog-card group flex h-full flex-col border p-6 text-white transition duration-200 hover:-translate-y-1 hover:border-[#88c0d0] ${surfaceClass} ${surface === "default" ? "hover:bg-white/[0.1]" : "hover:bg-[#434c5e]"}`}
 >
-  <h3 class="display-type text-2xl leading-tight">
+  <h3 class="display-type text-2xl leading-tight" lang={contentLang}>
     <a href={articlePath}>{post.title}</a>
   </h3>
-  <p class="mt-4 grow leading-relaxed text-white/65">{post.summary}</p>
+  <p class="mt-4 grow leading-relaxed text-white/65" lang={contentLang}>
+    {post.summary}
+  </p>
   <div class="mt-6 flex items-center gap-3 font-mono text-xs font-bold text-[#8fbcbb] uppercase">
     <time datetime={post.publishedAt}>{formatBlogDate(post.publishedAt, "short")}</time>
     <span>·</span>
