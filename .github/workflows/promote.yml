@@ -82,17 +82,19 @@ jobs:
           fi
           echo "number=$number" >> "$GITHUB_OUTPUT"
 
-      # Merges made with GITHUB_TOKEN (Dependabot auto-merge) don't trigger push workflows, so preview's head
-      # can lack the Lint & Format, Tests and Build checks the release PR needs, and a preview deploy
-      # Only on schedule/manual runs: on push runs Code Quality was triggered too and may just not have started
+      # Merges made with GITHUB_TOKEN (Dependabot auto-merge) don't trigger push workflows. Then preview's head
+      # has neither the Lint & Format, Tests and Build checks the release PR needs nor a preview deploy.
+      # Push runs skip this: Code Quality was triggered by the same push. Any Code Quality run for the commit
+      # counts, even one still queued, so a run that hasn't reported yet isn't dispatched twice.
       - name: Run missing checks and deploy on preview
         if: steps.pr.outputs.number != '' && github.event_name != 'push'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          runs=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs?check_name=Build" --jq '.total_count')
+          runs=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow code-quality.yml --commit "$GITHUB_SHA" \
+            --json databaseId --jq length)
           if [ "$runs" = "0" ]; then
-            echo "No checks on $GITHUB_SHA yet; dispatching Code Quality and Deploy to Vercel"
+            echo "No Code Quality run for $GITHUB_SHA; dispatching Code Quality and Deploy to Vercel"
             gh workflow run code-quality.yml --ref preview
             gh workflow run deploy-vercel.yml --ref preview
           fi
