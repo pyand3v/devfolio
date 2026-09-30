@@ -1,13 +1,31 @@
+// Validates all content before a build: each file against the same Zod schemas the Astro build uses,
+// plus the rules that span several files (translations, BYO lesson order, images in public/).
+import { existsSync } from "node:fs"
 import { readdir, readFile } from "node:fs/promises"
 import path from "node:path"
+import { parse } from "yaml"
+import { defaultLocale, locales } from "../src/lib/i18n.ts"
+import {
+  BlogPostSchema,
+  ByoEntrySchema,
+  byoCourseFile,
+  contentDirectories,
+  ProjectSchema,
+  resolveEntryData,
+  WorkItemSchema,
+} from "../src/lib/schemas.ts"
 
 const root = path.resolve(import.meta.dirname, "..")
-const metadataDirectory = path.join(root, "src", "data", "blog", "metadata")
-const blogDirectory = path.join(root, "src", "data", "blog")
-const validSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
-const supportedLanguages = new Set(["en", "es", "pt-br"])
+const schemas = {
+  blog: BlogPostSchema,
+  work: WorkItemSchema,
+  projects: ProjectSchema,
+  byo: ByoEntrySchema,
+}
+const errors = []
 
 async function mdxFiles(directory) {
+  if (!existsSync(directory)) return []
   const entries = await readdir(directory, { withFileTypes: true })
   const nested = await Promise.all(
     entries.map(async entry => {
@@ -19,202 +37,108 @@ async function mdxFiles(directory) {
   return nested.flat()
 }
 
-async function frontmatter(file) {
-  const source = await readFile(file, "utf8")
-  const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-  if (!match) throw new Error(`${path.relative(root, file)} has no frontmatter.`)
+function splitFrontmatter(source) {
+  const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)([\s\S]*)$/)
+  return match ? { frontmatter: parse(match[1]) ?? {}, body: match[2] } : undefined
+}
 
-  return Object.fromEntries(
-    match[1]
-      .split(/\r?\n/)
-      .filter(Boolean)
-      .map(line => {
-        const separator = line.indexOf(":")
-        const key = line.slice(0, separator).trim()
-        const value = line
-          .slice(separator + 1)
-          .trim()
-          .replace(/^['"]|['"]$/g, "")
-        return [key, value]
-      })
+// Absolute paths to files in public/ that an entry points at, from its frontmatter and its body. Code
+// blocks and inline code are skipped, since their paths are examples.
+function publicReferences(data, body) {
+  const fromFrontmatter = [data.image, data.logoUrl, ...(data.gallery ?? []).map(item => item.src)]
+  const prose = body.replace(/^(```|~~~)[\s\S]*?^\1/gm, "").replace(/`[^`\n]*`/g, "")
+  const fromBody = [
+    ...prose.matchAll(/\bsrc=["'](\/[^"']+)["']/g),
+    ...prose.matchAll(/!\[[^\]]*\]\((\/[^)\s]+)/g),
+  ].map(match => match[1])
+  return [...fromFrontmatter, ...fromBody].filter(
+    reference => typeof reference === "string" && reference.startsWith("/")
   )
 }
 
-const errors = []
-const metadata = await Promise.all(
-  (await mdxFiles(metadataDirectory)).map(async file => ({
-    key: path.basename(file, ".mdx"),
-    data: await frontmatter(file),
-  }))
-)
-const seenSlugs = new Set()
-const metadataByKey = new Map()
-
-for (const record of metadata) {
-  const { key, data } = record
-  metadataByKey.set(key, record)
-  const languages = (data.availableLanguages ?? "")
-    .replace(/^\[|\]$/g, "")
-    .split(",")
-    .map(value => value.trim())
-    .filter(Boolean)
-
-  if (data.type !== "article") errors.push(`${key}: type must be "article".`)
-  if (!validSlug.test(data.slug ?? "")) errors.push(`${key}: slug must be lowercase kebab-case.`)
-  if (seenSlugs.has(data.slug)) errors.push(`${key}: slug "${data.slug}" is duplicated.`)
-  seenSlugs.add(data.slug)
-  if (!languages.length || languages.some(language => !supportedLanguages.has(language))) {
-    errors.push(`${key}: availableLanguages must contain only supported language codes.`)
-  }
-  if (!languages.includes(data.fallbackLanguage)) {
-    errors.push(`${key}: fallbackLanguage must be listed in availableLanguages.`)
-  }
-}
-
-const contentFiles = (await mdxFiles(blogDirectory)).filter(
-  file => !file.startsWith(metadataDirectory)
-)
-const contentByKeyAndLocale = new Map()
-for (const file of contentFiles) {
-  const data = await frontmatter(file)
-  const reference = data.translationKey
-  const locale = data.locale
-  const relative = path.relative(root, file)
-  if (!metadataByKey.has(reference))
-    errors.push(`${relative}: translationKey "${reference}" has no metadata file.`)
-  if (!supportedLanguages.has(locale))
-    errors.push(`${relative}: locale "${locale}" is unsupported.`)
-  contentByKeyAndLocale.set(`${reference}:${locale}`, relative)
-}
-
-for (const record of metadata) {
-  const languages = (record.data.availableLanguages ?? "")
-    .replace(/^\[|\]$/g, "")
-    .split(",")
-    .map(value => value.trim())
-    .filter(Boolean)
-  for (const language of languages) {
-    if (!contentByKeyAndLocale.has(`${record.key}:${language}`)) {
-      errors.push(`${record.key}: declares ${language}, but no matching localized MDX file exists.`)
+async function loadCollection(collection) {
+  const directory = path.join(root, contentDirectories[collection])
+  const entries = []
+  for (const file of await mdxFiles(directory)) {
+    const relative = path.relative(root, file).replaceAll("\\", "/")
+    const parsed = splitFrontmatter(await readFile(file, "utf8"))
+    if (!parsed) {
+      errors.push(`${relative}: has no frontmatter.`)
+      continue
     }
-  }
-}
+    const entryPath = path
+      .relative(directory, file)
+      .replaceAll("\\", "/")
+      .replace(/\.mdx$/, "")
+    const resolved = resolveEntryData(collection, entryPath, parsed.frontmatter)
+    errors.push(...resolved.errors.map(error => `${relative}: ${error}.`))
+    if (resolved.errors.length) continue
 
-async function validateEntryMetadata({
-  type,
-  contentDirectory,
-  metadataDirectory,
-  requiresAssetKey = false,
-}) {
-  const [contentFiles, metadataFiles] = await Promise.all([
-    mdxFiles(contentDirectory),
-    mdxFiles(metadataDirectory),
-  ])
-  const metadataKeys = new Set()
-
-  for (const file of metadataFiles) {
-    const key = path.basename(file, ".mdx").toLowerCase()
-    const data = await frontmatter(file)
-    metadataKeys.add(key)
-    if (data.type !== type) errors.push(`${key}: type must be "${type}".`)
-    if (!validSlug.test(data.slug ?? "")) errors.push(`${key}: slug must be lowercase kebab-case.`)
-    if (seenSlugs.has(data.slug)) errors.push(`${key}: slug "${data.slug}" is duplicated.`)
-    seenSlugs.add(data.slug)
-    if (requiresAssetKey && !data.assetKey) errors.push(`${key}: assetKey is required.`)
-  }
-
-  for (const file of contentFiles) {
-    const key = path.basename(file, ".mdx").toLowerCase()
-    if (!metadataKeys.has(key)) {
-      errors.push(`${path.relative(root, file)}: missing ${type} metadata file.`)
+    const result = schemas[collection].safeParse(resolved.data)
+    if (!result.success) {
+      for (const issue of result.error.issues) {
+        errors.push(`${relative}: ${issue.path.join(".") || "frontmatter"}: ${issue.message}.`)
+      }
+      continue
     }
-  }
-
-  for (const key of metadataKeys) {
-    if (!contentFiles.some(file => path.basename(file, ".mdx").toLowerCase() === key)) {
-      errors.push(`${key}: ${type} metadata has no matching content MDX file.`)
+    for (const reference of publicReferences(result.data, parsed.body)) {
+      if (!existsSync(path.join(root, "public", decodeURI(reference.split(/[?#]/)[0])))) {
+        errors.push(`${relative}: ${reference} doesn't exist in public/.`)
+      }
     }
+    entries.push({ relative, data: result.data })
   }
+  return entries
 }
 
-await validateEntryMetadata({
-  type: "project",
-  contentDirectory: path.join(root, "src", "data", "projects"),
-  metadataDirectory: path.join(root, "src", "data", "metadata", "projects"),
-  requiresAssetKey: true,
-})
-await validateEntryMetadata({
-  type: "work",
-  contentDirectory: path.join(root, "src", "data", "work"),
-  metadataDirectory: path.join(root, "src", "data", "metadata", "work"),
-})
+const blog = await loadCollection("blog")
+const work = await loadCollection("work")
+const projects = await loadCollection("projects")
+const byo = await loadCollection("byo")
 
-const byoDirectory = path.join(root, "src", "data", "byo")
-const byoRecords = await Promise.all(
-  (await mdxFiles(byoDirectory)).map(async file => ({ file, data: await frontmatter(file) }))
-)
-const requiredByoFields = ["type", "locale", "translationKey", "title", "description"]
-const byoByKey = new Map()
-const byoProjects = new Map()
-const byoLessonOrders = new Map()
-const byoSlugs = new Set()
-
-for (const record of byoRecords) {
-  const relative = path.relative(root, record.file)
-  for (const field of requiredByoFields)
-    if (!record.data[field]) errors.push(`${relative}: ${field} is required.`)
-  if (!["project", "lesson", "guide", "exercise"].includes(record.data.type)) {
-    errors.push(`${relative}: type must be project, lesson, guide, or exercise.`)
-    continue
-  }
-  if (!supportedLanguages.has(record.data.locale))
-    errors.push(`${relative}: locale is unsupported.`)
-  const translationKey = `${record.data.type}:${record.data.translationKey}`
-  const localized = byoByKey.get(translationKey) ?? new Set()
-  localized.add(record.data.locale)
-  byoByKey.set(translationKey, localized)
-  if (record.data.type === "project") {
-    const projectLocales = byoProjects.get(record.data.translationKey) ?? new Set()
-    projectLocales.add(record.data.locale)
-    byoProjects.set(record.data.translationKey, projectLocales)
-    continue
-  }
-  if (!record.data.project) errors.push(`${relative}: project is required.`)
-  if (!record.data.slug || !validSlug.test(record.data.slug))
-    errors.push(`${relative}: slug must be lowercase kebab-case.`)
-  const slugKey = `${record.data.locale}:${record.data.project}:${record.data.type}:${record.data.slug}`
-  if (byoSlugs.has(slugKey)) errors.push(`${relative}: slug is duplicated within this project.`)
-  byoSlugs.add(slugKey)
-  if (record.data.type === "lesson") {
-    const chapter = Number(record.data.chapter),
-      order = Number(record.data.order)
-    if (!Number.isInteger(chapter) || chapter < 1)
-      errors.push(`${relative}: chapter must be a positive integer.`)
-    if (!Number.isInteger(order) || order < 1)
-      errors.push(`${relative}: order must be a positive integer.`)
-    const lessonKey = `${record.data.locale}:${record.data.project}`
-    const lessonOrders = byoLessonOrders.get(lessonKey) ?? []
-    lessonOrders.push(order)
-    byoLessonOrders.set(lessonKey, lessonOrders)
-  }
-  if (
-    record.data.type === "exercise" &&
-    !["easy", "medium", "hard"].includes(record.data.difficulty)
-  )
-    errors.push(`${relative}: exercise difficulty must be easy, medium, or hard.`)
-}
-for (const [key, localized] of byoByKey)
-  if (localized.size !== supportedLanguages.size)
-    errors.push(`${key}: must have complete en, es, and pt-br translations.`)
-for (const record of byoRecords.filter(record => record.data.type !== "project"))
-  if (!byoProjects.has(record.data.project))
+// Every blog post needs a default-locale version: it holds the fields its translations share
+const blogLocales = Map.groupBy(blog, entry => entry.data.slug)
+for (const [slug, translations] of blogLocales) {
+  if (!translations.some(entry => entry.data.locale === defaultLocale)) {
     errors.push(
-      `${path.relative(root, record.file)}: references unknown project "${record.data.project}".`
+      `blog "${slug}": has no ${defaultLocale} version (src/data/blog/${defaultLocale}/${slug}.mdx).`
     )
-for (const [key, orders] of byoLessonOrders) {
-  const expected = Array.from({ length: orders.length }, (_, index) => index + 1)
-  if (orders.sort((a, b) => a - b).some((order, index) => order !== expected[index]))
-    errors.push(`${key}: lesson order must be contiguous.`)
+  }
+}
+
+// Every BYO entry exists in every locale, and each course's lessons are numbered 1, 2, 3...
+const byoTranslations = Map.groupBy(byo, ({ data }) => `${data.project}/${data.slug}`)
+for (const [key, translations] of byoTranslations) {
+  const missing = locales.filter(locale => !translations.some(({ data }) => data.locale === locale))
+  if (missing.length) errors.push(`byo "${key}": missing ${missing.join(", ")} translation.`)
+}
+const courses = new Map(
+  byo
+    .filter(({ data }) => data.type === "project")
+    .map(({ data }) => [`${data.locale}/${data.slug}`, data])
+)
+for (const { relative, data } of byo.filter(({ data }) => data.type !== "project")) {
+  if (!courses.has(`${data.locale}/${data.project}`)) {
+    errors.push(`${relative}: course folder has no ${byoCourseFile}.mdx.`)
+  }
+}
+const lessons = Map.groupBy(
+  byo.filter(({ data }) => data.type === "lesson"),
+  ({ data }) => `${data.locale}/${data.project}`
+)
+for (const [key, courseLessons] of lessons) {
+  const orders = courseLessons.map(({ data }) => data.order).sort((a, b) => a - b)
+  if (orders.some((order, index) => order !== index + 1)) {
+    errors.push(
+      `byo "${key}": lesson order must run 1, 2, 3... without gaps (got ${orders.join(", ")}).`
+    )
+  }
+  const chapters = new Set(courses.get(key)?.chapters.map(chapter => chapter.order))
+  for (const { relative, data } of courseLessons) {
+    if (!chapters.has(data.chapter)) {
+      errors.push(`${relative}: chapter ${data.chapter} isn't in the course's chapters.`)
+    }
+  }
 }
 
 if (errors.length) {
@@ -223,5 +147,6 @@ if (errors.length) {
 }
 
 console.log(
-  `Content validation passed for ${metadata.length} article metadata records and all project/work metadata.`
+  `Content validation passed: ${blogLocales.size} blog posts (${blog.length} files), ${work.length} work entries, ` +
+    `${projects.length} projects, ${courses.size / locales.length} BYO courses (${byo.length} files).`
 )

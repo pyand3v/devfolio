@@ -18,7 +18,7 @@ const { Content, headings } = await render(post.entry)
 const similar = (await getAllBlogPosts(locale))
   .filter(
     entry =>
-      entry.translationKey !== post.translationKey &&
+      entry.slug !== post.slug &&
       entry.tags?.some(tag => post.tags?.map(value => value.toLowerCase()).includes(tag))
   )
   .slice(0, 3)
