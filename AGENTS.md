@@ -81,11 +81,17 @@ The `@/` import alias maps to `src/`.
   your session was started on) and open a PR against `main`. Never push to `main` either: it's protected
   (a PR plus passing Lint & Format, Tests and Build checks), and only admins and the Prepare Release
   workflow may bypass that.
-- Use short imperative commit subjects (e.g. `Add localized slogan to landing page`). `chore(release):` is
+- PR titles follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): summary`,
+  with a lowercase imperative summary, no trailing period, ideally under 72 characters (e.g.
+  `feat(blog): add tag filter`, `fix(i18n): translate 404 page`, `chore(deps): bump astro`). Types: `feat`,
+  `fix`, `content`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`; the scope
+  is optional (`blog`, `work`, `byo`, `i18n`, `seo`, `deps`, `ci`, ...), and `!` before the colon marks a
+  breaking change. The **PR Title** check enforces this, and squash merges use the title as the commit.
+- Use the same format for commit subjects (e.g. `feat(landing): add localized slogan`). `chore(release):` is
   reserved for the Prepare Release workflow.
 - Fill in `.github/pull_request_template.md`: summary, type of change, checklist, and screenshots for any UI
   change (desktop and mobile).
-- CI on every PR (`.github/workflows/`): Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
+- CI on every PR (`.github/workflows/`): the PR title format, Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
   production build, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
   content/docs-only PRs). All checks must pass before merging. Commenting `@claude` on an issue or PR asks
   Claude to respond or push a fix; `@claude review` requests another review.
