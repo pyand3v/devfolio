@@ -28,6 +28,7 @@ Package manager is **pnpm** (v11, Node 24). Don't use npm/yarn or create other l
 | Type check              | `pnpm types:check`                                      |
 | Tests / single file     | `pnpm test` / `pnpm vitest run tests/lib/utils.test.ts` |
 | Coverage                | `pnpm test:coverage`                                    |
+| E2E + axe (Playwright)  | `pnpm test:e2e` (after `pnpm build`)                    |
 
 Before calling a change done, run the same gates CI runs:
 
@@ -42,8 +43,8 @@ bypass them with `--no-verify`; fix the underlying issue instead.
 
 - `src/pages/` — routes. The default locale (`en`) lives at the root (`/blog`, `/work`, ...), and
   `src/pages/[locale]/` mirrors it for `es` and `pt-br` via `getStaticPaths`. When adding or changing a route,
-  update both trees. List and detail routes have a sibling `opengraph-image.ts` endpoint that renders a PNG
-  at build time.
+  update both trees: `tests/pages/route-parity.test.ts` fails otherwise, and lists the few English-only pages.
+  List and detail routes have a sibling `opengraph-image.ts` endpoint that renders a PNG at build time.
 - `src/pages/*.ts` — static endpoints: `rss.xml`, `sitemap.xml`, `robots.txt`, `llms.txt`.
 - `src/pages/admin/` + `public/admin/index.html` — the Sveltia CMS at `/admin`: its config (`config.yml`, built
   from `src/lib/cms-config.ts`) and its script, served from the installed `@sveltia/cms` package.
@@ -64,9 +65,13 @@ bypass them with `--no-verify`; fix the underlying issue instead.
 - `scripts/content-check.mjs` — pre-build validation: every file against the schemas, plus translations,
   BYO lesson order and referenced images.
 - `scripts/content.mjs` — the `pnpm content` CLI: scaffolds entries, copies images, opens content PRs.
-- `tests/` — Vitest unit tests (Node environment) for `src/lib`.
+- `tests/` — Vitest unit tests (Node environment) for `src/lib`, `src/scripts` and the static endpoints
+  in `src/pages/*.ts` (`tests/pages/`, with `astro:content` mocked).
 - `docs/SEO.md` — SEO setup notes.
 - `docs/CONTENT.md` — how content is structured and how to write it (CMS, CLI or by hand).
+- `e2e/` — Playwright specs run by `pnpm test:e2e` against the built site (`playwright.config.ts`): axe
+  accessibility audits and keyboard checks, and smoke tests for `src/scripts/` (locale redirect, language
+  switcher, tag filter, mobile menu, fixed theme).
 
 The `@/` import alias maps to `src/`.
 
@@ -117,7 +122,7 @@ The `@/` import alias maps to `src/`.
 - Fill in `.github/pull_request_template.md`: summary, type of change, checklist, and screenshots for any UI
   change (desktop and mobile).
 - CI on every PR (`.github/workflows/`): the PR title format, Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
-  production build with an internal link check, Lighthouse budgets, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
+  production build with an internal link check, Lighthouse budgets, Playwright e2e and axe accessibility checks, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
   content/docs-only PRs and for `preview` → `main` promotions). All checks must pass before merging. Commenting `@claude` on an issue or PR asks
   Claude to respond or push a fix; `@claude review` requests another review.
 - There are no versioned releases or tags: every promotion merged into `main` deploys to production on

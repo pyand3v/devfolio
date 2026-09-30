@@ -27,11 +27,11 @@ const navigation = [
       <p class="text-xs font-black tracking-[0.16em] text-[#8fbcbb] uppercase">
         {labels.footer.explore}
       </p>
-      <div class="mt-4 flex flex-col gap-2">
+      <div class="mt-4 flex flex-col gap-1">
         {navigation.map(item => (
           <a
             href={getLocalizedPath(item.path, locale)}
-            class="text-sm font-bold text-white/75 hover:text-white"
+            class="py-0.5 text-sm font-bold text-white/75 hover:text-white"
           >
             {labels.nav[item.key]}
           </a>
@@ -55,7 +55,7 @@ const navigation = [
       </div>
     </div>
   </div>
-  <p class="mx-auto mt-12 max-w-7xl border-t border-white/15 pt-5 text-xs font-semibold tracking-wide text-white/45">
+  <p class="mx-auto mt-12 max-w-7xl border-t border-white/15 pt-5 text-xs font-semibold tracking-wide text-white/65">
     © {new Date().getFullYear()}
     {footerConfig.copyrightName}. All rights reserved.
   </p>

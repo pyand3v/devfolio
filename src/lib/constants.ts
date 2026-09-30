@@ -1,5 +1,3 @@
-import packageJson from "../../package.json"
-
 /**
  * Array of navigation items for the website (i.e. paths/pages to navigate to).
  */
@@ -17,11 +15,6 @@ export const navItems = [
  * the desktop menu in sync with `navItems` instead of duplicating and potentially drifting.
  */
 export const desktopNavItems = navItems.filter(({ path }) => path !== "/")
-
-/**
- * Version of the application from package.json.
- */
-export const appVersion = packageJson.version
 
 /**
  * Sentinel value used in work/project frontmatter `end`/`endDate` fields to mean
