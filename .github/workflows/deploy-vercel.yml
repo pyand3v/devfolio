@@ -22,6 +22,8 @@ env:
 jobs:
   deploy:
     name: Deploy
+    # Dependabot branches can't read Actions secrets, so a deploy would always fail there.
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
 
     steps:

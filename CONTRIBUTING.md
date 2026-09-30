@@ -1,7 +1,7 @@
-# Contributing to the Astro Portfolio Website
+# Contributing to devfolio
 
-Thank you for your interest in contributing to this custom Astro developer portfolio website!
-We welcome contributions from the community to help improve and enhance this template.
+Thank you for your interest in contributing to devfolio, a multilingual Astro developer portfolio!
+We welcome contributions from the community to help improve and enhance it.
 This document outlines the guidelines and steps for contributing.
 
 ---
