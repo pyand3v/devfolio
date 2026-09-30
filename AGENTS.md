@@ -50,7 +50,9 @@ bypass them with `--no-verify`; fix the underlying issue instead.
   from `src/lib/cms-config.ts`) and its script, served from the installed `@sveltia/cms` package.
 - `src/layouts/BaseLayout.astro` — the single page shell: SEO/meta tags, JSON-LD, header/footer, analytics.
 - `src/components/` — `.astro` components; MDX-specific components in `src/components/mdx/`.
-- `src/scripts/` — small client-side TypeScript (filtering, theme, galleries).
+- `src/scripts/` — small client-side TypeScript (filtering, theme, galleries, search).
+- Search (`/search`) is Pagefind: an integration in `astro.config.mjs` indexes `dist/` after the build, one
+  index per locale. Only elements marked `data-pagefind-body` are indexed; mark new content pages too.
 - `src/lib/` — shared logic: `content.ts` (collection queries), `i18n.ts` (locales and all UI copy),
   `schemas.ts` (the content model: Zod schemas and the fields each entry takes from its path),
   `content-files.ts` (helpers for the `pnpm content` CLI), `cms-config.ts` (Sveltia CMS collections),

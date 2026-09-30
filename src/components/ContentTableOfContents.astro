@@ -17,7 +17,10 @@ const labels = copy[getLocaleFromPathname(Astro.url.pathname)].a11y
 ---
 
 {visibleHeadings.length > 0 && (
-  <aside class="mb-10 border-l-2 border-[#88c0d0] pl-5 lg:sticky lg:top-28 lg:mb-0 lg:self-start">
+  <aside
+    data-pagefind-ignore
+    class="mb-10 border-l-2 border-[#88c0d0] pl-5 lg:sticky lg:top-28 lg:mb-0 lg:self-start"
+  >
     <p class="text-xs font-black tracking-[0.16em] text-[#8fbcbb] uppercase">{labels.onThisPage}</p>
     <nav class="mt-4" aria-label={labels.toc}>
       <ol class="space-y-2 text-sm leading-snug">

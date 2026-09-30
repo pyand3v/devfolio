@@ -12,11 +12,30 @@ export const localeOptions: Array<{ code: Locale; label: string; flag: string }>
 
 export const copy = {
   en: {
-    nav: { home: "Home", work: "Work", projects: "Projects", blog: "Blog", byo: "BYO" },
+    nav: {
+      home: "Home",
+      work: "Work",
+      projects: "Projects",
+      blog: "Blog",
+      byo: "BYO",
+      search: "Search",
+    },
     footer: {
       description: "Product engineering for useful software people love to use.",
       explore: "Explore",
       findMe: "Find me",
+    },
+    search: {
+      eyebrow: "Search",
+      title: "Find it\nfast.",
+      description: "Search blog posts, work, projects and Build Your Own lessons.",
+      label: "Search the site",
+      placeholder: "Try “concurrency” or “system design”",
+      loading: "Searching…",
+      result: "result for",
+      results: "results for",
+      empty: "No results for",
+      unavailable: "Search couldn’t load. Please try again later.",
     },
     home: {
       eyebrow: "Independent by design · Paraguay",
@@ -105,12 +124,31 @@ export const copy = {
     },
   },
   es: {
-    nav: { home: "Inicio", work: "Trabajo", projects: "Proyectos", blog: "Blog", byo: "BYO" },
+    nav: {
+      home: "Inicio",
+      work: "Trabajo",
+      projects: "Proyectos",
+      blog: "Blog",
+      byo: "BYO",
+      search: "Buscar",
+    },
     footer: {
       description:
         "Ingeniería de producto para crear software útil que las personas disfrutan usar.",
       explore: "Explorar",
       findMe: "Encuéntrame",
+    },
+    search: {
+      eyebrow: "Buscar",
+      title: "Encuéntralo\nrápido.",
+      description: "Busca artículos, trabajo, proyectos y lecciones de Build Your Own.",
+      label: "Buscar en el sitio",
+      placeholder: "Prueba con “concurrencia” o “diseño de sistemas”",
+      loading: "Buscando…",
+      result: "resultado para",
+      results: "resultados para",
+      empty: "No hay resultados para",
+      unavailable: "No se pudo cargar la búsqueda. Inténtalo de nuevo más tarde.",
     },
     home: {
       eyebrow: "Independiente por diseño · Paraguay",
@@ -200,11 +238,30 @@ export const copy = {
     },
   },
   "pt-br": {
-    nav: { home: "Início", work: "Trabalho", projects: "Projetos", blog: "Blog", byo: "BYO" },
+    nav: {
+      home: "Início",
+      work: "Trabalho",
+      projects: "Projetos",
+      blog: "Blog",
+      byo: "BYO",
+      search: "Buscar",
+    },
     footer: {
       description: "Engenharia de produto para criar software útil que as pessoas adoram usar.",
       explore: "Explorar",
       findMe: "Encontre-me",
+    },
+    search: {
+      eyebrow: "Buscar",
+      title: "Encontre\nrápido.",
+      description: "Pesquise artigos, trabalho, projetos e lições do Build Your Own.",
+      label: "Pesquisar no site",
+      placeholder: "Experimente “concorrência” ou “design de sistemas”",
+      loading: "Buscando…",
+      result: "resultado para",
+      results: "resultados para",
+      empty: "Nenhum resultado para",
+      unavailable: "Não foi possível carregar a busca. Tente novamente mais tarde.",
     },
     home: {
       eyebrow: "Independente por design · Paraguai",
@@ -312,7 +369,7 @@ export const getLocaleSwitchPath = (pathname: string, locale: Locale) => {
   const segments = pathname.split("/").filter(Boolean)
   if (locales.includes(segments[0] as Locale)) segments.shift()
   const topLevel = segments[0]
-  if (topLevel === "blog" || topLevel === "byo")
+  if (topLevel === "blog" || topLevel === "byo" || topLevel === "search")
     return getLocalizedPath(`/${segments.join("/")}`, locale)
   const supported = topLevel === "work" || topLevel === "projects"
   return getLocalizedPath(supported ? `/${topLevel}` : "/", locale)
