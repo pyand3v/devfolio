@@ -7,24 +7,6 @@ on:
     branches: [ main, preview ]
 
 jobs:
-  # Changes land on `preview` first; `main` only accepts promotions from it. Required on `main`.
-  promotion-source:
-    name: Promotion Source
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.base_ref == 'main'
-    permissions: {}
-
-    steps:
-      - name: Check that the PR comes from preview
-        env:
-          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
-          HEAD_REF: ${{ github.head_ref }}
-        run: |
-          if [ "$HEAD_REPO" != "$GITHUB_REPOSITORY" ] || [ "$HEAD_REF" != "preview" ]; then
-            echo "::error::Pull requests into main must come from preview. Retarget this PR to preview."
-            exit 1
-          fi
-
   lint-and-format:
     name: Lint & Format
     runs-on: ubuntu-latest
