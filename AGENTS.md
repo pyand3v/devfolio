@@ -57,6 +57,7 @@ bypass them with `--no-verify`; fix the underlying issue instead.
 - `scripts/content-check.mjs` — pre-build validation of blog metadata, slugs and translations.
 - `tests/` — Vitest unit tests (Node environment) for `src/lib`.
 - `docs/SEO.md` — SEO setup notes.
+- `docs/content-generator-handoff.md` — research brief for a future content generator (not built yet).
 
 The `@/` import alias maps to `src/`.
 
