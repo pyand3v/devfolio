@@ -78,7 +78,9 @@ The `@/` import alias maps to `src/`.
 ## Git and pull requests
 
 - Never commit directly to `main`. Work on a branch (`feat/…`, `fix/…`, `chore/…`, `docs/…`, or the branch
-  your session was started on) and open a PR against `main`.
+  your session was started on) and open a PR against `main`. Never push to `main` either: it's protected
+  (a PR plus passing Lint & Format, Tests and Build checks), and only admins and the Prepare Release
+  workflow may bypass that.
 - Use short imperative commit subjects (e.g. `Add localized slogan to landing page`). `chore(release):` is
   reserved for the Prepare Release workflow.
 - Fill in `.github/pull_request_template.md`: summary, type of change, checklist, and screenshots for any UI
