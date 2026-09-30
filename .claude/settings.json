@@ -31,6 +31,15 @@
       "Bash(gh issue view:*)",
       "Bash(gh issue list:*)"
     ],
-    "deny": ["Read(./.env)", "Read(./.env.*)", "Bash(git push --force:*)", "Bash(git push -f:*)"]
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push origin main:*)",
+      "Bash(git push origin HEAD:main:*)",
+      "Bash(git push -u origin main:*)",
+      "Bash(git push --set-upstream origin main:*)"
+    ]
   }
 }
