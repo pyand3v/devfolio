@@ -55,9 +55,9 @@ jobs:
       - name: Run TypeScript type check
         run: pnpm types:check
 
-      - name: Build Next.js
+      - name: Build site
         env:
-          NEXT_TELEMETRY_DISABLED: 1
+          ASTRO_TELEMETRY_DISABLED: 1
         run: pnpm build
 
       - name: Configure git user
