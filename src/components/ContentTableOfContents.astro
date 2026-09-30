@@ -1,4 +1,6 @@
 ---
+import { copy, getLocaleFromPathname } from "@/lib/i18n"
+
 interface Heading {
   depth: number
   slug: string
@@ -11,6 +13,7 @@ interface Props {
 
 const { headings } = Astro.props
 const visibleHeadings = headings.filter(heading => heading.depth <= 3)
+const labels = copy[getLocaleFromPathname(Astro.url.pathname)].a11y
 ---
 
 {visibleHeadings.length > 0 && (
@@ -18,8 +21,8 @@ const visibleHeadings = headings.filter(heading => heading.depth <= 3)
     data-pagefind-ignore
     class="mb-10 border-l-2 border-[#88c0d0] pl-5 lg:sticky lg:top-28 lg:mb-0 lg:self-start"
   >
-    <p class="text-xs font-black tracking-[0.16em] text-[#8fbcbb] uppercase">On this page</p>
-    <nav class="mt-4" aria-label="Table of contents">
+    <p class="text-xs font-black tracking-[0.16em] text-[#8fbcbb] uppercase">{labels.onThisPage}</p>
+    <nav class="mt-4" aria-label={labels.toc}>
       <ol class="space-y-2 text-sm leading-snug">
         {visibleHeadings.map(heading => (
           <li class:list={[heading.depth === 3 && "ml-3"]}>

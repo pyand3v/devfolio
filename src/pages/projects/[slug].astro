@@ -56,7 +56,7 @@ const jsonLd = {
         class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#8fbcbb] uppercase transition hover:gap-3 hover:text-white"
       >
         <Icon name="lucide:arrow-left" class="size-4" />
-        Back to Projects
+        {copy.en.detail.backToProjects}
       </a>
       <h1 class="display-type mb-3 text-4xl leading-[0.95]">{project.title}</h1>
       <p class="mb-4 text-lg text-white/65">{project.description}</p>
@@ -68,13 +68,13 @@ const jsonLd = {
         {project.teamSize && (
           <span class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white/75">
             <Icon name="lucide:users" />
-            Team Size: {project.teamSize}
+            {copy.en.detail.teamSize}: {project.teamSize}
           </span>
         )}
         {project.role && (
           <span class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white/75">
             <Icon name="lucide:briefcase-business" />
-            Role: {project.role}
+            {copy.en.detail.role}: {project.role}
           </span>
         )}
         {project.githubUrl && (
@@ -84,7 +84,7 @@ const jsonLd = {
             class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white transition hover:border-[#88c0d0]"
           >
             <Icon name="fa6-brands:github" />
-            View on GitHub
+            {copy.en.detail.github}
           </a>
         )}
         {project.paperUrl && (
@@ -94,14 +94,14 @@ const jsonLd = {
             class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white transition hover:border-[#88c0d0]"
           >
             <Icon name="lucide:book-open" />
-            Read Paper
+            {copy.en.detail.paper}
           </a>
         )}
       </div>
       <section class="mb-8">
         <h2 class="mb-3 flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase">
           <Icon name="lucide:layers-3" />
-          Tech Stack
+          {copy.en.detail.techStack}
         </h2>
         <div class="flex flex-wrap gap-3">
           {project.techStack.map(name => (

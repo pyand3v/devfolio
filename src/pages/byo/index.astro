@@ -2,12 +2,13 @@
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import ByoCatalog from "@/components/ByoCatalog.astro"
 import { getAllByoProjects } from "@/lib/content"
+import { copy } from "@/lib/i18n"
 const bundles = await getAllByoProjects("en")
 ---
 
 <BaseLayout
-  title="Build Your Own"
-  description="Practical build-alongs for making useful digital products."
+  title={copy.en.pages.byoTitle}
+  description={copy.en.pages.byoDescription}
   canonical="/byo"
 >
   <ByoCatalog bundles={bundles} locale="en" />

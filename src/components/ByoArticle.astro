@@ -4,7 +4,7 @@ import { Icon } from "astro-icon/components"
 import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
 import type { ByoExercise, ByoGuide, ByoLesson, ByoProjectBundle } from "@/lib/content"
 import type { Locale } from "@/lib/i18n"
-import { getLocalizedPath } from "@/lib/i18n"
+import { copy as uiCopy, getLocalizedPath } from "@/lib/i18n"
 interface Props {
   bundle: ByoProjectBundle
   entry: ByoLesson | ByoGuide | ByoExercise
@@ -100,7 +100,7 @@ const label =
           <nav
             data-pagefind-ignore
             class="mt-14 grid gap-4 border-t border-white/20 pt-6 sm:grid-cols-2"
-            aria-label="Lesson navigation"
+            aria-label={uiCopy[locale].a11y.lessonNav}
           >
             {previous ? (
               <a
