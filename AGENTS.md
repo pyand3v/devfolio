@@ -79,21 +79,19 @@ The `@/` import alias maps to `src/`.
 
 - Never commit directly to `main`. Work on a branch (`feat/…`, `fix/…`, `chore/…`, `docs/…`, or the branch
   your session was started on) and open a PR against `main`. Never push to `main` either: it's protected
-  (a PR plus passing Lint & Format, Tests and Build checks), and only admins and the Prepare Release
-  workflow may bypass that.
+  (a PR plus passing Lint & Format, Tests and Build checks), and only admins may bypass that.
 - PR titles follow [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): summary`,
   with a lowercase imperative summary, no trailing period, ideally under 72 characters (e.g.
   `feat(blog): add tag filter`, `fix(i18n): translate 404 page`, `chore(deps): bump astro`). Types: `feat`,
   `fix`, `content`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`; the scope
   is optional (`blog`, `work`, `byo`, `i18n`, `seo`, `deps`, `ci`, ...), and `!` before the colon marks a
   breaking change. The **PR Title** check enforces this, and squash merges use the title as the commit.
-- Use the same format for commit subjects (e.g. `feat(landing): add localized slogan`). `chore(release):` is
-  reserved for the Prepare Release workflow.
+- Use the same format for commit subjects (e.g. `feat(landing): add localized slogan`).
 - Fill in `.github/pull_request_template.md`: summary, type of change, checklist, and screenshots for any UI
   change (desktop and mobile).
 - CI on every PR (`.github/workflows/`): the PR title format, Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
   production build, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
   content/docs-only PRs). All checks must pass before merging. Commenting `@claude` on an issue or PR asks
   Claude to respond or push a fix; `@claude review` requests another review.
-- Releases are cut from `main` with the manual **Prepare Release** workflow (bumps `package.json`, tags
-  `vX.Y.Z`), which triggers **Build & Release**. Don't bump the version in feature PRs.
+- There are no versioned releases or tags: every merge to `main` deploys to production on Vercel, and the
+  commit history is the changelog. Don't bump the version in `package.json`.
