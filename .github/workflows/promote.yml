@@ -1,0 +1,114 @@
+name: Promote
+
+# Keeps a `preview` -> `main` promotion PR open whenever preview has changes production doesn't, and keeps
+# its description listing them. Merging that PR with a merge commit is the release (it deploys to pyan.dev).
+#
+# PRs opened with GITHUB_TOKEN don't trigger other workflows, so the promotion PR's `pull_request` checks
+# (PR Title, Promotion Source) wouldn't run when this workflow opens it. The two jobs below check the PR and
+# report those checks on the same commit instead; Lint & Format, Tests and Build come from Code Quality's
+# push run on preview. Later pushes to preview come from people, so the regular PR checks run on them too.
+#
+# Needs "Allow GitHub Actions to create and approve pull requests" (Settings -> Actions -> General).
+on:
+  push:
+    branches: [preview]
+  workflow_dispatch:
+
+concurrency:
+  group: promote
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  promotion-pr:
+    name: Promotion PR
+    # The checks below are reported on the commit that triggered the run, so it must be preview's head
+    if: github.ref == 'refs/heads/preview'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    outputs:
+      number: ${{ steps.pr.outputs.number }}
+
+    steps:
+      - name: Checkout preview
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # Compares trees, not commits: after a release main has a merge commit preview lacks, which
+      # shouldn't open an empty promotion PR
+      - name: Open or update the promotion PR
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet origin/main HEAD; then
+            echo "preview matches main; nothing to promote"
+            exit 0
+          fi
+
+          body=$(
+            echo 'Promotes `preview` to production. To release, merge with a **merge commit** (not squash);'
+            echo 'that deploys to https://pyan.dev.'
+            echo
+            echo '## Changes'
+            echo
+            git log --no-merges --reverse --format='- %s' origin/main..HEAD
+            echo
+            echo '_Opened and kept up to date by the Promote workflow._'
+          )
+
+          number=$(gh pr list --base main --head preview --state open --json number --jq '.[0].number')
+          if [ -z "$number" ]; then
+            url=$(gh pr create --base main --head preview --title "chore: promote preview to main" --body "$body")
+            number="${url##*/}"
+            echo "Opened promotion PR #$number"
+          else
+            gh pr edit "$number" --body "$body"
+            echo "Updated promotion PR #$number"
+          fi
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+
+  pr-title:
+    name: PR Title
+    needs: promotion-pr
+    if: needs.promotion-pr.outputs.number != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v6
+
+      - name: Check Conventional Commits format
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ needs.promotion-pr.outputs.number }}
+        run: .github/scripts/check-pr-title.sh "$(gh pr view "$NUMBER" --json title --jq .title)"
+
+  promotion-source:
+    name: Promotion Source
+    needs: promotion-pr
+    if: needs.promotion-pr.outputs.number != ''
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+
+    steps:
+      - name: Check that the PR comes from preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ needs.promotion-pr.outputs.number }}
+        run: |
+          head=$(gh pr view "$NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --json headRefName,headRepository,headRepositoryOwner \
+            --jq '.headRepositoryOwner.login + "/" + .headRepository.name + ":" + .headRefName')
+          if [ "$head" != "$GITHUB_REPOSITORY:preview" ]; then
+            echo "::error::Promotion PR #$NUMBER comes from $head, not preview."
+            exit 1
+          fi
