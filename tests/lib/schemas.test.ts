@@ -77,6 +77,21 @@ describe("WorkItemSchema", () => {
     expect(WorkItemSchema.parse(valid)).toEqual(valid)
   })
 
+  it("accepts a current role", () => {
+    expect(WorkItemSchema.safeParse({ ...valid, start: "2022-01", end: "Present" }).success).toBe(
+      true
+    )
+  })
+
+  it("rejects dates it can't read and an end before the start", () => {
+    expect(messages(WorkItemSchema.safeParse({ ...valid, start: "someday" }))).toEqual([
+      `"someday" isn't a date: use "Jan 2024", "2024-01" or "Present"`,
+    ])
+    expect(messages(WorkItemSchema.safeParse({ ...valid, end: "Dec 2021" }))).toEqual([
+      'end "Dec 2021" is before start "Jan 2022"',
+    ])
+  })
+
   it("rejects missing locations", () => {
     const { locations: _locations, ...rest } = valid
     expect(WorkItemSchema.safeParse(rest).success).toBe(false)
@@ -102,6 +117,16 @@ describe("ProjectSchema", () => {
   it("requires alt text for gallery images", () => {
     const result = ProjectSchema.safeParse({ ...valid, gallery: [{ src: "/a.png" }] })
     expect(result.success).toBe(false)
+  })
+
+  it("accepts a project that started and ended in the same month", () => {
+    expect(ProjectSchema.safeParse({ ...valid, endDate: "2023-01" }).success).toBe(true)
+  })
+
+  it("rejects an end date before the start date", () => {
+    expect(messages(ProjectSchema.safeParse({ ...valid, endDate: "2022-12" }))).toEqual([
+      'endDate "2022-12" is before startDate "2023-01"',
+    ])
   })
 
   it("rejects a non-numeric teamSize", () => {

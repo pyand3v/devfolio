@@ -6,22 +6,13 @@ import path from "node:path"
 import { parse } from "yaml"
 import { defaultLocale, locales } from "../src/lib/i18n.ts"
 import {
-  BlogPostSchema,
-  ByoEntrySchema,
   byoCourseFile,
+  collectionSchemas,
   contentDirectories,
-  ProjectSchema,
   resolveEntryData,
-  WorkItemSchema,
 } from "../src/lib/schemas.ts"
 
 const root = path.resolve(import.meta.dirname, "..")
-const schemas = {
-  blog: BlogPostSchema,
-  work: WorkItemSchema,
-  projects: ProjectSchema,
-  byo: ByoEntrySchema,
-}
 const errors = []
 
 async function mdxFiles(directory) {
@@ -74,7 +65,7 @@ async function loadCollection(collection) {
     errors.push(...resolved.errors.map(error => `${relative}: ${error}.`))
     if (resolved.errors.length) continue
 
-    const result = schemas[collection].safeParse(resolved.data)
+    const result = collectionSchemas[collection].safeParse(resolved.data)
     if (!result.success) {
       for (const issue of result.error.issues) {
         errors.push(`${relative}: ${issue.path.join(".") || "frontmatter"}: ${issue.message}.`)

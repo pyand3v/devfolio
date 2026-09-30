@@ -3,6 +3,7 @@
 // `scripts/content.mjs`. The scripts run it with Node's built-in TypeScript support, so it may only use
 // erasable syntax and relative imports (no `@/` alias).
 import { z } from "zod"
+import { parseFlexibleDate } from "./dates.ts"
 import { defaultLocale, locales } from "./i18n.ts"
 
 export const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -13,6 +14,36 @@ const SlugSchema = z.string().regex(slugPattern, "Must be lowercase kebab-case")
 const DateTimeSchema = z
   .union([z.iso.datetime({ offset: true }), z.date()])
   .transform(value => (typeof value === "string" ? value : value.toISOString()))
+
+/**
+ * Checks a start/end pair the pages format with `formatDateRange`: both must be dates like "Jan 2024",
+ * "2024-01" or "Present", and the start can't be after the end.
+ */
+function checkDateRange(startKey: string, endKey: string) {
+  return (entry: Record<string, unknown>, context: z.RefinementCtx) => {
+    const [start, end] = [String(entry[startKey]), String(entry[endKey])]
+    const [from, to] = [parseFlexibleDate(start), parseFlexibleDate(end)]
+    for (const [key, value, date] of [
+      [startKey, start, from],
+      [endKey, end, to],
+    ] as const) {
+      if (Number.isNaN(date.getTime())) {
+        context.addIssue({
+          code: "custom",
+          path: [key],
+          message: `"${value}" isn't a date: use "Jan 2024", "2024-01" or "Present"`,
+        })
+      }
+    }
+    if (start !== end && from.getTime() > to.getTime()) {
+      context.addIssue({
+        code: "custom",
+        path: [endKey],
+        message: `${endKey} "${end}" is before ${startKey} "${start}"`,
+      })
+    }
+  }
+}
 
 /** Blog fields every translation shares. They're written only in the default-locale file. */
 export const sharedBlogFields = ["featured", "publishedAt", "updatedAt"] as const
@@ -50,33 +81,37 @@ export const BlogPostSchema = z
     }
   })
 
-export const WorkItemSchema = z.object({
-  slug: SlugSchema,
-  company: z.string().min(1),
-  title: z.string().min(1),
-  start: z.string(),
-  end: z.string(),
-  description: z.string(),
-  locations: z.array(z.string()),
-  logoUrl: z.string().optional(),
-  companyUrl: z.string().optional(),
-  techStack: z.array(z.string()).optional(),
-})
+export const WorkItemSchema = z
+  .object({
+    slug: SlugSchema,
+    company: z.string().min(1),
+    title: z.string().min(1),
+    start: z.string(),
+    end: z.string(),
+    description: z.string(),
+    locations: z.array(z.string()),
+    logoUrl: z.string().optional(),
+    companyUrl: z.string().optional(),
+    techStack: z.array(z.string()).optional(),
+  })
+  .superRefine(checkDateRange("start", "end"))
 
-export const ProjectSchema = z.object({
-  slug: SlugSchema,
-  title: z.string().min(1),
-  image: z.string(),
-  description: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
-  techStack: z.array(z.string()),
-  teamSize: z.number().optional(),
-  role: z.string().optional(),
-  githubUrl: z.string().optional(),
-  paperUrl: z.string().optional(),
-  gallery: z.array(z.object({ src: z.string(), alt: z.string() })).optional(),
-})
+export const ProjectSchema = z
+  .object({
+    slug: SlugSchema,
+    title: z.string().min(1),
+    image: z.string(),
+    description: z.string(),
+    startDate: z.string(),
+    endDate: z.string(),
+    techStack: z.array(z.string()),
+    teamSize: z.number().optional(),
+    role: z.string().optional(),
+    githubUrl: z.string().optional(),
+    paperUrl: z.string().optional(),
+    gallery: z.array(z.object({ src: z.string(), alt: z.string() })).optional(),
+  })
+  .superRefine(checkDateRange("startDate", "endDate"))
 
 const byoEntryFields = {
   locale: LocaleSchema,
@@ -192,3 +227,11 @@ export function resolveEntryData(
     .map(([key, value]) => `${key} is "${frontmatter[key]}", but the file path says "${value}"`)
   return { data: { ...frontmatter, ...fields }, errors }
 }
+
+/** The schema each collection's frontmatter is validated with, after `resolveEntryData`. */
+export const collectionSchemas = {
+  blog: BlogPostSchema,
+  work: WorkItemSchema,
+  projects: ProjectSchema,
+  byo: ByoEntrySchema,
+} satisfies Record<Collection, z.ZodType>
