@@ -1,14 +1,16 @@
 name: PR Title
 
 # Enforces Conventional Commits PR titles, e.g. `feat(blog): add tag filter` or `chore(deps): bump astro`.
-# Squash merges use the PR title as the commit subject, so this keeps the history on `main` consistent.
+# Squash merges into `preview` use the PR title as the commit subject, so this keeps the history consistent.
+# The rule lives in `.github/scripts/check-pr-title.sh`, shared with the Promote workflow.
 # Re-runs on `edited` so fixing the title replaces the failed result, and on `synchronize` so the check
 # is reported on every new head commit.
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize]
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   conventional-title:
@@ -16,29 +18,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v6
+
       # The title is passed through an env var, never interpolated into the script, since it's user input
       - name: Check Conventional Commits format
         env:
           TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          types="feat|fix|content|docs|style|refactor|perf|test|build|ci|chore|revert"
-          pattern="^($types)(\([a-z0-9./-]+\))?!?: [^ ].*[^.]$"
-
-          if [[ "$TITLE" =~ $pattern ]]; then
-            echo "PR title follows Conventional Commits: $TITLE"
-            exit 0
-          fi
-
-          echo "::error title=Invalid PR title::'$TITLE' must look like 'type(scope): summary'"
-          {
-            echo "### PR title doesn't follow Conventional Commits"
-            echo
-            echo "Got: \`$TITLE\`"
-            echo
-            echo "Expected \`type(optional-scope): summary\`, with a lowercase imperative summary and no"
-            echo "trailing period. Allowed types: \`${types//|/\`, \`}\`."
-            echo
-            echo "Examples: \`feat(blog): add tag filter\`, \`fix(i18n): translate 404 page\`,"
-            echo "\`chore(deps): bump astro from 7.2.2 to 7.3.5\`. Append \`!\` before the colon for breaking changes."
-          } >> "$GITHUB_STEP_SUMMARY"
-          exit 1
+        run: .github/scripts/check-pr-title.sh "$TITLE"
