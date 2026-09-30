@@ -11,18 +11,22 @@
         ? "es"
         : "en"
   }
+  const segments = window.location.pathname.split("/").filter(Boolean)
+  const prefixed = supported.includes(segments[0])
+  const current = prefixed ? segments.shift() || "en" : "en"
+  // Without a stored choice, a localized URL (a shared link, a search result) is the choice: redirecting
+  // it by browser language would also send crawlers, which browse in English, away from every translation
+  const initial = () => (prefixed ? current : detectLocale())
   let preferred = ""
   try {
     preferred = localStorage.getItem(key) ?? ""
     if (!supported.includes(preferred)) {
-      preferred = detectLocale()
+      preferred = initial()
       localStorage.setItem(key, preferred)
     }
   } catch {
-    preferred = detectLocale()
+    preferred = initial()
   }
-  const segments = window.location.pathname.split("/").filter(Boolean)
-  const current = supported.includes(segments[0]) ? segments.shift() || "en" : "en"
   const logicalPath = `/${segments.join("/")}`.replace(/\/$/, "") || "/"
   if (current === preferred) {
     if (current !== "en")

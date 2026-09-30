@@ -20,7 +20,9 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props
 const locale = Astro.params.locale as Locale
-const canonical = `/blog/${post.slug}`
+// Without a translation the page shows the English post, so that's the canonical version
+const translated = post.locale === locale
+const canonical = translated ? `/${locale}/blog/${post.slug}` : `/blog/${post.slug}`
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -39,6 +41,8 @@ const jsonLd = {
   title={post.title}
   description={post.summary}
   canonical={canonical}
+  translations={translated ? post.availableLanguages : []}
+  ogImage={`${canonical}/opengraph-image`}
   isBlogPost
   jsonLd={jsonLd}
 >
