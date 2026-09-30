@@ -208,7 +208,7 @@ export function fieldsFromPath(
 
 /**
  * Combines an entry's frontmatter with the fields its path defines. The path wins: frontmatter may
- * repeat a path field (the CMS writes `project` into BYO entries) but not contradict it.
+ * repeat a path field, e.g. a hand-written `slug`, but not contradict it.
  */
 export function resolveEntryData(
   collection: Collection,

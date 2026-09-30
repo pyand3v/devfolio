@@ -41,6 +41,9 @@ importers:
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
+      '@sveltia/cms':
+        specifier: ^0.223.0
+        version: 0.223.0
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
@@ -68,6 +71,9 @@ importers:
       tailwind-merge:
         specifier: 3.7.0
         version: 3.7.0
+      yaml:
+        specifier: ^2.9.1
+        version: 2.9.1
       zod:
         specifier: 4.6.5
         version: 4.6.5
@@ -75,9 +81,6 @@ importers:
       '@astrojs/check':
         specifier: ^0.9.10
         version: 0.9.10(prettier-plugin-astro@1.1.0(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)(prettier@3.9.9))(prettier@3.9.9)(typescript@6.0.3)
-      '@sveltia/cms':
-        specifier: ^0.223.0
-        version: 0.223.0
       '@tailwindcss/typography':
         specifier: ^0.5.20
         version: 0.5.20(tailwindcss@4.3.3)
@@ -87,6 +90,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 4.1.11
         version: 4.1.11(vitest@4.1.11)
+      ajv:
+        specifier: ^8.20.0
+        version: 8.20.0
       eslint:
         specifier: 10.11.0
         version: 10.11.0(jiti@2.7.0)
@@ -123,9 +129,6 @@ importers:
       vitest:
         specifier: 4.1.11
         version: 4.1.11(@types/node@26.6.3)(@vitest/coverage-v8@4.1.11)(happy-dom@20.14.5)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
-      yaml:
-        specifier: ^2.9.1
-        version: 2.9.1
 
 packages:
 

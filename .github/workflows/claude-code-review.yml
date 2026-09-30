@@ -5,9 +5,15 @@ name: Claude Code Review
 on:
   pull_request:
     types: [opened, ready_for_review, reopened]
-    # Content and docs are already validated by CI, so PRs touching only these skip the review
+    # Content and docs are already validated by CI, so PRs touching only these skip the review. That
+    # includes the images the CMS and `pnpm content image` add next to content.
     paths-ignore:
       - "src/data/**/*.mdx"
+      - "public/blog/**"
+      - "public/byo/**"
+      - "public/projects/**"
+      - "public/work/**"
+      - "public/uploads/**"
       - "docs/**"
       - "**/*.md"
 

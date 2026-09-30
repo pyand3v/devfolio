@@ -242,7 +242,6 @@ async function newCourseEntry(type) {
   const slug = await askSlug(title, slug => byoEntryPath(defaultLocale, course, slug))
   const data = {
     type,
-    project: course,
     order: nextOrder(
       siblings.filter(entry => entry.data.type === type).map(entry => entry.data.order)
     ),
