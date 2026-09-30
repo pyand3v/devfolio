@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import CollectionLanding from "@/components/CollectionLanding.astro"
-import { locales, type Locale } from "@/lib/i18n"
+import { copy, locales, type Locale } from "@/lib/i18n"
 
 export function getStaticPaths() {
   return locales.filter(locale => locale !== "en").map(locale => ({ params: { locale } }))
@@ -10,6 +10,6 @@ export function getStaticPaths() {
 const locale = Astro.params.locale as Locale
 ---
 
-<BaseLayout title="Blog">
+<BaseLayout title={copy[locale].nav.blog} description={copy[locale].pages.blogDescription}>
   <CollectionLanding locale={locale} kind="blog" />
 </BaseLayout>

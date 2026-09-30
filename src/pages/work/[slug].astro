@@ -5,6 +5,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro"
 import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
 import TechBadge from "@/components/TechBadge.astro"
 import { homeIntroConfig } from "@/data/portfolio"
+import { copy } from "@/lib/i18n"
 import { siteMetadata } from "@/data/site"
 import { formatDateRange } from "@/lib/utils"
 import { getAllWorkItems } from "@/lib/content"
@@ -41,7 +42,7 @@ const jsonLd = {
         class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#8fbcbb] uppercase transition hover:gap-3 hover:text-white"
       >
         <Icon name="lucide:arrow-left" class="size-4" />
-        Back to Work
+        {copy.en.detail.backToWork}
       </a>
       <div class="mb-8 flex items-start gap-4">
         {item.logoUrl && (
@@ -70,7 +71,7 @@ const jsonLd = {
         <section class="mb-8">
           <>
             <h2 class="mb-3 font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase">
-              Tech Stack
+              {copy.en.detail.techStack}
             </h2>
             <div class="flex flex-wrap gap-2">
               {item.techStack.map(name => (

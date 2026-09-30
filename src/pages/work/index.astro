@@ -1,8 +1,9 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import CollectionLanding from "@/components/CollectionLanding.astro"
+import { copy } from "@/lib/i18n"
 ---
 
-<BaseLayout title="Work" description="Explore my professional work experience and career journey.">
+<BaseLayout title={copy.en.nav.work} description={copy.en.pages.workDescription}>
   <CollectionLanding locale="en" kind="work" />
 </BaseLayout>

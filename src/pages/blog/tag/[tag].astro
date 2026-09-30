@@ -2,6 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import BlogCard from "@/components/BlogCard.astro"
 import { getAllBlogPosts } from "@/lib/content"
+import { copy } from "@/lib/i18n"
 
 export async function getStaticPaths() {
   const posts = await getAllBlogPosts("en", { featuredOnly: false })
@@ -13,11 +14,12 @@ const posts = (await getAllBlogPosts("en", { featuredOnly: false })).filter(post
   post.tags?.includes(tag ?? "")
 )
 const displayTag = tag?.replaceAll("-", " ") ?? ""
+const labels = copy.en.tag
 ---
 
 <BaseLayout
-  title={`Posts tagged ${displayTag}`}
-  description={`Posts about ${displayTag}.`}
+  title={`${labels.title} ${displayTag}`}
+  description={`${labels.description} ${displayTag}.`}
   canonical={`/blog/tag/${tag}`}
 >
   <section class="portfolio-dark-grid min-h-screen text-white">
@@ -27,15 +29,15 @@ const displayTag = tag?.replaceAll("-", " ") ?? ""
           href="/blog"
           class="inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase transition hover:text-white"
         >
-          &larr; Back to blog
+          &larr; {labels.back}
         </a>
         <p class="mt-10 text-xs font-black tracking-[0.2em] text-[#8fbcbb] uppercase">
-          Tag archive
+          {labels.eyebrow}
         </p>
         <h1 class="display-type mt-5 max-w-4xl text-5xl leading-[0.9] sm:text-7xl">{displayTag}</h1>
         <p class="mt-6 max-w-2xl text-lg text-white/70">
           {posts.length}
-          {posts.length === 1 ? "article" : "articles"} filed under this topic.
+          {posts.length === 1 ? labels.countOne : labels.countOther}
         </p>
       </header>
       <div class="mt-12 grid gap-5 lg:grid-cols-2">

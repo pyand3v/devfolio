@@ -45,6 +45,45 @@ export const copy = {
       description:
         "Selected roles turning customer needs and business goals into thoughtful product experiences.",
     },
+    pages: {
+      blogDescription:
+        "Read my latest blog posts about software development, technology, and more.",
+      projectsDescription: "Browse my portfolio of projects, side projects, and technical work.",
+      workDescription: "Explore my professional work experience and career journey.",
+      byoTitle: "Build Your Own",
+      byoDescription: "Practical build-alongs for making useful digital products.",
+    },
+    tag: {
+      title: "Posts tagged",
+      description: "Posts about",
+      back: "Back to blog",
+      eyebrow: "Tag archive",
+      countOne: "article filed under this topic.",
+      countOther: "articles filed under this topic.",
+    },
+    notFound: {
+      title: "Page not found",
+      description: "The page you requested does not exist.",
+      body: "The page you requested does not exist or may have moved.",
+      home: "Back home",
+    },
+    detail: {
+      backToWork: "Back to Work",
+      backToProjects: "Back to Projects",
+      techStack: "Tech Stack",
+      teamSize: "Team Size",
+      role: "Role",
+      github: "View on GitHub",
+      paper: "Read Paper",
+    },
+    a11y: {
+      mainNav: "Main navigation",
+      mobileNav: "Mobile navigation",
+      toggleNav: "Toggle navigation",
+      onThisPage: "On this page",
+      toc: "Table of contents",
+      lessonNav: "Lesson navigation",
+    },
     projects: {
       eyebrow: "02 · Selected builds",
       title: "Things worth\ntrying.",
@@ -94,6 +133,45 @@ export const copy = {
       description:
         "Roles seleccionados transformando necesidades de clientes y objetivos de negocio en experiencias de producto.",
     },
+    pages: {
+      blogDescription: "Lee mis últimos artículos sobre desarrollo de software, tecnología y más.",
+      projectsDescription:
+        "Explora mi portafolio de proyectos, proyectos personales y trabajo técnico.",
+      workDescription: "Conoce mi experiencia profesional y mi trayectoria.",
+      byoTitle: "Build Your Own",
+      byoDescription: "Guías prácticas para construir productos digitales útiles.",
+    },
+    tag: {
+      title: "Artículos sobre",
+      description: "Artículos sobre",
+      back: "Volver al blog",
+      eyebrow: "Archivo de temas",
+      countOne: "artículo sobre este tema.",
+      countOther: "artículos sobre este tema.",
+    },
+    notFound: {
+      title: "Página no encontrada",
+      description: "La página que buscas no existe.",
+      body: "La página que buscas no existe o puede haberse movido.",
+      home: "Volver al inicio",
+    },
+    detail: {
+      backToWork: "Volver a Trabajo",
+      backToProjects: "Volver a Proyectos",
+      techStack: "Tecnologías",
+      teamSize: "Tamaño del equipo",
+      role: "Rol",
+      github: "Ver en GitHub",
+      paper: "Leer el artículo",
+    },
+    a11y: {
+      mainNav: "Navegación principal",
+      mobileNav: "Navegación móvil",
+      toggleNav: "Abrir o cerrar la navegación",
+      onThisPage: "En esta página",
+      toc: "Índice",
+      lessonNav: "Navegación entre lecciones",
+    },
     projects: {
       eyebrow: "02 · Proyectos seleccionados",
       title: "Cosas que vale\nla pena probar.",
@@ -141,6 +219,46 @@ export const copy = {
       title: "Trabalho que\nchega à produção.",
       description:
         "Funções selecionadas transformando necessidades de clientes e objetivos de negócio em experiências de produto.",
+    },
+    pages: {
+      blogDescription:
+        "Leia meus artigos mais recentes sobre desenvolvimento de software, tecnologia e mais.",
+      projectsDescription:
+        "Explore meu portfólio de projetos, projetos pessoais e trabalho técnico.",
+      workDescription: "Conheça minha experiência profissional e minha trajetória.",
+      byoTitle: "Build Your Own",
+      byoDescription: "Guias práticos para construir produtos digitais úteis.",
+    },
+    tag: {
+      title: "Artigos sobre",
+      description: "Artigos sobre",
+      back: "Voltar ao blog",
+      eyebrow: "Arquivo de temas",
+      countOne: "artigo sobre este tema.",
+      countOther: "artigos sobre este tema.",
+    },
+    notFound: {
+      title: "Página não encontrada",
+      description: "A página que você procura não existe.",
+      body: "A página que você procura não existe ou pode ter sido movida.",
+      home: "Voltar ao início",
+    },
+    detail: {
+      backToWork: "Voltar a Trabalho",
+      backToProjects: "Voltar a Projetos",
+      techStack: "Tecnologias",
+      teamSize: "Tamanho da equipe",
+      role: "Função",
+      github: "Ver no GitHub",
+      paper: "Ler o artigo",
+    },
+    a11y: {
+      mainNav: "Navegação principal",
+      mobileNav: "Navegação móvel",
+      toggleNav: "Abrir ou fechar a navegação",
+      onThisPage: "Nesta página",
+      toc: "Sumário",
+      lessonNav: "Navegação entre lições",
     },
     projects: {
       eyebrow: "02 · Projetos selecionados",
