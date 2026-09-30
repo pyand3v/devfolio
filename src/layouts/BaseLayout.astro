@@ -8,6 +8,7 @@ import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import { siteMetadata } from "@/data/site"
 import { getLocaleFromPathname } from "@/lib/i18n"
+import { rssPath, rssTitle } from "@/lib/rss"
 import Analytics from "@vercel/analytics/astro"
 import SpeedInsights from "@vercel/speed-insights/astro"
 import localeRedirect from "@/scripts/locale-redirect.js?raw"
@@ -67,8 +68,9 @@ const socialImage =
     <link
       rel="alternate"
       type="application/rss+xml"
-      title={`${siteMetadata.title} RSS`}
-      href="/rss.xml"
+      title={`${rssTitle(siteMetadata.title, locale)} RSS`}
+      href={rssPath(locale)}
+      hreflang={locale}
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
