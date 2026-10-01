@@ -1,5 +1,4 @@
 import type { APIRoute } from "astro"
-import { siteMetadata } from "@/data/site"
 import { getAllBlogPosts } from "@/lib/content"
 import { createOgImage } from "@/lib/og"
 export async function getStaticPaths() {
@@ -8,8 +7,4 @@ export async function getStaticPaths() {
   return tags.map(tag => ({ params: { tag } }))
 }
 export const GET: APIRoute = ({ params }) =>
-  createOgImage(
-    `Posts tagged ${params.tag?.replaceAll("-", " ") ?? ""}`,
-    "Blog",
-    siteMetadata.theme
-  )
+  createOgImage(`Posts tagged ${params.tag?.replaceAll("-", " ") ?? ""}`, "Blog")

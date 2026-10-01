@@ -1,5 +1,4 @@
 import type { APIRoute } from "astro"
-import { siteMetadata } from "@/data/site"
 import { getAllBlogPosts } from "@/lib/content"
 import { copy, locales, type Locale } from "@/lib/i18n"
 import { createOgImage } from "@/lib/og"
@@ -20,4 +19,4 @@ export async function getStaticPaths() {
 }
 
 export const GET: APIRoute = ({ params, props }) =>
-  createOgImage(props.title, copy[params.locale as Locale].nav.blog, siteMetadata.theme)
+  createOgImage(props.title, copy[params.locale as Locale].nav.blog)
