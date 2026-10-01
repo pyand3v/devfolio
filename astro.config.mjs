@@ -3,39 +3,82 @@ import tailwindcss from "@tailwindcss/vite"
 import icon from "astro-icon"
 import { defineConfig } from "astro/config"
 import { createHash } from "node:crypto"
-import { readFileSync } from "node:fs"
+import { createReadStream, existsSync, readFileSync, statSync } from "node:fs"
+import { extname, join, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const site = process.env.PUBLIC_SITE_URL ?? "https://nextjs-portofolio-website.vercel.app"
 
-// BaseLayout renders this file inline, so the CSP allows it by the hash of the exact same bytes
-const localeRedirect = readFileSync(new URL("./src/scripts/locale-redirect.js", import.meta.url))
-const localeRedirectHash = `sha256-${createHash("sha256").update(localeRedirect).digest("base64")}`
+// These scripts are rendered inline (BaseLayout, and the BYO components for byo-progress.js), so the CSP
+// allows them by the hash of the exact same bytes
+const inlineScriptHash = path =>
+  `sha256-${createHash("sha256")
+    .update(readFileSync(new URL(path, import.meta.url)))
+    .digest("base64")}`
+const localeRedirectHash = inlineScriptHash("./src/scripts/locale-redirect.js")
+const themeInitHash = inlineScriptHash("./src/scripts/theme-init.js")
+const byoProgressHash = inlineScriptHash("./src/scripts/byo-progress.js")
+
+// Pagefind's files that aren't binary data (its index and WebAssembly files are)
+const pagefindTypes = {
+  ".js": "text/javascript",
+  ".css": "text/css",
+  ".json": "application/json",
+}
 
 /**
  * Indexes the built pages with Pagefind once the build is done, for the static search at /search. Only
  * elements marked data-pagefind-body are indexed (blog posts, work, projects and BYO), with one index per
- * <html lang>.
+ * <html lang>. The dev server has no built pages to index, so it serves the index from the last build.
  * @returns {import("astro").AstroIntegration}
  */
-const pagefind = () => ({
-  name: "pagefind",
-  hooks: {
-    "astro:build:done": async ({ dir, logger }) => {
-      const { createIndex, close } = await import("pagefind")
-      const { index, errors } = await createIndex()
-      if (!index) throw new Error(`Pagefind: ${errors.join("\n")}`)
-      const added = await index.addDirectory({ path: fileURLToPath(dir) })
-      if (added.errors.length) throw new Error(`Pagefind: ${added.errors.join("\n")}`)
-      const written = await index.writeFiles({
-        outputPath: fileURLToPath(new URL("pagefind/", dir)),
-      })
-      if (written.errors.length) throw new Error(`Pagefind: ${written.errors.join("\n")}`)
-      await close()
-      logger.info(`Indexed ${added.page_count} pages for search`)
+const pagefind = () => {
+  let outDir = new URL("./dist/", import.meta.url)
+  return {
+    name: "pagefind",
+    hooks: {
+      "astro:config:done": ({ config }) => {
+        outDir = config.outDir
+      },
+      "astro:server:setup": ({ server, logger }) => {
+        const root = resolve(fileURLToPath(new URL("pagefind/", outDir)))
+        if (!existsSync(root)) {
+          logger.warn(
+            "No search index yet, so /search can't find anything. Run `pnpm build` once to make one."
+          )
+        }
+        server.middlewares.use("/pagefind", (request, response, next) => {
+          let file = ""
+          try {
+            file = join(root, decodeURIComponent((request.url ?? "/").split("?")[0]))
+          } catch {
+            // A malformed escape in the URL: not one of Pagefind's files
+          }
+          if (!file.startsWith(root + sep) || !existsSync(file) || !statSync(file).isFile())
+            return next()
+          response.setHeader(
+            "Content-Type",
+            pagefindTypes[extname(file)] ?? "application/octet-stream"
+          )
+          createReadStream(file).pipe(response)
+        })
+      },
+      "astro:build:done": async ({ dir, logger }) => {
+        const { createIndex, close } = await import("pagefind")
+        const { index, errors } = await createIndex()
+        if (!index) throw new Error(`Pagefind: ${errors.join("\n")}`)
+        const added = await index.addDirectory({ path: fileURLToPath(dir) })
+        if (added.errors.length) throw new Error(`Pagefind: ${added.errors.join("\n")}`)
+        const written = await index.writeFiles({
+          outputPath: fileURLToPath(new URL("pagefind/", dir)),
+        })
+        if (written.errors.length) throw new Error(`Pagefind: ${written.errors.join("\n")}`)
+        await close()
+        logger.info(`Indexed ${added.page_count} pages for search`)
+      },
     },
-  },
-})
+  }
+}
 
 export default defineConfig({
   site,
@@ -66,7 +109,7 @@ export default defineConfig({
       scriptDirective: {
         // Pagefind's search runs as WebAssembly
         resources: ["'self'", "https://va.vercel-scripts.com", "'wasm-unsafe-eval'"],
-        hashes: [localeRedirectHash],
+        hashes: [localeRedirectHash, themeInitHash, byoProgressHash],
       },
       styleDirective: {
         // Syntax-highlighted code blocks use inline style attributes

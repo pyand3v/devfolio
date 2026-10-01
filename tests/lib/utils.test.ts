@@ -136,6 +136,11 @@ describe("formatBlogDate", () => {
     expect(formatBlogDate("2025-04-15")).toBe("April 15, 2025")
   })
 
+  it("should format the date in the requested locale", () => {
+    expect(formatBlogDate("2025-04-01", "long", "es")).toBe("1 de abril de 2025")
+    expect(formatBlogDate("2025-04-01", "long", "pt-br")).toBe("1 de abril de 2025")
+  })
+
   it("should return 'Invalid Date' for an unparseable date string", () => {
     expect(formatBlogDate("not-a-date")).toBe("Invalid Date")
   })
