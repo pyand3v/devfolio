@@ -1,10 +1,11 @@
 ---
 import { render } from "astro:content"
 import { Icon } from "astro-icon/components"
-import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
+import ArticleSheet from "@/components/ArticleSheet.astro"
 import type { ByoExercise, ByoGuide, ByoLesson, ByoProjectBundle } from "@/lib/content"
-import type { Locale } from "@/lib/i18n"
-import { copy as uiCopy, getLocalizedPath } from "@/lib/i18n"
+import { copy, getLocalizedPath, type Locale } from "@/lib/i18n"
+import byoProgress from "@/scripts/byo-progress.js?raw"
+
 interface Props {
   bundle: ByoProjectBundle
   entry: ByoLesson | ByoGuide | ByoExercise
@@ -12,127 +13,109 @@ interface Props {
 }
 const { bundle, entry, locale } = Astro.props
 const { Content, headings } = await render(entry)
+const labels = copy[locale].byo
+const project = bundle.project.data
+const base = `/byo/${project.slug}`
 const lessonEntry = entry.data.type === "lesson" ? (entry as ByoLesson) : undefined
-const isLesson = Boolean(lessonEntry)
 const lessonIndex = lessonEntry ? bundle.lessons.findIndex(item => item.id === lessonEntry.id) : -1
 const previous = lessonEntry ? bundle.lessons[lessonIndex - 1] : undefined
 const next = lessonEntry ? bundle.lessons[lessonIndex + 1] : undefined
 const chapter = lessonEntry
-  ? bundle.project.data.chapters.find(item => item.order === lessonEntry.data.chapter)
+  ? project.chapters.find(item => item.order === lessonEntry.data.chapter)
   : undefined
-const copy = {
-  en: {
-    back: "Back to path",
-    previous: "Previous lesson",
-    next: "Next lesson",
-    lesson: "Lesson",
-    guide: "Guide",
-    exercise: "Exercise",
-    of: "of",
-  },
-  es: {
-    back: "Volver a la ruta",
-    previous: "Lección anterior",
-    next: "Siguiente lección",
-    lesson: "Lección",
-    guide: "Guía",
-    exercise: "Ejercicio",
-    of: "de",
-  },
-  "pt-br": {
-    back: "Voltar à trilha",
-    previous: "Lição anterior",
-    next: "Próxima lição",
-    lesson: "Lição",
-    guide: "Guia",
-    exercise: "Exercício",
-    of: "de",
-  },
-}[locale]
-const label =
+const kind =
   entry.data.type === "lesson"
-    ? copy.lesson
+    ? labels.lesson
     : entry.data.type === "guide"
-      ? copy.guide
-      : copy.exercise
+      ? labels.guide
+      : labels.exercise
+const folder = { lesson: "lessons", guide: "guides", exercise: "exercises" }[entry.data.type]
+const path = [
+  `byo/${project.slug}/${folder}/${entry.data.slug}`,
+  lessonEntry && chapter?.title,
+  lessonEntry && `${labels.lesson} ${lessonIndex + 1} ${labels.of} ${bundle.lessons.length}`,
+  !lessonEntry && kind,
+]
+  .filter(Boolean)
+  .join(" · ")
+// Long courses drop the connectors so the numbered stops wrap into tidy rows
+const compactTrail = bundle.lessons.length > 8
+const lessonHref = (slug: string) => getLocalizedPath(`${base}/lessons/${slug}`, locale)
 ---
 
-<section class="portfolio-dark-grid min-h-screen text-white">
-  <article
-    class="mx-auto max-w-6xl px-5 py-10 lg:px-8 lg:py-16"
-    data-pagefind-body
-    data-pagefind-meta={`section:BYO · ${bundle.project.data.title}`}
-  >
-    <a
-      data-pagefind-ignore
-      href={getLocalizedPath(`/byo/${bundle.project.data.slug}`, locale)}
-      class="inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[.12em] text-[#8fbcbb] uppercase hover:text-white"
-    >
-      <Icon name="lucide:arrow-left" class="size-4" />
-      {copy.back}
-    </a>
-    <header class="mt-10 border-b border-[#88c0d0] pb-8">
-      <p class="font-mono text-xs font-bold tracking-[.15em] text-[#8fbcbb] uppercase">
-        BYO · {bundle.project.data.title} · {label}
-      </p>
-      {isLesson && (
-        <p class="mt-4 font-mono text-xs text-[#8fbcbb]">
-          {chapter?.title} · {copy.lesson} {lessonIndex + 1} {copy.of} {bundle.lessons.length}
-        </p>
-      )}
-      <h1 class="display-type mt-5 max-w-4xl text-4xl leading-[.9] sm:text-6xl">
-        {entry.data.title}
-      </h1>
-      <p class="mt-5 max-w-3xl text-lg leading-relaxed text-white/70">{entry.data.description}</p>
-    </header>
-    <div
-      class:list={[
-        "mt-10",
-        headings.length > 0 && "lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-12",
-      ]}
-    >
-      <ContentTableOfContents headings={headings} />
-      <div class="min-w-0">
-        <div class="prose prose-invert max-w-none prose-headings:font-[Gabarito,Arial,sans-serif] prose-headings:text-white prose-p:text-white/75 prose-a:text-[#88c0d0] hover:prose-a:text-white">
-          <Content />
-        </div>
-        {isLesson && (
-          <nav
-            data-pagefind-ignore
-            class="mt-14 grid gap-4 border-t border-white/20 pt-6 sm:grid-cols-2"
-            aria-label={uiCopy[locale].a11y.lessonNav}
-          >
-            {previous ? (
-              <a
-                href={getLocalizedPath(
-                  `/byo/${bundle.project.data.slug}/lessons/${previous.data.slug}`,
-                  locale
-                )}
-                class="border border-white/20 p-4 hover:border-[#88c0d0]"
-              >
-                <span class="font-mono text-[.65rem] text-[#8fbcbb] uppercase">
-                  ← {copy.previous}
-                </span>
-                <span class="mt-2 block font-bold">{previous.data.title}</span>
-              </a>
-            ) : (
-              <span />
+<ArticleSheet
+  backHref={getLocalizedPath(base, locale)}
+  backLabel={labels.backToPath}
+  path={path}
+  title={entry.data.title}
+  description={entry.data.description}
+  headings={headings}
+  pagefindSection={`BYO · ${project.title}`}
+>
+  <Fragment slot="meta">
+    {lessonEntry && (
+      <ol
+        class:list={["mt-7 flex flex-wrap items-center", compactTrail ? "gap-1.5" : "gap-2"]}
+        aria-label={`${project.title}: ${labels.lesson} ${lessonIndex + 1} ${labels.of} ${bundle.lessons.length}`}
+        data-pagefind-ignore
+        data-byo-course={project.slug}
+        data-byo-visit={lessonEntry.data.slug}
+        data-byo-total={bundle.lessons.length}
+      >
+        {bundle.lessons.map((lesson, index) => (
+          <li class="flex items-center gap-2">
+            {index > 0 && !compactTrail && (
+              <span class="w-4 border-t-2 border-dashed border-line sm:w-6" aria-hidden="true" />
             )}
-            {next && (
-              <a
-                href={getLocalizedPath(
-                  `/byo/${bundle.project.data.slug}/lessons/${next.data.slug}`,
-                  locale
-                )}
-                class="border border-white/20 p-4 text-right hover:border-[#88c0d0]"
-              >
-                <span class="font-mono text-[.65rem] text-[#8fbcbb] uppercase">{copy.next} →</span>
-                <span class="mt-2 block font-bold">{next.data.title}</span>
-              </a>
-            )}
-          </nav>
+            <a
+              href={lessonHref(lesson.data.slug)}
+              aria-current={index === lessonIndex ? "step" : undefined}
+              title={lesson.data.title}
+              class="byo-stop size-7 text-xs hover:border-accent"
+              data-byo-stop={lesson.data.slug}
+              data-number={index + 1}
+            >
+              <span class="sr-only">{labels.lesson} </span>
+              {index + 1}
+            </a>
+          </li>
+        ))}
+      </ol>
+    )}
+    {lessonEntry && <script is:inline set:html={byoProgress} />}
+  </Fragment>
+  <Content />
+  <Fragment slot="footer">
+    {lessonEntry && (
+      <nav
+        data-pagefind-ignore
+        class="mt-14 grid gap-4 border-t-[1.5px] border-dashed border-line pt-8 sm:grid-cols-2"
+        aria-label={copy[locale].a11y.lessonNav}
+      >
+        {previous ? (
+          <a href={lessonHref(previous.data.slug)} class="card-paper group block rounded-md p-4">
+            <span class="inline-flex items-center gap-1.5 font-mono text-xs text-accent">
+              <Icon name="lucide:arrow-left" class="size-3.5" />
+              {labels.previous}
+            </span>
+            <span class="display mt-1.5 block text-lg text-ink">{previous.data.title}</span>
+          </a>
+        ) : (
+          <span />
         )}
-      </div>
-    </div>
-  </article>
-</section>
+        {next && (
+          <a
+            href={lessonHref(next.data.slug)}
+            class="card-paper group block rounded-md p-4 text-right"
+          >
+            <span class="inline-flex items-center gap-1.5 font-mono text-xs text-accent">
+              {labels.next}
+              <Icon name="lucide:arrow-right" class="size-3.5" />
+            </span>
+            <span class="display mt-1.5 block text-lg text-ink">{next.data.title}</span>
+          </a>
+        )}
+      </nav>
+    )}
+  </Fragment>
+</ArticleSheet>

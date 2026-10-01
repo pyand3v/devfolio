@@ -4,8 +4,8 @@ import { createOgImage } from "@/lib/og"
 
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]
 
-async function render(title: string, subtitle: string, theme?: string) {
-  const response = await createOgImage(title, subtitle, theme)
+async function render(title: string, subtitle: string) {
+  const response = await createOgImage(title, subtitle)
   return { response, bytes: new Uint8Array(await response.arrayBuffer()) }
 }
 
@@ -33,24 +33,20 @@ describe("createOgImage", () => {
     expect(first.bytes).not.toEqual(second.bytes)
   })
 
-  it("uses the requested theme and falls back to blue for unknown ones", async () => {
-    const [blue, rose, unknown] = await Promise.all([
-      render("Title", "Blog", "blue"),
-      render("Title", "Blog", "rose"),
-      render("Title", "Blog", "not-a-theme"),
-    ])
-    expect(rose.bytes).not.toEqual(blue.bytes)
-    expect(unknown.bytes).toEqual(blue.bytes)
+  it("changes with the subtitle", async () => {
+    const [blog, project] = await Promise.all([render("Title", "Blog"), render("Title", "Project")])
+    expect(blog.bytes).not.toEqual(project.bytes)
   })
 
-  it("reads the font once for every image", async () => {
+  it("reads each font once for every image", async () => {
     vi.resetModules()
     const readFileSync = vi.spyOn(fs, "readFileSync")
     const { createOgImage: create } = await import("@/lib/og")
     await create("One", "Blog")
     await create("Two", "Blog")
     const fontReads = readFileSync.mock.calls.filter(([file]) => String(file).endsWith(".woff"))
-    expect(fontReads).toHaveLength(1)
+    // Fraunces for the title, JetBrains Mono for the labels and Caveat for the handwriting
+    expect(fontReads).toHaveLength(3)
     readFileSync.mockRestore()
   })
 })

@@ -2,7 +2,16 @@
 import { afterEach, beforeEach, describe, it, expect, vi, type Mock } from "vitest"
 
 const fixture = `
+  <meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0e1a33" media="(prefers-color-scheme: dark)" />
+  <button id="theme-toggle" data-label-dark="Dark" data-label-light="Light"></button>
   <div id="scroll-progress"></div>
+  <p id="scroll-progress-label"></p>
+  <a id="search" href="/search" data-search-link>Search</a>
+  <ol>
+    <li><a href="#first" data-toc-link>First</a></li>
+    <li><a href="#second" data-toc-link>Second</a></li>
+  </ol>
   <button id="mobile-menu-toggle" aria-expanded="false"></button>
   <nav id="mobile-menu" class="hidden">
     <a href="/es" data-locale-option="es">ES</a>
@@ -13,7 +22,9 @@ const fixture = `
     <a id="external" href="https://example.com/">External</a>
     <a id="new-tab" href="/blog" target="_blank">New tab</a>
     <article class="prose">
-      <pre>const answer = 42</pre>
+      <h2 id="first">First</h2>
+      <h2 id="second">Second</h2>
+      <pre data-language="ts">const answer = 42</pre>
       <img src="/cover.png" alt='Diagram "quoted" &lt;b&gt;' />
     </article>
   </main>
@@ -49,6 +60,7 @@ const click = (element: Element, init: MouseEventInit = {}) =>
 describe("site script", () => {
   beforeEach(async () => {
     localStorage.clear()
+    document.documentElement.dataset.theme = "light"
     assign = vi.fn<(url: string | URL) => void>()
     vi.spyOn(window.location, "assign").mockImplementation(assign)
     await load()
@@ -118,7 +130,56 @@ describe("site script", () => {
     await vi.waitFor(() => expect(document.querySelector("dialog")).toBeNull())
   })
 
-  it("sets the scroll progress bar", () => {
+  it("sets the scroll progress bar and its readout", () => {
     expect($("#scroll-progress").style.transform).toMatch(/^scaleX\(/)
+    expect($("#scroll-progress-label").textContent).toMatch(/^\[[#-]{10}\] \d+%$/)
+  })
+
+  describe("theme toggle", () => {
+    it("names the theme it switches to", () => {
+      expect($("#theme-toggle").getAttribute("aria-label")).toBe("Dark")
+    })
+
+    it("switches the theme and remembers the choice", () => {
+      click($("#theme-toggle"))
+      expect(document.documentElement.dataset.theme).toBe("dark")
+      expect(localStorage.getItem("theme")).toBe("dark")
+      expect($("#theme-toggle").getAttribute("aria-label")).toBe("Light")
+      click($("#theme-toggle"))
+      expect(document.documentElement.dataset.theme).toBe("light")
+      expect(localStorage.getItem("theme")).toBe("light")
+    })
+
+    it("colors the browser chrome for the chosen theme", () => {
+      const colors = () =>
+        [...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')].map(
+          meta => meta.content
+        )
+      expect(colors()).toEqual(["#f7f5ef", "#f7f5ef"])
+      click($("#theme-toggle"))
+      expect(colors()).toEqual(["#0e1a33", "#0e1a33"])
+    })
+  })
+
+  it("opens search with Ctrl K", () => {
+    const followed = vi.fn((event: Event) => event.preventDefault())
+    $("#search").addEventListener("click", followed)
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true }))
+    expect(followed).toHaveBeenCalledOnce()
+  })
+
+  it("labels code blocks with their language", () => {
+    expect($(".code-block-wrapper .terminal-bar").textContent).toContain("ts")
+  })
+
+  it("marks the section being read in the outline", async () => {
+    vi.spyOn($("#first"), "getBoundingClientRect").mockReturnValue({ top: -50 } as DOMRect)
+    vi.spyOn($("#second"), "getBoundingClientRect").mockReturnValue({ top: 900 } as DOMRect)
+    window.dispatchEvent(new Event("scroll"))
+    await vi.waitFor(() =>
+      expect($('[href="#first"]').getAttribute("aria-current")).toBe("location")
+    )
+    expect($('[href="#first"]').closest("li")!.hasAttribute("data-active")).toBe(true)
+    expect($('[href="#second"]').closest("li")!.hasAttribute("data-active")).toBe(false)
   })
 })

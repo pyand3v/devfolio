@@ -4,53 +4,68 @@ import type { BlogPost } from "@/lib/content"
 import { copy, getLocalizedPath, type Locale } from "@/lib/i18n"
 import { formatBlogDate } from "@/lib/utils"
 
+// A post as a pinned paper card, or as a sticky note on the home page
 interface Props {
   post: BlogPost
   locale?: Locale
-  surface?: "default" | "contrast"
+  variant?: "card" | "note"
+  tilt?: string
 }
-const { post, locale = "en", surface = "default" } = Astro.props
+const { post, locale = "en", variant = "card", tilt = "0deg" } = Astro.props
 const labels = copy[locale].article
-const surfaceClass =
-  surface === "contrast" ? "border-[#2e3440] bg-[#3b4252]" : "border-white/20 bg-white/[0.06]"
 const articlePath = getLocalizedPath(`/blog/${post.slug}`, locale)
 // Untranslated posts are listed in English, so mark their text as such for screen readers and translators
 const contentLang = post.locale !== locale ? post.locale : undefined
+const tags = post.tags?.length ? post.tags : ["Engineering"]
+const isNote = variant === "note"
+const readingTime = `${post.readingTime} ${labels.minRead}`
 ---
 
 <article
-  class={`blog-card group flex h-full flex-col border p-6 text-white transition duration-200 hover:-translate-y-1 hover:border-[#88c0d0] ${surfaceClass} ${surface === "default" ? "hover:bg-white/[0.1]" : "hover:bg-[#434c5e]"}`}
+  class:list={[
+    "blog-card group relative flex h-full flex-col rounded-sm p-6",
+    isNote ? "note tape" : "card-paper",
+  ]}
+  style={`--tilt: ${tilt}`}
 >
-  <h3 class="display-type text-2xl leading-tight" lang={contentLang}>
-    <a href={articlePath}>{post.title}</a>
+  <p class:list={["font-mono text-xs", isNote ? "text-note-accent" : "text-muted"]}>
+    <time datetime={post.publishedAt}>{formatBlogDate(post.publishedAt, "short", locale)}</time>
+    <span aria-hidden="true"> · </span>
+    {readingTime}
+  </p>
+  <h3
+    class:list={["display mt-3 text-2xl", isNote ? "text-note-ink" : "text-ink"]}
+    lang={contentLang}
+  >
+    <a href={articlePath} class="after:absolute after:inset-0 after:content-['']">
+      {post.title}
+    </a>
   </h3>
-  <p class="mt-4 grow leading-relaxed text-white/65" lang={contentLang}>
+  <p
+    class:list={[
+      "mt-3 grow leading-relaxed",
+      isNote ? "line-clamp-3 text-note-ink/85" : "text-ink-soft",
+    ]}
+    lang={contentLang}
+  >
     {post.summary}
   </p>
-  <div class="mt-6 flex items-center gap-3 font-mono text-xs font-bold text-[#8fbcbb] uppercase">
-    <time datetime={post.publishedAt}>{formatBlogDate(post.publishedAt, "short")}</time>
-    <span>·</span>
-    <span>
-      {post.readingTime} {labels.minRead}
-    </span>
-  </div>
-  <ul class="mt-4 flex flex-wrap gap-2" aria-label={labels.tags}>
-    {(post.tags?.length ? post.tags : ["Engineering"]).map(tag => (
+  <ul class="relative z-10 mt-5 flex flex-wrap gap-x-3 gap-y-1" aria-label={labels.tags}>
+    {tags.slice(0, isNote ? 3 : 5).map(tag => (
       <li>
         <a
           href={getLocalizedPath(`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`, locale)}
-          class="inline-flex border border-[#8fbcbb]/55 px-2 py-1 font-mono text-[0.65rem] leading-none font-bold tracking-[0.13em] text-[#8fbcbb] uppercase transition hover:border-[#88c0d0] hover:bg-[#88c0d0] hover:text-[#2e3440] focus-visible:border-[#88c0d0] focus-visible:bg-[#88c0d0] focus-visible:text-[#2e3440] focus-visible:outline-none"
+          class:list={["flag", isNote && "text-note-accent"]}
         >
-          {tag}
+          {tag.toLowerCase().replaceAll(" ", "-")}
         </a>
       </li>
     ))}
   </ul>
-  <a
-    href={articlePath}
-    class="mt-6 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-white uppercase"
-  >
-    {labels.read}
-    <Icon name="lucide:arrow-right" class="size-4 transition group-hover:translate-x-1" />
-  </a>
+  {!isNote && (
+    <span class="link-arrow mt-5" aria-hidden="true">
+      {labels.read}
+      <Icon name="lucide:arrow-right" class="size-4" />
+    </span>
+  )}
 </article>

@@ -1,0 +1,39 @@
+---
+import { Icon } from "astro-icon/components"
+import TitleLines from "@/components/TitleLines.astro"
+
+interface Props {
+  eyebrow: string
+  title: string
+  href?: string
+  linkLabel?: string
+  /** "h1" for page headers, "h2" for sections within a page */
+  level?: "h1" | "h2"
+  description?: string
+}
+
+const { eyebrow, title, href, linkLabel, level = "h2", description } = Astro.props
+const Heading = level
+---
+
+<div class="grid gap-6 border-b-[1.5px] border-dashed border-line pb-8 lg:grid-cols-[1fr_auto] lg:items-end">
+  <div>
+    <p class="eyebrow">{eyebrow}</p>
+    <Heading
+      class:list={[
+        "display mt-4 text-ink",
+        Heading === "h1" ? "text-5xl sm:text-6xl lg:text-7xl" : "text-4xl sm:text-5xl",
+      ]}
+    >
+      <TitleLines text={title} underline />
+    </Heading>
+    {description && <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted">{description}</p>}
+    <slot />
+  </div>
+  {href && linkLabel && (
+    <a href={href} class="link-arrow lg:mb-2">
+      {linkLabel}
+      <Icon name="lucide:arrow-right" class="size-4" />
+    </a>
+  )}
+</div>

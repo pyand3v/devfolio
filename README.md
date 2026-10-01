@@ -8,7 +8,7 @@ Source for [pyan.dev](https://www.pyan.dev), Daniel Benitez's static, multilingu
 - Three languages: English (`en`, the default), Spanish (`es`), and Brazilian Portuguese (`pt-br`)
 - MDX content collections with Zod frontmatter validation and a pre-build content check
 - Client-side filtering, sorting, and pagination for lists
-- A fixed Nord color palette, responsive navigation, scroll progress, galleries, code-copy controls, and image lightboxes
+- A "lab notebook" design: graph paper with terminal windows taped in, light and dark themes, small scroll-triggered animations (all off under reduced motion), responsive navigation, reading progress, galleries, code-copy controls, and image lightboxes
 - Static RSS, robots, sitemap, `llms.txt`, JSON-LD, and Open Graph image endpoints
 - Vercel Analytics and Speed Insights
 

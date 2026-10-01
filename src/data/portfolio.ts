@@ -3,7 +3,7 @@ export const homeIntroConfig = {
   shortName: "Daniel",
   headline: "I turn customer insight and business goals into useful, polished software.",
   availability: "Based in Paraguay · Remote-first · Open to product engineering roles",
-  workItemsToShow: 1,
+  workItemsToShow: 3,
   projectsToShow: 4,
   blogPostsToShow: 3,
 }

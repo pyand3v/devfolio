@@ -1,94 +1,66 @@
 ---
 import { Icon } from "astro-icon/components"
 import type { Project } from "@/lib/content"
-import type { Locale } from "@/lib/i18n"
+import { copy, type Locale } from "@/lib/i18n"
 import TechBadge from "@/components/TechBadge.astro"
 import { calculateDuration, formatDateRange } from "@/lib/utils"
+
+// A project as an app window drawn in ink; hovering it runs a little build
 interface Props {
   project: Project
   eager?: boolean
   locale?: Locale
-  surface?: "light" | "dark"
 }
-const { project, eager = false, locale = "en", surface = "dark" } = Astro.props
-const visibleTech = project.techStack.slice(0, 5)
+
+const { project, eager = false, locale = "en" } = Astro.props
+const labels = copy[locale].cards
+const visibleTech = project.techStack.slice(0, 4)
 const more = project.techStack.length - visibleTech.length
-const labels = {
-  en: { type: "Project", action: "View project" },
-  es: { type: "Proyecto", action: "Ver proyecto" },
-  "pt-br": { type: "Projeto", action: "Ver projeto" },
-}[locale]
-const isDark = surface === "dark"
+const href = `/projects/${project.slug}`
 ---
 
-<a href={`/projects/${project.slug}`} class="group block h-full">
-  <article
-    class:list={[
-      "flex h-full flex-col overflow-hidden transition duration-200 hover:-translate-y-1",
-      isDark
-        ? "border border-white/20 bg-white/[0.06] hover:border-[#88c0d0] hover:bg-white/[0.1]"
-        : "border-2 border-[#3b4252] bg-[#eceff4] shadow-[6px_6px_0_#88c0d0] hover:shadow-[10px_10px_0_#88c0d0]",
-    ]}
-  >
-    <div
-      class:list={[
-        "relative h-56 overflow-hidden bg-[#2e3440]",
-        isDark ? "border-b border-white/20" : "border-b-2 border-[#3b4252]",
-      ]}
-    >
-      <img
-        src={project.image}
-        alt={project.title}
-        class="size-full object-cover transition duration-500 group-hover:scale-105 group-hover:opacity-80"
-        loading={eager ? "eager" : "lazy"}
-      />
-      <span class="absolute right-4 top-4 bg-[#88c0d0] px-2 py-1 text-[0.65rem] font-black tracking-[0.14em] text-[#2e3440] uppercase">
-        {labels.type}
-      </span>
-    </div>
-    <div class="flex flex-1 flex-col p-6">
-      <p
-        class:list={[
-          "font-mono text-xs font-bold tracking-[0.14em] uppercase",
-          isDark ? "text-[#8fbcbb]" : "text-[#5e81ac]",
-        ]}
-      >
-        {formatDateRange(project.startDate, project.endDate)} ·{" "}
-        {calculateDuration(project.startDate, project.endDate)}
-      </p>
-      <h3 class:list={["display-type mt-4 text-3xl", isDark ? "text-white" : "text-[#2e3440]"]}>
+<article class="window group relative flex h-full flex-col">
+  <div class="window-bar">
+    <span class="dot" aria-hidden="true"></span>
+    <span class="dot" aria-hidden="true"></span>
+    <span class="ml-1 truncate">projects/{project.slug}</span>
+    <span class="ml-auto hidden text-accent sm:inline">{labels.project}</span>
+  </div>
+  <div class="relative aspect-[16/9] overflow-hidden border-b-[1.5px] border-ink bg-grid">
+    <img
+      src={project.image}
+      alt=""
+      class="size-full object-cover transition duration-500 group-hover:scale-[1.04]"
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+    />
+  </div>
+  <div class="flex flex-1 flex-col p-5">
+    <p class="font-mono text-xs text-accent">
+      {formatDateRange(project.startDate, project.endDate)} ·{" "}
+      {calculateDuration(project.startDate, project.endDate)}
+    </p>
+    <h3 class="display mt-2 text-2xl text-ink">
+      <a href={href} class="after:absolute after:inset-0 after:content-['']">
         {project.title}
-      </h3>
-      <p class:list={["mt-3 grow leading-relaxed", isDark ? "text-white/65" : "text-[#2e3440]/70"]}>
-        {project.description}
-      </p>
-      <div class="mt-6 flex flex-wrap gap-2">
-        {visibleTech.map(name => (
-          <TechBadge name={name} small surface={surface} />
-        ))}
-        {more > 0 && (
-          <span
-            class:list={[
-              "border px-2 py-0.5 text-xs font-bold",
-              isDark ? "border-white/35 text-white/70" : "border-[#3b4252]/35 text-[#3b4252]/70",
-            ]}
-          >
-            + {more}
-          </span>
-        )}
-      </div>
-      <span
-        class:list={[
-          "mt-6 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] uppercase",
-          isDark ? "text-white" : "text-[#2e3440]",
-        ]}
-      >
-        {labels.action}
-        <Icon
-          name="lucide:arrow-up-right"
-          class="size-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-        />
-      </span>
+      </a>
+    </h3>
+    <p class="mt-2 grow leading-relaxed text-ink-soft">{project.description}</p>
+    <div class="mt-4 flex flex-wrap gap-1.5">
+      {visibleTech.map(name => (
+        <TechBadge name={name} />
+      ))}
+      {more > 0 && <TechBadge name={`+${more}`} />}
     </div>
-  </article>
-</a>
+    <div class="mt-5 flex items-center gap-3 font-mono text-xs text-muted" aria-hidden="true">
+      <span>npm run build</span>
+      <span class="build-bar grow">
+        <span></span>
+      </span>
+      <Icon
+        name="lucide:arrow-up-right"
+        class="size-4 text-accent transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+      />
+    </div>
+  </div>
+</article>

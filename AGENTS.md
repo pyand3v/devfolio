@@ -50,9 +50,12 @@ bypass them with `--no-verify`; fix the underlying issue instead.
   from `src/lib/cms-config.ts`) and its script, served from the installed `@sveltia/cms` package.
 - `src/layouts/BaseLayout.astro` — the single page shell: SEO/meta tags, JSON-LD, header/footer, analytics.
 - `src/components/` — `.astro` components; MDX-specific components in `src/components/mdx/`.
-- `src/scripts/` — small client-side TypeScript (filtering, theme, galleries, search).
+- `src/scripts/` — small client-side TypeScript (filtering, theme, galleries, search). `theme-init.js` and
+  `locale-redirect.js` run inline in `<head>`; the CSP allows them by hash (`astro.config.mjs`).
 - Search (`/search`) is Pagefind: an integration in `astro.config.mjs` indexes `dist/` after the build, one
   index per locale. Only elements marked `data-pagefind-body` are indexed; mark new content pages too.
+  `pnpm dev` serves the index from the last `pnpm build`, so search in dev needs one build and shows
+  content as of that build.
 - `src/lib/` — shared logic: `content.ts` (collection queries), `i18n.ts` (locales and all UI copy),
   `schemas.ts` (the content model: Zod schemas and the fields each entry takes from its path),
   `content-files.ts` (helpers for the `pnpm content` CLI), `cms-config.ts` (Sveltia CMS collections),
@@ -73,7 +76,7 @@ bypass them with `--no-verify`; fix the underlying issue instead.
 - `docs/CONTENT.md` — how content is structured and how to write it (CMS, CLI or by hand).
 - `e2e/` — Playwright specs run by `pnpm test:e2e` against the built site (`playwright.config.ts`): axe
   accessibility audits and keyboard checks, and smoke tests for `src/scripts/` (locale redirect, language
-  switcher, tag filter, mobile menu, fixed theme).
+  switcher, tag filter, mobile menu, theme).
 
 The `@/` import alias maps to `src/`.
 
@@ -89,9 +92,16 @@ The `@/` import alias maps to `src/`.
   frontmatter doesn't repeat them. If you change a schema, update `src/lib/cms-config.ts` (a test checks the
   CMS fields match) and existing content in the same change. `schemas.ts`, `content-files.ts`, `dates.ts`
   and `i18n.ts` run directly in Node, so they may only use relative imports and erasable TypeScript.
-- **Styling**: Tailwind utilities plus the Nord design tokens in `src/styles/globals.css` (the palette is
-  intentionally fixed, not theme-switchable). Use Astro's `class:list` for conditional classes. Pages must
-  work at phone width without horizontal scroll.
+- **Styling**: a "lab notebook" look — graph paper, ink, handwritten notes, and terminal windows taped in.
+  Use Tailwind utilities with the theme tokens in `src/styles/globals.css` (`bg-paper`, `bg-sheet`,
+  `text-ink`, `text-muted`, `text-accent`, `text-annot`, `border-line`, the `code-*` colors, and `font-serif`,
+  `font-mono`, `font-hand`) plus its component classes (`sheet`, `window`, `terminal`, `note`, `card-paper`,
+  `btn-ink`, `btn-line`, `link-arrow`, `flag`, `eyebrow`); never hard-code colors. Every token has a light
+  and a dark value, and `dark:` follows `[data-theme]`. Terminal and code surfaces stay dark in both themes.
+  Motion: put `data-reveal` on an element or `data-animate` on a container so its animations wait until it
+  scrolls into view; an animation's resting state must be its finished state, since reduced motion turns
+  them all off. Use Astro's `class:list` for conditional classes. Pages must work at phone width without
+  horizontal scroll.
 - **Formatting**: Prettier — no semicolons, double quotes, 2 spaces, 100-char lines, `arrowParens: avoid`.
   MDX, `docs/` and `.github/` are Prettier-ignored.
 - **Tests**: add or update Vitest tests in `tests/lib/` when changing logic in `src/lib/`.
@@ -121,8 +131,8 @@ The `@/` import alias maps to `src/`.
 - Every push deploys through `.github/workflows/deploy-vercel.yml`: `main` to production (`pyan.dev`), any
   other branch to a new Vercel preview URL. The URL shows as "View deployment" on the commit and its PR,
   and under Deployments on the repo page.
-- Fill in `.github/pull_request_template.md`: summary, type of change, checklist, and screenshots for any UI
-  change (desktop and mobile).
+- Fill in `.github/pull_request_template.md`: summary, type of change, and checklist. Screenshots aren't
+  required; check UI changes on the PR's Vercel preview instead.
 - CI on every PR (`.github/workflows/`): the PR title format, Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
   production build with an internal link check, Lighthouse budgets, Playwright e2e and axe accessibility checks, a Vercel preview deployment, and a one-time Claude review when the PR opens (skipped for
   content/docs-only PRs and for `preview` → `main` promotions). All checks must pass before merging. Commenting `@claude` on an issue or PR asks

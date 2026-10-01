@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro"
-import BlogCard from "@/components/BlogCard.astro"
+import TagLanding from "@/components/TagLanding.astro"
 import { getAllBlogPosts } from "@/lib/content"
 import { copy, locales, type Locale } from "@/lib/i18n"
 
@@ -35,29 +35,5 @@ const labels = copy[locale].tag
   translations={[]}
   ogImage="/blog/opengraph-image"
 >
-  <section class="portfolio-dark-grid min-h-screen text-white">
-    <div class="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
-      <header class="border-b-2 border-[#88c0d0] pb-10">
-        <a
-          href={`/${locale}/blog`}
-          class="inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase transition hover:text-white"
-        >
-          &larr; {labels.back}
-        </a>
-        <p class="mt-10 text-xs font-black tracking-[0.2em] text-[#8fbcbb] uppercase">
-          {labels.eyebrow}
-        </p>
-        <h1 class="display-type mt-5 max-w-4xl text-5xl leading-[0.9] sm:text-7xl">{displayTag}</h1>
-        <p class="mt-6 max-w-2xl text-lg text-white/70">
-          {posts.length}
-          {posts.length === 1 ? labels.countOne : labels.countOther}
-        </p>
-      </header>
-      <div class="mt-12 grid gap-5 lg:grid-cols-2">
-        {posts.map(post => (
-          <BlogCard post={post} locale={locale} />
-        ))}
-      </div>
-    </div>
-  </section>
+  <TagLanding tag={tag ?? ""} posts={posts} locale={locale} />
 </BaseLayout>

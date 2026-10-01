@@ -54,10 +54,16 @@ export function formatDateRange(start: string, end: string): string {
  * Formats an ISO date string ("YYYY-MM-DD") as a human-readable date, e.g. "April 1, 2025".
  * @param date - the ISO date string to format.
  * @param style - "long" for full month name, "short" for abbreviated month name.
+ * @param locale - the site locale to format the date for.
  */
-export function formatBlogDate(date: string, style: "long" | "short" = "long"): string {
+export function formatBlogDate(
+  date: string,
+  style: "long" | "short" = "long",
+  locale: "en" | "es" | "pt-br" = "en"
+): string {
   const normalizedDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T12:00:00-03:00` : date
-  return new Date(normalizedDate).toLocaleDateString("en-US", {
+  const language = { en: "en-US", es: "es-ES", "pt-br": "pt-BR" }[locale]
+  return new Date(normalizedDate).toLocaleDateString(language, {
     timeZone: "America/Argentina/Buenos_Aires",
     year: "numeric",
     month: style,
