@@ -30,14 +30,25 @@ const setUpTheme = () => {
       (dark ? toggle.dataset.labelLight : toggle.dataset.labelDark) ?? toggle.ariaLabel ?? ""
     )
   }
+  // The browser chrome on mobile follows the theme too, not only the system preference the metas in
+  // BaseLayout start from. Keep these in step with --paper in src/styles/globals.css.
+  const paper = { light: "#f7f5ef", dark: "#0e1a33" }
+  const syncChrome = () => {
+    const theme = root.dataset.theme === "dark" ? "dark" : "light"
+    document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach(meta => {
+      meta.content = paper[theme]
+    })
+  }
   const apply = (theme: "light" | "dark") => {
     root.dataset.theme = theme
     label()
+    syncChrome()
   }
   // theme-init.js painted the canvas before the stylesheet loaded; the stylesheet takes over from here
   root.style.removeProperty("background-color")
   root.style.removeProperty("color-scheme")
   label()
+  syncChrome()
   toggle?.addEventListener("click", () => {
     const next = root.dataset.theme === "dark" ? "light" : "dark"
     storage.set("theme", next)

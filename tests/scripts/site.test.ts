@@ -2,6 +2,8 @@
 import { afterEach, beforeEach, describe, it, expect, vi, type Mock } from "vitest"
 
 const fixture = `
+  <meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0e1a33" media="(prefers-color-scheme: dark)" />
   <button id="theme-toggle" data-label-dark="Dark" data-label-light="Light"></button>
   <div id="scroll-progress"></div>
   <p id="scroll-progress-label"></p>
@@ -146,6 +148,16 @@ describe("site script", () => {
       click($("#theme-toggle"))
       expect(document.documentElement.dataset.theme).toBe("light")
       expect(localStorage.getItem("theme")).toBe("light")
+    })
+
+    it("colors the browser chrome for the chosen theme", () => {
+      const colors = () =>
+        [...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')].map(
+          meta => meta.content
+        )
+      expect(colors()).toEqual(["#f7f5ef", "#f7f5ef"])
+      click($("#theme-toggle"))
+      expect(colors()).toEqual(["#0e1a33", "#0e1a33"])
     })
   })
 

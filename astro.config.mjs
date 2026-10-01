@@ -60,7 +60,10 @@ const pagefind = () => {
             "Content-Type",
             pagefindTypes[extname(file)] ?? "application/octet-stream"
           )
-          createReadStream(file).pipe(response)
+          createReadStream(file)
+            // A rebuild can remove the file mid-request
+            .on("error", () => (response.headersSent ? response.destroy() : next()))
+            .pipe(response)
         })
       },
       "astro:build:done": async ({ dir, logger }) => {
