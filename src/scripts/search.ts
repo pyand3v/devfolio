@@ -24,21 +24,20 @@ const renderResult = ({ url, excerpt, meta }: PagefindResult) => {
   const item = document.createElement("li")
   const link = document.createElement("a")
   link.href = url
-  link.className =
-    "block border border-white/20 bg-white/[0.03] p-5 transition hover:border-[#88c0d0] hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#88c0d0]"
+  link.className = "card-paper block rounded-md p-5"
   if (meta.section) {
     const section = document.createElement("p")
-    section.className = "font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase"
+    section.className = "font-mono text-xs text-accent"
     section.textContent = meta.section
     link.append(section)
   }
   const title = document.createElement("h2")
-  title.className = "mt-2 text-xl font-bold text-white"
+  title.className = "display mt-1.5 text-xl text-ink"
   title.textContent = meta.title ?? url
   // Pagefind escapes the page text and only adds <mark> around the matches
   const snippet = document.createElement("p")
   snippet.className =
-    "mt-2 text-sm leading-relaxed text-white/75 [&_mark]:bg-[#ebcb8b] [&_mark]:px-0.5 [&_mark]:text-[#2e3440]"
+    "mt-2 text-sm leading-relaxed text-ink-soft [&_mark]:bg-note [&_mark]:px-0.5 [&_mark]:text-note-ink"
   snippet.innerHTML = excerpt
   link.append(title, snippet)
   item.append(link)

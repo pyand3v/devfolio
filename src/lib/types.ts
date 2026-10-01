@@ -50,28 +50,9 @@ export interface WorkItemProps {
 export type { WorkItemFrontmatter } from "@/lib/schemas"
 
 /**
- * @description Accent color themes available for the portfolio.
- * Set `siteMetadata.theme` in src/data/metadata.ts to one of these values.
- */
-export type Theme =
-  | "blue"
-  | "purple"
-  | "green"
-  | "orange"
-  | "rose"
-  | "teal"
-  | "indigo"
-  | "amber"
-  | "cyan"
-  | "violet"
-  | "pink"
-  | "lime"
-
-/**
  * @description Shape of the site-wide metadata configuration object in src/data/metadata.ts.
  */
 export interface SiteMetadata {
-  theme: Theme
   title: string
   description: string
   keywords: string[]

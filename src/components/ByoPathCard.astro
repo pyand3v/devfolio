@@ -1,0 +1,94 @@
+---
+import { Icon } from "astro-icon/components"
+import type { ByoProjectBundle } from "@/lib/content"
+import { copy, getLocalizedPath, type Locale } from "@/lib/i18n"
+import byoProgress from "@/scripts/byo-progress.js?raw"
+
+// A Build Your Own course as a learning path: one stop per lesson along a dashed trail, filled in from
+// the lessons the visitor opened. Long courses get a segmented bar instead, which fits any number of
+// lessons at any width.
+interface Props {
+  bundle: ByoProjectBundle
+  index: number
+  locale: Locale
+}
+
+const { bundle, index, locale } = Astro.props
+const labels = copy[locale].byo
+const { project, lessons } = bundle
+const href = getLocalizedPath(`/byo/${project.data.slug}`, locale)
+const compact = lessons.length > 8
+const meta = [
+  `${project.data.chapters.length} ${labels.chapters}`,
+  `${lessons.length} ${labels.lessons}`,
+].join(" · ")
+const stops = lessons.map((lesson, stop) => ({
+  slug: lesson.data.slug,
+  number: stop + 1,
+  href: getLocalizedPath(`/byo/${project.data.slug}/lessons/${lesson.data.slug}`, locale),
+}))
+---
+
+<article
+  class="card-paper group relative flex h-full flex-col rounded-md p-6"
+  data-animate
+  data-byo-course={project.data.slug}
+  data-byo-total={lessons.length}
+>
+  <p class="font-mono text-xs text-accent">
+    BYO-{String(index + 1).padStart(2, "0")}
+    <span class="text-muted">{` · ${meta}`}</span>
+  </p>
+  <h3 class="display mt-3 text-2xl text-ink">
+    <a href={href} class="after:absolute after:inset-0 after:content-['']">
+      {project.data.title}
+    </a>
+  </h3>
+  <p class="mt-2 grow leading-relaxed text-ink-soft">{project.data.description}</p>
+  {compact ? (
+    <div class="mt-6 flex items-center gap-1" aria-hidden="true">
+      {stops.map(stop => (
+        <span
+          class="byo-seg pop"
+          data-byo-stop={stop.slug}
+          data-number={stop.number}
+          data-href={stop.href}
+          data-start={stop.number === 1 || undefined}
+          style={`--delay: ${0.1 + stop.number * 0.03}s`}
+        />
+      ))}
+    </div>
+  ) : (
+    <div class="relative mt-6 flex items-center justify-between" aria-hidden="true">
+      <span class="absolute inset-x-2 top-1/2 border-t-2 border-dashed border-line" />
+      {stops.map(stop => (
+        <span
+          class="byo-stop pop relative size-6 text-[0.6875rem]"
+          data-byo-stop={stop.slug}
+          data-number={stop.number}
+          data-href={stop.href}
+          data-start={stop.number === 1 || undefined}
+          style={`--delay: ${0.05 + stop.number * 0.1}s`}
+        >
+          {stop.number}
+        </span>
+      ))}
+    </div>
+  )}
+  <p class="mt-3 font-mono text-xs text-muted" data-byo-count data-label={labels.opened} hidden></p>
+  <span class="link-arrow mt-5" aria-hidden="true" data-byo-fresh>
+    {labels.open}
+    <Icon name="lucide:arrow-right" class="size-4" />
+  </span>
+  <a
+    href={href}
+    class="link-arrow relative z-10 mt-5 self-start"
+    data-byo-continue
+    data-label={labels.continueLesson}
+    hidden
+  >
+    <span data-text>{labels.continueLesson}</span>
+    <Icon name="lucide:arrow-right" class="size-4" />
+  </a>
+</article>
+<script is:inline set:html={byoProgress} />

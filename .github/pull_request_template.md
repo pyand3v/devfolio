@@ -30,10 +30,6 @@
 - [ ] No console warnings or errors in the browser
 - [ ] `AGENTS.md` / docs updated if commands, structure, or conventions changed
 
-## Screenshots
-
-[//]: # "Required for UI changes: before/after on desktop and mobile. Delete this section otherwise."
-
 ## Supplementary Information
 
 [//]: # "Anything else reviewers should know."

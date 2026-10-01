@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components"
 import BaseLayout from "@/layouts/BaseLayout.astro"
+import Terminal from "@/components/Terminal.astro"
 import { copy, locales } from "@/lib/i18n"
 
 // One 404.html answers for every locale, so it carries each translation and src/scripts/not-found.ts
@@ -9,26 +10,46 @@ const labels = copy.en.notFound
 ---
 
 <BaseLayout title={labels.title} description={labels.description} noIndex ogImage={null}>
-  <section class="mx-auto max-w-xl px-4 py-16 text-center">
-    <Icon name="lucide:circle-alert" class="mx-auto mb-5 size-14 text-accent-500" />
-    {locales.map(locale => (
-      <div
-        data-not-found={locale}
-        data-title={copy[locale].notFound.title}
-        lang={locale}
-        hidden={locale !== "en"}
-      >
-        <h1 class="mb-3 text-3xl font-bold">{copy[locale].notFound.title}</h1>
-        <p class="mb-8 text-gray-600 dark:text-gray-300">{copy[locale].notFound.body}</p>
-        <a
-          href="/"
-          class="inline-flex items-center gap-2 rounded-lg bg-accent-600 px-4 py-2 font-semibold text-white transition hover:bg-accent-700"
+  <section class="mx-auto grid max-w-5xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
+    <div>
+      {locales.map(locale => (
+        <div
+          data-not-found={locale}
+          data-title={copy[locale].notFound.title}
+          lang={locale}
+          hidden={locale !== "en"}
         >
-          <Icon name="lucide:arrow-left" class="size-4" />
-          {copy[locale].notFound.home}
-        </a>
-      </div>
-    ))}
+          <p class="eyebrow">HTTP 404</p>
+          <h1 class="display mt-4 text-5xl text-ink sm:text-6xl">
+            <span class="underline-scribble">{copy[locale].notFound.title}</span>
+          </h1>
+          <p class="mt-6 text-lg leading-relaxed text-ink-soft">{copy[locale].notFound.body}</p>
+          <a href="/" class="btn-ink mt-8">
+            <Icon name="lucide:arrow-left" class="size-4" />
+            {copy[locale].notFound.home}
+          </a>
+        </div>
+      ))}
+    </div>
+    <div aria-hidden="true">
+      <Terminal title="~ — zsh" tilt="-1.5deg">
+        <p>
+          <span class="text-code-prompt">$</span> cd ./this-page
+        </p>
+        <p class="typed text-[#ff7b72]" style="--chars: 43; --delay: 0.5s">
+          cd: no such file or directory: ./this-page
+        </p>
+        <p class="typed" style="--chars: 14; --delay: 2.4s">
+          <span class="text-code-prompt">$</span> git blame url
+        </p>
+        <p class="typed text-code-muted" style="--chars: 32; --delay: 3.2s">
+          fatal: not a known path (404)
+        </p>
+        <p>
+          <span class="text-code-prompt">$</span> <span class="cursor"></span>
+        </p>
+      </Terminal>
+    </div>
   </section>
 </BaseLayout>
 <script>

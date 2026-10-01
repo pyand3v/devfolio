@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test"
 
 // Smoke tests for the behaviour that lives in src/scripts/ and only runs in a browser: the inline locale
-// redirect, the language switcher, the blog tag filter, the mobile menu and the fixed theme.
+// redirect, the language switcher, the blog tag filter, the mobile menu and the theme.
 
 const visiblePosts = (page: Page) => page.locator(".blog-post-item:visible")
 
@@ -166,16 +166,27 @@ test.describe("mobile menu", () => {
 })
 
 test.describe("theme", () => {
-  // The Nord palette is intentionally fixed: the site looks the same whatever the system prefers
+  // Graph paper in light, a navy blueprint in dark
+  const paper = { light: "rgb(247, 245, 239)", dark: "rgb(14, 26, 51)" }
+
   for (const colorScheme of ["light", "dark"] as const) {
-    test(`keeps the fixed palette with a ${colorScheme} system theme`, async ({ page }) => {
+    test(`follows a ${colorScheme} system theme until one is picked`, async ({ page }) => {
       await page.emulateMedia({ colorScheme })
       await page.goto("/")
-      await expect(page.locator("html")).toHaveAttribute("data-theme", "blue")
-      await expect(page.locator("#headerPortfolio")).toHaveCSS(
-        "background-color",
-        "rgb(46, 52, 64)"
-      )
+      await expect(page.locator("html")).toHaveAttribute("data-theme", colorScheme)
+      await expect(page.locator("body")).toHaveCSS("background-color", paper[colorScheme])
     })
   }
+
+  test("switches theme from the toggle and keeps it across pages", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "light" })
+    await page.goto("/")
+    await page.locator("#theme-toggle").click()
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
+    await expect(page.locator("body")).toHaveCSS("background-color", paper.dark)
+
+    await page.goto("/blog")
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
+    await expect(page.locator("#theme-toggle")).toHaveAttribute("aria-label", /light/i)
+  })
 })

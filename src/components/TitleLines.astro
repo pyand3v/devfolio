@@ -1,0 +1,20 @@
+---
+// Renders copy that marks its line breaks with "\n", optionally underlining the last line by hand
+interface Props {
+  text: string
+  underline?: boolean
+}
+
+const { text, underline = false } = Astro.props
+const lines = text.split("\n")
+---
+
+{lines.map((line, index) => {
+  const last = index === lines.length - 1
+  return (
+    <>
+      {last && underline ? <span class="underline-scribble">{line}</span> : line}
+      {!last && <br />}
+    </>
+  )
+})}

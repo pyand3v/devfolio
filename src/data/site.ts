@@ -1,19 +1,4 @@
-export type Theme =
-  | "blue"
-  | "purple"
-  | "green"
-  | "orange"
-  | "rose"
-  | "teal"
-  | "indigo"
-  | "amber"
-  | "cyan"
-  | "violet"
-  | "pink"
-  | "lime"
-
 export const siteMetadata = {
-  theme: "blue" as Theme,
   title: "Daniel Benitez | Product Engineer",
   description:
     "Product Engineer building useful, polished software from customer insight to reliable release.",

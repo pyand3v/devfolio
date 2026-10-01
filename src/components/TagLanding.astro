@@ -1,0 +1,42 @@
+---
+import { Icon } from "astro-icon/components"
+import BlogCard from "@/components/BlogCard.astro"
+import type { BlogPost } from "@/lib/content"
+import { copy, getLocalizedPath, type Locale } from "@/lib/i18n"
+
+interface Props {
+  tag: string
+  posts: BlogPost[]
+  locale: Locale
+}
+
+const { tag, posts, locale } = Astro.props
+const labels = copy[locale].tag
+const displayTag = tag.replaceAll("-", " ")
+const count = `${posts.length} ${posts.length === 1 ? labels.countOne : labels.countOther}`
+const tilts = ["-0.6deg", "0.5deg", "0.3deg", "-0.4deg"]
+---
+
+<section class="mx-auto max-w-6xl px-4 pt-10 pb-10 sm:px-6 lg:pt-14">
+  <a href={getLocalizedPath("/blog", locale)} class="link-arrow">
+    <Icon name="lucide:arrow-left" class="size-4" />
+    {labels.back}
+  </a>
+  <div class="mt-10 border-b-[1.5px] border-dashed border-line pb-8">
+    <p class="eyebrow">{labels.eyebrow}</p>
+    <h1 class="display mt-4 text-5xl text-ink sm:text-6xl">
+      <span class="font-mono text-[0.6em] text-accent" aria-hidden="true">
+        --
+      </span>
+      <span class="underline-scribble">{displayTag}</span>
+    </h1>
+    <p class="mt-5 text-lg text-muted">{count}</p>
+  </div>
+  <div class="mt-10 grid gap-8 md:grid-cols-2">
+    {posts.map((post, index) => (
+      <div data-reveal style={`--delay: ${(index % 2) * 0.1}s`}>
+        <BlogCard post={post} locale={locale} tilt={tilts[index % tilts.length]} />
+      </div>
+    ))}
+  </div>
+</section>

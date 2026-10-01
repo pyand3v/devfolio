@@ -1,5 +1,4 @@
 import type { APIRoute } from "astro"
-import { siteMetadata } from "@/data/site"
 import { getAllBlogPosts } from "@/lib/content"
 import { createOgImage } from "@/lib/og"
 export async function getStaticPaths() {
@@ -9,5 +8,4 @@ export async function getStaticPaths() {
     props: { title: post.title },
   }))
 }
-export const GET: APIRoute = ({ props }) =>
-  createOgImage(props.title, "Blog post", siteMetadata.theme)
+export const GET: APIRoute = ({ props }) => createOgImage(props.title, "Blog post")

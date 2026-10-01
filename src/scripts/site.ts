@@ -1,3 +1,204 @@
+const root = document.documentElement
+const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+const storage = {
+  get: (key: string) => {
+    try {
+      return localStorage.getItem(key)
+    } catch {
+      return null
+    }
+  },
+  set: (key: string, value: string) => {
+    try {
+      localStorage.setItem(key, value)
+    } catch {
+      // Storage can be blocked; the choice then lasts for this page only
+    }
+  },
+}
+
+// theme-init.js picked the theme before paint; this keeps the toggle and the system preference in step
+const setUpTheme = () => {
+  const toggle = document.querySelector<HTMLButtonElement>("#theme-toggle")
+  const system = window.matchMedia("(prefers-color-scheme: dark)")
+  const label = () => {
+    if (!toggle) return
+    const dark = root.dataset.theme === "dark"
+    toggle.setAttribute(
+      "aria-label",
+      (dark ? toggle.dataset.labelLight : toggle.dataset.labelDark) ?? toggle.ariaLabel ?? ""
+    )
+  }
+  // The browser chrome on mobile follows the theme too, not only the system preference the metas in
+  // BaseLayout start from. Keep these in step with --paper in src/styles/globals.css.
+  const paper = { light: "#f7f5ef", dark: "#0e1a33" }
+  const syncChrome = () => {
+    const theme = root.dataset.theme === "dark" ? "dark" : "light"
+    document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach(meta => {
+      meta.content = paper[theme]
+    })
+  }
+  const apply = (theme: "light" | "dark") => {
+    root.dataset.theme = theme
+    label()
+    syncChrome()
+  }
+  // theme-init.js painted the canvas before the stylesheet loaded; the stylesheet takes over from here
+  root.style.removeProperty("background-color")
+  root.style.removeProperty("color-scheme")
+  label()
+  syncChrome()
+  toggle?.addEventListener("click", () => {
+    const next = root.dataset.theme === "dark" ? "light" : "dark"
+    storage.set("theme", next)
+    const doc = document as Document & { startViewTransition?: (update: () => void) => unknown }
+    if (doc.startViewTransition && !reducedMotion()) doc.startViewTransition(() => apply(next))
+    else apply(next)
+  })
+  // Until the visitor picks a theme, follow the system as it changes
+  system.addEventListener?.("change", event => {
+    if (!storage.get("theme")) apply(event.matches ? "dark" : "light")
+  })
+}
+
+// Animations inside [data-animate] and on [data-reveal] wait, paused by CSS, until they scroll into view
+const setUpInView = () => {
+  const targets = [...document.querySelectorAll<HTMLElement>("[data-animate], [data-reveal]")]
+  if (!("IntersectionObserver" in window)) {
+    targets.forEach(target => target.classList.add("in-view"))
+    return
+  }
+  const observer = new IntersectionObserver(
+    entries =>
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return
+        entry.target.classList.add("in-view")
+        observer.unobserve(entry.target)
+      }),
+    { rootMargin: "0px 0px -8% 0px" }
+  )
+  targets.forEach(target => observer.observe(target))
+}
+
+// Ctrl K, ⌘ K or "/" opens search, or focuses it when already there
+const setUpSearchShortcut = () => {
+  const link = document.querySelector<HTMLAnchorElement>("[data-search-link]")
+  document.addEventListener("keydown", event => {
+    const target = event.target as HTMLElement | null
+    const typing =
+      target?.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target?.tagName ?? "")
+    const shortcut =
+      (event.key.toLowerCase() === "k" && (event.ctrlKey || event.metaKey)) ||
+      (event.key === "/" && !typing && !event.ctrlKey && !event.metaKey && !event.altKey)
+    if (!shortcut) return
+    const input = document.querySelector<HTMLInputElement>("#search-input")
+    event.preventDefault()
+    if (input) input.focus()
+    else if (link) link.click()
+  })
+}
+
+const setUpReadingProgress = () => {
+  const progress = document.querySelector<HTMLElement>("#scroll-progress")
+  const readout = document.querySelector<HTMLElement>("#scroll-progress-label")
+  const toc = [...document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")]
+  const headings = toc
+    .map(link => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+    .filter((heading): heading is HTMLElement => Boolean(heading))
+
+  let queued = false
+  const update = () => {
+    queued = false
+    const max = document.documentElement.scrollHeight - window.innerHeight
+    const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0
+    if (progress) progress.style.transform = `scaleX(${ratio})`
+    if (readout) {
+      const filled = Math.round(ratio * 10)
+      readout.textContent = `[${"#".repeat(filled)}${"-".repeat(10 - filled)}] ${Math.round(ratio * 100)}%`
+    }
+    if (headings.length) {
+      // The current section is the last heading above the top quarter of the screen
+      const line = window.innerHeight * 0.25
+      let current = -1
+      headings.forEach((heading, index) => {
+        if (heading.getBoundingClientRect().top <= line) current = index
+      })
+      toc.forEach((link, index) => {
+        const item = link.closest("li")
+        item?.toggleAttribute("data-active", index === current)
+        item?.toggleAttribute("data-read", index < current)
+        if (index === current) link.setAttribute("aria-current", "location")
+        else link.removeAttribute("aria-current")
+      })
+    }
+  }
+  const onScroll = () => {
+    if (queued) return
+    queued = true
+    window.requestAnimationFrame(update)
+  }
+  window.addEventListener("scroll", onScroll, { passive: true })
+  update()
+}
+
+// Code blocks become terminal windows: a title bar with the language and a copy button
+const setUpCodeBlocks = () => {
+  const copyLabel = document.body.dataset.copyLabel ?? "Copy"
+  const copiedLabel = document.body.dataset.copiedLabel ?? "Copied"
+  document.querySelectorAll<HTMLPreElement>(".prose pre").forEach(block => {
+    if (block.parentElement?.classList.contains("code-block-wrapper")) return
+    const wrapper = document.createElement("div")
+    wrapper.className = "code-block-wrapper code-block not-prose"
+    const bar = document.createElement("div")
+    bar.className = "terminal-bar rounded-t-lg"
+    for (let dot = 0; dot < 3; dot++) {
+      const span = document.createElement("span")
+      span.className = "dot"
+      span.setAttribute("aria-hidden", "true")
+      bar.append(span)
+    }
+    const language = document.createElement("span")
+    language.className = "ml-1.5"
+    language.textContent = block.dataset.language ?? ""
+    const button = document.createElement("button")
+    button.type = "button"
+    button.className =
+      "ml-auto rounded px-2 py-0.5 font-mono text-xs text-code-muted transition hover:bg-white/10 hover:text-code-fg"
+    button.textContent = copyLabel
+    button.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(block.innerText)
+      button.textContent = copiedLabel
+      setTimeout(() => {
+        button.textContent = copyLabel
+      }, 1600)
+    })
+    bar.append(language, button)
+    block.before(wrapper)
+    wrapper.append(bar, block)
+  })
+}
+
+const setUpImageZoom = () => {
+  document.querySelectorAll<HTMLImageElement>(".prose img").forEach(image =>
+    image.addEventListener("click", () => {
+      const dialog = document.createElement("dialog")
+      dialog.className =
+        "m-auto max-h-[95vh] max-w-[95vw] bg-transparent p-0 backdrop:bg-black/80 backdrop:backdrop-blur-sm"
+      // Built with DOM properties, not innerHTML, so alt text can't break out of the attribute
+      const zoomed = document.createElement("img")
+      zoomed.src = image.currentSrc || image.src
+      zoomed.alt = image.alt
+      zoomed.className = "max-h-[90vh] max-w-[90vw] rounded-md"
+      dialog.append(zoomed)
+      dialog.addEventListener("click", () => dialog.close())
+      dialog.addEventListener("close", () => dialog.remove())
+      document.body.append(dialog)
+      dialog.showModal()
+    })
+  )
+}
+
 const ready = () => {
   const mobileToggle = document.querySelector<HTMLButtonElement>("#mobile-menu-toggle")
   const mobileMenu = document.querySelector<HTMLElement>("#mobile-menu")
@@ -35,54 +236,12 @@ const ready = () => {
     window.location.assign(`/${preferred}${path}${anchor.search}${anchor.hash}`)
   })
 
-  const progress = document.querySelector<HTMLElement>("#scroll-progress")
-  const onScroll = () => {
-    if (!progress) return
-    const max = document.documentElement.scrollHeight - window.innerHeight
-    progress.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`
-  }
-  window.addEventListener("scroll", onScroll, { passive: true })
-  onScroll()
-
-  document.querySelectorAll<HTMLPreElement>(".prose pre").forEach(block => {
-    if (block.parentElement?.classList.contains("code-block-wrapper")) return
-    const wrapper = document.createElement("div")
-    wrapper.className = "code-block-wrapper relative"
-    block.before(wrapper)
-    wrapper.append(block)
-    const button = document.createElement("button")
-    button.type = "button"
-    button.className =
-      "absolute right-2 top-2 rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100"
-    button.textContent = "Copy"
-    button.addEventListener("click", async () => {
-      await navigator.clipboard.writeText(block.innerText)
-      button.textContent = "Copied"
-      setTimeout(() => {
-        button.textContent = "Copy"
-      }, 1600)
-    })
-    wrapper.classList.add("group")
-    wrapper.append(button)
-  })
-
-  document.querySelectorAll<HTMLImageElement>(".prose img").forEach(image =>
-    image.addEventListener("click", () => {
-      const dialog = document.createElement("dialog")
-      dialog.className =
-        "m-auto max-h-[95vh] max-w-[95vw] rounded-xl bg-transparent p-0 backdrop:bg-black/80"
-      // Built with DOM properties, not innerHTML, so alt text can't break out of the attribute
-      const zoomed = document.createElement("img")
-      zoomed.src = image.currentSrc || image.src
-      zoomed.alt = image.alt
-      zoomed.className = "max-h-[90vh] max-w-[90vw] rounded-xl"
-      dialog.append(zoomed)
-      dialog.addEventListener("click", () => dialog.close())
-      dialog.addEventListener("close", () => dialog.remove())
-      document.body.append(dialog)
-      dialog.showModal()
-    })
-  )
+  setUpTheme()
+  setUpInView()
+  setUpSearchShortcut()
+  setUpReadingProgress()
+  setUpCodeBlocks()
+  setUpImageZoom()
 }
 
 document.addEventListener("DOMContentLoaded", ready)

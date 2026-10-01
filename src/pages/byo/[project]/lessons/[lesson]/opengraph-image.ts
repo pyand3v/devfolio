@@ -9,4 +9,4 @@ export async function getStaticPaths() {
     }))
   )
 }
-export const GET: APIRoute = ({ props }) => createOgImage(props.title, "BYO lesson", "rose")
+export const GET: APIRoute = ({ props }) => createOgImage(props.title, "BYO lesson")

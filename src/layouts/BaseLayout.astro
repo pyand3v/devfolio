@@ -1,18 +1,21 @@
 ---
-import "@fontsource/gabarito/400.css"
-import "@fontsource/gabarito/500.css"
-import "@fontsource/gabarito/600.css"
-import "@fontsource/gabarito/700.css"
+import "@fontsource/inter/latin-400.css"
+import "@fontsource/inter/latin-500.css"
+import "@fontsource/inter/latin-600.css"
+import "@fontsource/fraunces/latin-500.css"
+import "@fontsource/jetbrains-mono/latin-400.css"
+import "@fontsource/jetbrains-mono/latin-500.css"
+import "@fontsource/caveat/latin-500.css"
 import "@/styles/globals.css"
 import Header from "@/components/Header.astro"
 import Footer from "@/components/Footer.astro"
 import { siteMetadata } from "@/data/site"
-import { getLocaleFromPathname } from "@/lib/i18n"
+import { copy, getLocaleFromPathname, locales, type Locale } from "@/lib/i18n"
 import { rssPath, rssTitle } from "@/lib/rss"
 import Analytics from "@vercel/analytics/astro"
 import SpeedInsights from "@vercel/speed-insights/astro"
 import localeRedirect from "@/scripts/locale-redirect.js?raw"
-import { locales, type Locale } from "@/lib/i18n"
+import themeInit from "@/scripts/theme-init.js?raw"
 import { languageAlternates, logicalPath, trimTrailingSlash } from "@/lib/seo"
 
 interface Props {
@@ -48,6 +51,7 @@ const fullTitle = title ? `${title} | ${siteMetadata.title}` : siteMetadata.titl
 const canonicalPath = trimTrailingSlash(canonical)
 const url = new URL(canonicalPath, siteMetadata.siteUrl).toString()
 const locale = getLocaleFromPathname(Astro.url.pathname)
+const labels = copy[locale].ui
 // Open Graph images are only rendered for the unprefixed routes, which translations share
 const sharedPath = logicalPath(canonicalPath)
 const socialImage =
@@ -63,11 +67,15 @@ const alternates = noIndex
 ---
 
 <!doctype html>
-<html lang={locale} data-theme={siteMetadata.theme}>
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
     <script is:inline set:html={localeRedirect} />
+    <script is:inline set:html={themeInit} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e1a33" media="(prefers-color-scheme: dark)" />
     <meta name="description" content={description} />
     <meta name="keywords" content={siteMetadata.keywords.join(", ")} />
     <meta name="author" content={siteMetadata.author.name} />
@@ -116,7 +124,11 @@ const alternates = noIndex
       />
     )}
   </head>
-  <body class="portfolio-shell flex min-h-screen flex-col overscroll-none font-[Gabarito,Arial,sans-serif] antialiased">
+  <body
+    class="flex min-h-screen flex-col antialiased"
+    data-copy-label={labels.copy}
+    data-copied-label={labels.copied}
+  >
     <Header pathname={Astro.url.pathname} isBlogPost={isBlogPost} />
     <main class="grow">
       <slot />

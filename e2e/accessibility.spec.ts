@@ -34,9 +34,22 @@ const pages = [
 ]
 
 test.describe("axe", () => {
+  // Audit every element in its finished state: with motion, content still fading in (or waiting below the
+  // fold to animate) is measured half transparent
+  test.use({ reducedMotion: "reduce" })
+
   for (const path of pages) {
     test(`${path} has no WCAG A/AA violations`, async ({ page }) => {
       await page.goto(path)
+      await expectNoViolations(page)
+    })
+  }
+
+  for (const path of ["/", "/blog/concurrency-in-java", "/byo/build-your-own-developer-tool"]) {
+    test(`${path} has no violations in the dark theme`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: "dark" })
+      await page.goto(path)
+      await expect(page.locator("html")).toHaveAttribute("data-theme", "dark")
       await expectNoViolations(page)
     })
   }

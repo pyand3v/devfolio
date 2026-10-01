@@ -1,6 +1,7 @@
 ---
 import { copy, getLocaleFromPathname } from "@/lib/i18n"
 
+// The outline as a commit graph: src/scripts/site.ts fills each node in as its section is read
 interface Heading {
   depth: number
   slug: string
@@ -12,24 +13,25 @@ interface Props {
 }
 
 const { headings } = Astro.props
-const visibleHeadings = headings.filter(heading => heading.depth <= 3)
+const visibleHeadings = headings.filter(heading => heading.depth >= 2 && heading.depth <= 3)
 const labels = copy[getLocaleFromPathname(Astro.url.pathname)].a11y
 ---
 
 {visibleHeadings.length > 0 && (
-  <aside
-    data-pagefind-ignore
-    class="mb-10 border-l-2 border-[#88c0d0] pl-5 lg:sticky lg:top-28 lg:mb-0 lg:self-start"
-  >
-    <p class="text-xs font-black tracking-[0.16em] text-[#8fbcbb] uppercase">{labels.onThisPage}</p>
-    <nav class="mt-4" aria-label={labels.toc}>
-      <ol class="space-y-2 text-sm leading-snug">
+  <aside data-pagefind-ignore class="mb-10 lg:sticky lg:top-24 lg:mb-0 lg:self-start">
+    <p class="font-mono text-xs text-muted">
+      <span class="text-accent" aria-hidden="true">
+        ${" "}
+      </span>
+      {labels.onThisPage}
+    </p>
+    <nav class="relative mt-4" aria-label={labels.toc}>
+      <span class="toc-line" aria-hidden="true" />
+      <ol class="grid gap-1">
         {visibleHeadings.map(heading => (
-          <li class:list={[heading.depth === 3 && "ml-3"]}>
-            <a
-              href={`#${heading.slug}`}
-              class="font-mono text-xs text-white/60 transition hover:text-[#88c0d0] focus-visible:text-[#88c0d0] focus-visible:outline-none"
-            >
+          <li class:list={["toc-item", heading.depth === 3 && "toc-item-sub"]}>
+            <span class="toc-node" aria-hidden="true" />
+            <a href={`#${heading.slug}`} data-toc-link class="toc-link">
               {heading.text}
             </a>
           </li>

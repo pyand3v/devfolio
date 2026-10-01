@@ -2,7 +2,7 @@
 import { render } from "astro:content"
 import { Icon } from "astro-icon/components"
 import BaseLayout from "@/layouts/BaseLayout.astro"
-import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
+import ArticleSheet from "@/components/ArticleSheet.astro"
 import ProjectGallery from "@/components/ProjectGallery.astro"
 import TechBadge from "@/components/TechBadge.astro"
 import { homeIntroConfig } from "@/data/portfolio"
@@ -44,86 +44,65 @@ const jsonLd = {
   pageSubtitle={`${homeIntroConfig.name}'s Projects · ${formatDuration(project.startDate, project.endDate)}`}
   jsonLd={jsonLd}
 >
-  <section class="portfolio-dark-grid min-h-screen text-white">
-    <article
-      class="mx-auto max-w-4xl px-5 py-8 lg:px-8 lg:py-12"
-      data-pagefind-body
-      data-pagefind-meta={`section:${copy.en.nav.projects}`}
-    >
-      <a
+  <ArticleSheet
+    backHref="/projects"
+    backLabel={copy.en.detail.backToProjects}
+    path={`projects/${project.slug} · ${formatDuration(project.startDate, project.endDate)}`}
+    title={project.title}
+    description={project.description}
+    headings={headings}
+    pagefindSection={copy.en.nav.projects}
+  >
+    <Fragment slot="meta">
+      <dl
+        class="mt-6 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-muted"
         data-pagefind-ignore
-        href="/projects"
-        class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#8fbcbb] uppercase transition hover:gap-3 hover:text-white"
       >
-        <Icon name="lucide:arrow-left" class="size-4" />
-        {copy.en.detail.backToProjects}
-      </a>
-      <h1 class="display-type mb-3 text-4xl leading-[0.95]">{project.title}</h1>
-      <p class="mb-4 text-lg text-white/65">{project.description}</p>
-      <div class="mb-8 flex flex-wrap items-center gap-3 font-mono text-xs text-[#8fbcbb] uppercase">
-        <span class="inline-flex items-center gap-2 border border-[#8fbcbb]/50 bg-[#8fbcbb]/8 px-3 py-1">
-          <Icon name="lucide:clock" />
-          {formatDuration(project.startDate, project.endDate)}
-        </span>
         {project.teamSize && (
-          <span class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white/75">
-            <Icon name="lucide:users" />
-            {copy.en.detail.teamSize}: {project.teamSize}
-          </span>
+          <div class="inline-flex items-center gap-1.5">
+            <dt class="inline-flex items-center gap-1.5">
+              <Icon name="lucide:users" class="size-3.5 text-accent" />
+              {copy.en.detail.teamSize}:
+            </dt>
+            <dd class="text-ink">{project.teamSize}</dd>
+          </div>
         )}
         {project.role && (
-          <span class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white/75">
-            <Icon name="lucide:briefcase-business" />
-            {copy.en.detail.role}: {project.role}
-          </span>
+          <div class="inline-flex items-center gap-1.5">
+            <dt class="inline-flex items-center gap-1.5">
+              <Icon name="lucide:briefcase-business" class="size-3.5 text-accent" />
+              {copy.en.detail.role}:
+            </dt>
+            <dd class="text-ink">{project.role}</dd>
+          </div>
         )}
-        {project.githubUrl && (
-          <a
-            href={project.githubUrl}
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white transition hover:border-[#88c0d0]"
-          >
-            <Icon name="fa6-brands:github" />
-            {copy.en.detail.github}
-          </a>
-        )}
-        {project.paperUrl && (
-          <a
-            href={project.paperUrl}
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 border border-white/25 px-3 py-1 text-white transition hover:border-[#88c0d0]"
-          >
-            <Icon name="lucide:book-open" />
-            {copy.en.detail.paper}
-          </a>
-        )}
-      </div>
-      <section class="mb-8">
-        <h2 class="mb-3 flex items-center gap-2 font-mono text-xs font-bold tracking-[0.14em] text-[#8fbcbb] uppercase">
-          <Icon name="lucide:layers-3" />
-          {copy.en.detail.techStack}
-        </h2>
-        <div class="flex flex-wrap gap-3">
+      </dl>
+      {(project.githubUrl || project.paperUrl) && (
+        <div class="mt-5 flex flex-wrap gap-3" data-pagefind-ignore>
+          {project.githubUrl && (
+            <a href={project.githubUrl} rel="noopener noreferrer" class="btn-ink">
+              <Icon name="fa6-brands:github" class="size-4" />
+              {copy.en.detail.github}
+            </a>
+          )}
+          {project.paperUrl && (
+            <a href={project.paperUrl} rel="noopener noreferrer" class="btn-line">
+              <Icon name="lucide:book-open" class="size-4" />
+              {copy.en.detail.paper}
+            </a>
+          )}
+        </div>
+      )}
+      <section class="mt-6" data-pagefind-ignore>
+        <h2 class="font-mono text-xs text-accent">{copy.en.detail.techStack}</h2>
+        <div class="mt-2 flex flex-wrap gap-1.5">
           {project.techStack.map(name => (
-            <TechBadge name={name} surface="dark" />
+            <TechBadge name={name} />
           ))}
         </div>
       </section>
       <ProjectGallery images={images} />
-      <div
-        class:list={[
-          "mt-10",
-          headings.length > 0 &&
-            "lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[16rem_minmax(0,1fr)]",
-        ]}
-      >
-        <ContentTableOfContents headings={headings} />
-        <div class="min-w-0">
-          <div class="prose prose-invert max-w-full overflow-hidden">
-            <Content />
-          </div>
-        </div>
-      </div>
-    </article>
-  </section>
+    </Fragment>
+    <Content />
+  </ArticleSheet>
 </BaseLayout>

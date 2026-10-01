@@ -7,4 +7,4 @@ export async function getStaticPaths() {
     props: { title: bundle.project.data.title },
   }))
 }
-export const GET: APIRoute = ({ props }) => createOgImage(props.title, "Build your own", "rose")
+export const GET: APIRoute = ({ props }) => createOgImage(props.title, "Build your own")
