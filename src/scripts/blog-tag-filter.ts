@@ -51,7 +51,7 @@ if (filters.length && posts.length) {
           const chip = document.createElement("button")
           chip.type = "button"
           chip.className =
-            "inline-flex items-center gap-1 border border-[#d7df72]/55 px-2 py-1 text-[0.65rem] font-black tracking-[0.1em] text-[#d7df72] uppercase transition hover:border-[#e17669] hover:text-white"
+            "inline-flex items-center gap-1 rounded border border-accent bg-accent-soft px-2 py-0.5 font-mono text-xs text-accent-ink transition hover:border-annot hover:text-annot"
           chip.textContent = `${tag} \u00d7`
           chip.setAttribute("aria-label", `${selection?.dataset.removeLabel ?? "Remove"} ${tag}`)
           chip.addEventListener("click", () => {

@@ -1,0 +1,62 @@
+---
+import { Icon } from "astro-icon/components"
+import type { WorkItem } from "@/lib/content"
+import { copy, type Locale } from "@/lib/i18n"
+import { calculateDuration, formatDateRange } from "@/lib/utils"
+
+// The career as a commit graph: the line draws down and each role pops in as it scrolls into view
+interface Props {
+  items: WorkItem[]
+  locale: Locale
+  /** Long form shows every role's description; short form keeps the home page compact */
+  detailed?: boolean
+}
+
+const { items, locale, detailed = false } = Astro.props
+const labels = copy[locale].cards
+---
+
+<div class="sheet rounded-md px-5 py-6 sm:px-8 sm:py-8" data-animate>
+  <p class="font-mono text-xs text-muted" aria-hidden="true">
+    <span class="text-accent">$</span> git log --graph work/
+  </p>
+  <div class="graph mt-6">
+    <span class="graph-line" aria-hidden="true">
+      <span></span>
+    </span>
+    <ol class="relative grid gap-9">
+      {items.map((item, index) => (
+        <li class="flex gap-5">
+          <span
+            class="graph-node pop mt-1"
+            style={`--delay: ${0.25 + index * 0.25}s`}
+            data-filled={index === 0 || undefined}
+            aria-hidden="true"
+          />
+          <div class="min-w-0" data-reveal style={`--delay: ${0.3 + index * 0.25}s`}>
+            <p class="font-mono text-xs text-accent">
+              {formatDateRange(item.start, item.end)} · {calculateDuration(item.start, item.end)}
+            </p>
+            <h3 class="display mt-1.5 text-2xl text-ink">
+              <a href={`/work/${item.slug}`} class="hover:underline hover:decoration-wavy">
+                {item.title} <span class="text-muted">{labels.at}</span> {item.company}
+              </a>
+            </h3>
+            {item.locations.length > 0 && (
+              <p class="mt-1 font-mono text-xs text-muted">{item.locations.join(" · ")}</p>
+            )}
+            {(detailed || index === 0) && (
+              <p class="mt-3 max-w-2xl leading-relaxed text-ink-soft">{item.description}</p>
+            )}
+            {detailed && (
+              <a href={`/work/${item.slug}`} class="link-arrow mt-3">
+                {labels.readRole}
+                <Icon name="lucide:arrow-right" class="size-4" />
+              </a>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</div>

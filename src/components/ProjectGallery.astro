@@ -1,4 +1,7 @@
 ---
+import { Icon } from "astro-icon/components"
+import { copy } from "@/lib/i18n"
+
 interface Image {
   src: string
   alt: string
@@ -7,56 +10,63 @@ interface Props {
   images: Image[]
 }
 const { images } = Astro.props
+// Project pages are English-only
+const labels = copy.en.ui
 ---
 
 {images.length > 0 && (
-  <section class="project-gallery my-8" data-gallery>
-    <div class="relative overflow-hidden border border-white/20 bg-black/30">
-      <div class="gallery-track flex transition-transform duration-300">
-        {images.map(image => (
-          <img
-            src={image.src}
-            alt={image.alt}
-            class="h-80 min-w-full object-contain"
-            loading="lazy"
-          />
-        ))}
+  <section class="project-gallery mt-8" data-gallery>
+    <div class="overflow-hidden rounded-md border-[1.5px] border-ink bg-paper">
+      <div class="window-bar">
+        <span class="dot" aria-hidden="true" />
+        <span class="dot" aria-hidden="true" />
+        <span class="ml-1">gallery/</span>
+        <span class="gallery-count ml-auto" aria-hidden="true">
+          1/{images.length}
+        </span>
       </div>
-      {images.length > 1 && (
-        <>
-          <button
-            type="button"
-            class="gallery-prev absolute left-3 top-1/2 -translate-y-1/2 border border-white/30 bg-black/60 p-2 text-white transition hover:border-[#88c0d0] hover:bg-black/80"
-            aria-label="Previous image"
-          >
-            ←
-          </button>
-          <button
-            type="button"
-            class="gallery-next absolute right-3 top-1/2 -translate-y-1/2 border border-white/30 bg-black/60 p-2 text-white transition hover:border-[#88c0d0] hover:bg-black/80"
-            aria-label="Next image"
-          >
-            →
-          </button>
-        </>
-      )}
+      <div class="relative overflow-hidden">
+        <div class="gallery-track flex transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
+          {images.map(image => (
+            <img
+              src={image.src}
+              alt={image.alt}
+              class="h-72 min-w-full object-contain sm:h-96"
+              loading="lazy"
+            />
+          ))}
+        </div>
+        {images.length > 1 && (
+          <>
+            <button
+              type="button"
+              class="gallery-prev absolute top-1/2 left-3 grid size-9 -translate-y-1/2 place-items-center rounded-md border border-line bg-sheet text-ink transition hover:border-accent hover:text-accent"
+              aria-label={labels.previousImage}
+            >
+              <Icon name="lucide:arrow-left" class="size-4" />
+            </button>
+            <button
+              type="button"
+              class="gallery-next absolute top-1/2 right-3 grid size-9 -translate-y-1/2 place-items-center rounded-md border border-line bg-sheet text-ink transition hover:border-accent hover:text-accent"
+              aria-label={labels.nextImage}
+            >
+              <Icon name="lucide:arrow-right" class="size-4" />
+            </button>
+          </>
+        )}
+      </div>
     </div>
     {images.length > 1 && (
       <div class="mt-3 flex justify-center">
         {images.map((_, index) => (
           <button
             type="button"
-            class="gallery-dot grid size-6 place-items-center"
+            class="gallery-dot group grid size-7 place-items-center"
             data-index={index}
-            aria-label={`Show image ${index + 1}`}
+            aria-label={`${labels.showImage} ${index + 1}`}
             aria-current={index === 0 ? "true" : undefined}
           >
-            <span
-              class:list={[
-                "size-2.5 border border-white/40",
-                index === 0 ? "bg-[#88c0d0]" : "bg-white/25",
-              ]}
-            />
+            <span class="size-2.5 rounded-full border-2 border-accent transition group-aria-[current=true]:bg-accent" />
           </button>
         ))}
       </div>
@@ -66,14 +76,14 @@ const { images } = Astro.props
 <script>
   document.querySelectorAll<HTMLElement>("[data-gallery]").forEach(gallery => {
     const track = gallery.querySelector<HTMLElement>(".gallery-track")
+    const count = gallery.querySelector<HTMLElement>(".gallery-count")
     const dots = [...gallery.querySelectorAll<HTMLButtonElement>(".gallery-dot")]
     let active = 0
     const show = (index: number) => {
       active = (index + dots.length) % dots.length
       if (track) track.style.transform = `translateX(-${active * 100}%)`
+      if (count) count.textContent = `${active + 1}/${dots.length}`
       dots.forEach((dot, i) => {
-        dot.firstElementChild?.classList.toggle("bg-[#88c0d0]", i === active)
-        dot.firstElementChild?.classList.toggle("bg-white/25", i !== active)
         if (i === active) dot.setAttribute("aria-current", "true")
         else dot.removeAttribute("aria-current")
       })

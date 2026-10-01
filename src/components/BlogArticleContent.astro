@@ -1,11 +1,10 @@
 ---
 import { render } from "astro:content"
-import { Icon } from "astro-icon/components"
+import ArticleSheet from "@/components/ArticleSheet.astro"
 import BlogCard from "@/components/BlogCard.astro"
-import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
 import { getAllBlogPosts, type BlogPost } from "@/lib/content"
 import { copy, getLocalizedPath, type Locale } from "@/lib/i18n"
-import { formatBlogDateTime, getRelatedPosts } from "@/lib/utils"
+import { formatBlogDate, getRelatedPosts } from "@/lib/utils"
 
 interface Props {
   post: BlogPost
@@ -19,97 +18,72 @@ const labels = copy[locale].article
 // getAllBlogPosts falls back to the English post when there is no translation for the locale
 const untranslated = post.locale !== locale
 const contentLang = untranslated ? post.locale : undefined
+const updated = post.updatedAt !== post.publishedAt
+const path = [
+  `blog/${post.slug}`,
+  formatBlogDate(post.publishedAt, "short", locale).toLowerCase(),
+  updated && `↻ ${formatBlogDate(post.updatedAt, "short", locale).toLowerCase()}`,
+  `${post.readingTime} ${labels.minRead}`,
+]
+  .filter(Boolean)
+  .join(" · ")
+const tilts = ["-0.8deg", "0.6deg", "-0.4deg"]
 ---
 
-<section class="portfolio-dark-grid min-h-screen text-white">
-  <article
-    class="mx-auto max-w-7xl px-5 py-8 lg:px-8 lg:py-12"
-    data-pagefind-body={post.locale === locale || undefined}
-    data-pagefind-meta={`section:${copy[locale].nav.blog}`}
-  >
-    <a
-      data-pagefind-ignore
-      href={getLocalizedPath("/blog", locale)}
-      class="mb-8 inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.12em] text-[#8fbcbb] uppercase transition hover:gap-3 hover:text-white"
-    >
-      <Icon name="lucide:arrow-left" class="size-4" />
-      {labels.back}
-    </a>
-    <h1 class="display-type mb-5 text-4xl leading-[0.95] text-white sm:text-5xl" lang={contentLang}>
-      {post.title}
-    </h1>
-    <div
-      data-pagefind-ignore
-      class="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs text-[#8fbcbb] uppercase"
-    >
-      <span class="inline-flex items-center gap-1.5">
-        <Icon name="lucide:calendar-days" class="size-4" />
-        {formatBlogDateTime(post.publishedAt, locale)}
-      </span>
-      <span class="inline-flex items-center gap-1.5">
-        <Icon name="lucide:clock-3" class="size-4" />
-        {formatBlogDateTime(post.updatedAt, locale)}
-      </span>
-      <span class="inline-flex items-center gap-1.5">
-        <Icon name="lucide:book-open" class="size-4" />
-        {post.readingTime} {labels.minRead}
-      </span>
-    </div>
+<ArticleSheet
+  backHref={getLocalizedPath("/blog", locale)}
+  backLabel={labels.back}
+  path={path}
+  title={post.title}
+  description={post.summary}
+  headings={headings}
+  contentLang={contentLang}
+  pagefind={!untranslated}
+  pagefindSection={copy[locale].nav.blog}
+>
+  <Fragment slot="meta">
     {post.tags && (
-      <div class="mb-8 flex flex-wrap gap-2" data-pagefind-ignore>
+      <ul class="mt-5 flex flex-wrap gap-x-4 gap-y-1" aria-label={labels.tags} data-pagefind-ignore>
         {post.tags.map(tag => (
-          <a
-            href={getLocalizedPath(`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`, locale)}
-            class="border border-[#8fbcbb]/50 bg-[#8fbcbb]/8 px-2.5 py-1 font-mono text-xs font-bold text-[#8fbcbb] uppercase transition hover:border-[#88c0d0] hover:bg-[#88c0d0] hover:text-[#2e3440]"
-          >
-            <Icon name="lucide:tag" class="mr-1 inline size-3.5" />
-            {tag}
-          </a>
+          <li>
+            <a
+              href={getLocalizedPath(`/blog/tag/${encodeURIComponent(tag.toLowerCase())}`, locale)}
+              class="flag text-sm"
+            >
+              {tag.toLowerCase().replaceAll(" ", "-")}
+            </a>
+          </li>
         ))}
-      </div>
+      </ul>
     )}
     {untranslated && (
-      <p
-        class="border-l-4 border-[#ebcb8b] bg-[#ebcb8b]/10 px-4 py-3 text-sm leading-relaxed text-white/85"
-        role="note"
-      >
+      <p class="note tape mt-8 rounded-sm px-5 py-4 text-sm leading-relaxed" role="note">
         {copy[locale].untranslated.notice}{" "}
         <a
           href={`/blog/${post.slug}`}
           data-locale-option="en"
           hreflang="en"
-          class="font-bold text-[#88c0d0] underline decoration-[#88c0d0]/45 underline-offset-2 hover:text-white"
+          class="font-semibold underline underline-offset-2"
         >
           {copy[locale].untranslated.link}
         </a>
       </p>
     )}
-    <div
-      class:list={[
-        "mt-10",
-        headings.length > 0 &&
-          "lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[16rem_minmax(0,1fr)]",
-      ]}
-    >
-      <ContentTableOfContents headings={headings} />
-      <div class="min-w-0">
-        <div
-          lang={contentLang}
-          class="prose prose-invert max-w-full overflow-hidden prose-headings:font-[Gabarito,Arial,sans-serif] prose-headings:text-white prose-p:text-white/78 prose-strong:text-white prose-a:text-[#88c0d0] prose-a:decoration-[#88c0d0]/45 hover:prose-a:text-white"
-        >
-          <Content />
-        </div>
-        {related.length > 0 && (
-          <section class="mt-12" data-pagefind-ignore>
-            <h2 class="mb-4 text-2xl font-bold text-white">{labels.related}</h2>
-            <div class="grid gap-6">
-              {related.map(entry => (
-                <BlogCard post={entry} locale={locale} surface="contrast" />
-              ))}
+  </Fragment>
+  <Content />
+  <Fragment slot="after">
+    {related.length > 0 && (
+      <section class="mt-20" data-pagefind-ignore>
+        <p class="eyebrow">$ ls ../related</p>
+        <h2 class="display mt-3 text-3xl text-ink">{labels.related}</h2>
+        <div class="mt-8 grid gap-8 md:grid-cols-3">
+          {related.map((entry, index) => (
+            <div data-reveal style={`--delay: ${index * 0.1}s`}>
+              <BlogCard post={entry} locale={locale} tilt={tilts[index % 3]} />
             </div>
-          </section>
-        )}
-      </div>
-    </div>
-  </article>
-</section>
+          ))}
+        </div>
+      </section>
+    )}
+  </Fragment>
+</ArticleSheet>

@@ -10,23 +10,16 @@ const { src, alt = "", title, width, height } = Astro.props
 ---
 
 {src && (
-  <figure class="my-6 overflow-hidden rounded-xl border border-gray-200 bg-gray-50 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-    <button
-      type="button"
-      class="mdx-image-trigger block w-full cursor-zoom-in"
-      data-src={src}
-      data-alt={alt}
-    >
-      <img
-        src={src}
-        alt={alt}
-        title={title}
-        width={width}
-        height={height}
-        loading="lazy"
-        class="max-h-[36rem] w-full object-contain transition duration-300 hover:scale-[1.01]"
-      />
-    </button>
-    {title && <figcaption class="px-4 py-2 text-center text-sm text-gray-500">{title}</figcaption>}
+  <figure class="not-prose my-8">
+    <img
+      src={src}
+      alt={alt}
+      title={title}
+      width={width}
+      height={height}
+      loading="lazy"
+      class="max-h-[36rem] w-full rounded-md border-[1.5px] border-ink bg-paper object-contain shadow-[4px_4px_0_var(--grid-strong)]"
+    />
+    {title && <figcaption class="hand mt-3 text-center text-xl text-annot">{title}</figcaption>}
   </figure>
 )}

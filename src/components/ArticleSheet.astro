@@ -1,0 +1,80 @@
+---
+import { Icon } from "astro-icon/components"
+import ContentTableOfContents from "@/components/ContentTableOfContents.astro"
+
+// Long-form pages: a clean sheet laid on the grid, with the outline graph beside it
+interface Props {
+  backHref: string
+  backLabel: string
+  /** The monospace line above the title, e.g. "blog/concurrency-in-java · 2 min" */
+  path: string
+  title: string
+  description?: string
+  headings: { depth: number; slug: string; text: string }[]
+  /** Set when the text shown is in another language than the page */
+  contentLang?: string
+  pagefind?: boolean
+  pagefindSection?: string
+}
+
+const {
+  backHref,
+  backLabel,
+  path,
+  title,
+  description,
+  headings,
+  contentLang,
+  pagefind = true,
+  pagefindSection,
+} = Astro.props
+// The underline goes under the title's last two words, like a note to self
+const words = title.split(" ")
+const lead = words.slice(0, -2).join(" ")
+const tail = words.slice(-2).join(" ")
+const hasOutline = headings.some(heading => heading.depth >= 2 && heading.depth <= 3)
+---
+
+<div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:py-14">
+  <a data-pagefind-ignore href={backHref} class="link-arrow">
+    <Icon name="lucide:arrow-left" class="size-4" />
+    {backLabel}
+  </a>
+  <div class:list={["mt-8", hasOutline && "lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-10"]}>
+    {hasOutline && (
+      <div class="lg:pt-60">
+        <ContentTableOfContents headings={headings} />
+      </div>
+    )}
+    <article
+      class:list={[
+        "sheet min-w-0 rounded-md px-5 py-8 sm:px-10 sm:py-10",
+        !hasOutline && "mx-auto max-w-3xl",
+      ]}
+      data-pagefind-body={pagefind || undefined}
+      data-pagefind-meta={pagefindSection ? `section:${pagefindSection}` : undefined}
+    >
+      <header data-pagefind-ignore="all">
+        <p class="font-mono text-xs text-accent">{path}</p>
+      </header>
+      <h1 class="display mt-4 text-4xl text-ink sm:text-5xl" lang={contentLang}>
+        {lead && `${lead} `}
+        <span class="underline-scribble">{tail}</span>
+      </h1>
+      {description && (
+        <p class="mt-5 text-lg leading-relaxed text-muted" lang={contentLang}>
+          {description}
+        </p>
+      )}
+      <slot name="meta" />
+      <div
+        class="prose mt-10 max-w-none sm:prose-lg prose-headings:scroll-mt-24"
+        lang={contentLang}
+      >
+        <slot />
+      </div>
+      <slot name="footer" />
+    </article>
+  </div>
+  <slot name="after" />
+</div>

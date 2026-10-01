@@ -1,5 +1,5 @@
 ---
-import { Icon } from "astro-icon/components"
+import TitleLines from "@/components/TitleLines.astro"
 import { copy, type Locale } from "@/lib/i18n"
 
 interface Props {
@@ -8,53 +8,48 @@ interface Props {
 
 const { locale } = Astro.props
 const labels = copy[locale].search
-const titleLines = labels.title.split("\n")
 ---
 
-<section class="portfolio-dark-grid min-h-screen text-white">
-  <div class="mx-auto max-w-4xl px-5 py-20 lg:px-10 lg:py-28">
-    <header class="border-b border-[#88c0d0] pb-10">
-      <p class="text-xs font-black tracking-[0.22em] text-[#8fbcbb] uppercase">{labels.eyebrow}</p>
-      <h1 class="display-type mt-7 text-6xl leading-[0.82] sm:text-7xl">
-        {titleLines.map((line, index) => (
-          <>
-            {line}
-            {index < titleLines.length - 1 && <br />}
-          </>
-        ))}
-      </h1>
-      <p class="mt-6 max-w-xl text-lg leading-relaxed text-white/75">{labels.description}</p>
-    </header>
-    <form
-      class="search-form mt-10"
-      role="search"
-      data-loading={labels.loading}
-      data-result={labels.result}
-      data-results={labels.results}
-      data-empty={labels.empty}
-      data-unavailable={labels.unavailable}
-    >
-      <label for="search-input" class="sr-only">
-        {labels.label}
-      </label>
-      <div class="relative">
-        <Icon
-          name="lucide:search"
-          class="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-white/55"
-        />
-        <input
-          id="search-input"
-          name="q"
-          type="search"
-          autocomplete="off"
-          placeholder={labels.placeholder}
-          class="w-full border border-white/25 bg-black/20 py-4 pr-4 pl-12 text-lg text-white outline-none placeholder:text-white/55 focus:border-[#88c0d0] focus:ring-1 focus:ring-[#88c0d0]"
-        />
-      </div>
-    </form>
-    <p class="search-status mt-6 min-h-5 text-sm font-bold text-white/70" aria-live="polite"></p>
-    <ol class="search-results mt-6 grid gap-4"></ol>
-  </div>
+<section class="mx-auto max-w-3xl px-4 pt-14 pb-10 sm:px-6 lg:pt-20">
+  <p class="eyebrow">{labels.eyebrow}</p>
+  <h1 class="display mt-4 text-5xl text-ink sm:text-6xl">
+    <TitleLines text={labels.title} underline />
+  </h1>
+  <p class="mt-5 text-lg leading-relaxed text-muted">{labels.description}</p>
+  <form
+    class="search-form mt-10 overflow-hidden rounded-md border-[1.5px] border-ink bg-sheet transition-shadow focus-within:shadow-[5px_5px_0_var(--accent)]"
+    role="search"
+    data-loading={labels.loading}
+    data-result={labels.result}
+    data-results={labels.results}
+    data-empty={labels.empty}
+    data-unavailable={labels.unavailable}
+  >
+    <div class="window-bar" aria-hidden="true">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="ml-1">grep -ri</span>
+      <kbd class="ml-auto font-mono">Ctrl K</kbd>
+    </div>
+    <label for="search-input" class="sr-only">
+      {labels.label}
+    </label>
+    <div class="flex items-center gap-3 px-4">
+      <span class="font-mono text-lg text-accent" aria-hidden="true">
+        &gt;
+      </span>
+      <input
+        id="search-input"
+        name="q"
+        type="search"
+        autocomplete="off"
+        placeholder={labels.placeholder}
+        class="w-full bg-transparent py-4 font-mono text-base text-ink outline-none placeholder:text-muted"
+      />
+    </div>
+  </form>
+  <p class="search-status mt-6 min-h-5 font-mono text-sm text-muted" aria-live="polite"></p>
+  <ol class="search-results mt-6 grid gap-5"></ol>
 </section>
 <script>
   import "@/scripts/search"

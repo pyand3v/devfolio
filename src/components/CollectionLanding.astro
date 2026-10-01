@@ -1,8 +1,9 @@
 ---
-import BlogCard from "@/components/BlogCard.astro"
 import { Icon } from "astro-icon/components"
+import BlogCard from "@/components/BlogCard.astro"
 import ProjectCard from "@/components/ProjectCard.astro"
-import WorkCard from "@/components/WorkCard.astro"
+import SectionHeader from "@/components/SectionHeader.astro"
+import WorkLog from "@/components/WorkLog.astro"
 import { groupBlogTags } from "@/data/blog-tags"
 import type { Locale } from "@/lib/i18n"
 import { copy } from "@/lib/i18n"
@@ -15,12 +16,12 @@ interface Props {
 
 const { locale, kind } = Astro.props
 const labels = copy[locale][kind]
+const filter = copy[locale].blogFilter
 const [work, projects, posts] = await Promise.all([
   getAllWorkItems(),
   getAllProjects(),
   getAllBlogPosts(locale),
 ])
-const titleLines = labels.title.split("\n")
 const blogTags = [...new Map(posts.flatMap(post => post.tags ?? []).map(tag => [tag, 0]))]
   .map(([tag]) => ({
     tag,
@@ -28,209 +29,143 @@ const blogTags = [...new Map(posts.flatMap(post => post.tags ?? []).map(tag => [
   }))
   .sort((a, b) => a.tag.localeCompare(b.tag))
 const groupedBlogTags = groupBlogTags(blogTags, locale)
-const surfaceClass =
-  kind === "projects"
-    ? "portfolio-projects-grid"
-    : kind === "blog"
-      ? "portfolio-desk-grid"
-      : "portfolio-dark-grid"
-const blogFilterCopy = {
-  en: {
-    label: "Filter by topic",
-    all: "All articles",
-    clear: "Clear all",
-    selectedOne: "topic selected",
-    selected: "topics selected",
-    selectedTopics: "Selected topics",
-    search: "Search topics...",
-    noMatches: "No topics found.",
-    remove: "Remove",
-    result: "article shown",
-    results: "articles shown",
-    empty: "No articles found for this topic.",
-  },
-  es: {
-    label: "Filtrar por tema",
-    all: "Todos los art\u00edculos",
-    clear: "Limpiar todo",
-    selectedOne: "tema seleccionado",
-    selected: "temas seleccionados",
-    selectedTopics: "Temas seleccionados",
-    search: "Buscar temas...",
-    noMatches: "No se encontraron temas.",
-    remove: "Quitar",
-    result: "art\u00edculo mostrado",
-    results: "art\u00edculos mostrados",
-    empty: "No se encontraron art\u00edculos sobre este tema.",
-  },
-  "pt-br": {
-    label: "Filtrar por tema",
-    all: "Todos os artigos",
-    clear: "Limpar tudo",
-    selectedOne: "tema selecionado",
-    selected: "temas selecionados",
-    selectedTopics: "Temas selecionados",
-    search: "Buscar temas...",
-    noMatches: "Nenhum tema encontrado.",
-    remove: "Remover",
-    result: "artigo exibido",
-    results: "artigos exibidos",
-    empty: "Nenhum artigo encontrado para este tema.",
-  },
-}[locale]
+const tilts = ["-0.6deg", "0.5deg", "0.3deg", "-0.4deg"]
 ---
 
-<section class:list={[surfaceClass, "min-h-screen text-white"]}>
-  <div class="mx-auto max-w-[90rem] px-5 py-20 lg:px-10 lg:py-28">
-    <header class="grid gap-10 border-b border-[#88c0d0] pb-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16 lg:pb-14">
-      <div>
-        <p class="text-xs font-black tracking-[0.22em] text-[#8fbcbb] uppercase">
-          {labels.eyebrow}
-        </p>
-        <h1 class="display-type mt-7 text-6xl leading-[0.82] sm:text-7xl lg:text-8xl">
-          {titleLines.map((line, index) => (
-            <>
-              {line}
-              {index < titleLines.length - 1 && <br />}
-            </>
-          ))}
-        </h1>
-      </div>
-      <p class="max-w-xl text-lg leading-relaxed text-white/75">{labels.description}</p>
-    </header>
-    {kind === "work" && (
-      <div class="mt-14 grid gap-6">
-        {work.map(item => (
-          <WorkCard item={item} locale={locale} />
-        ))}
-      </div>
-    )}
-    {kind === "projects" && (
-      <div class="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2">
-        {projects.map((project, index) => (
-          <ProjectCard project={project} eager={index === 0} locale={locale} surface="dark" />
-        ))}
-      </div>
-    )}
-    {kind === "blog" && (
-      <>
-        <section
-          class="blog-tag-filter mt-12 border-y border-white/15 py-5"
-          aria-label={blogFilterCopy.label}
-        >
-          <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div class="flex items-baseline gap-3">
-              <p class="text-xs font-black tracking-[0.18em] text-[#8fbcbb] uppercase">
-                {blogFilterCopy.label}
-              </p>
-              <p class="blog-filter-count text-xs font-bold text-white/65" aria-live="polite" />
-            </div>
-            <details class="blog-filter-menu group relative w-full sm:w-auto">
-              <summary class="flex cursor-pointer list-none items-center justify-between gap-3 border border-white/25 bg-white/[0.04] px-4 py-2.5 font-mono text-xs font-bold tracking-[0.13em] text-white uppercase transition hover:border-[#88c0d0] hover:text-[#88c0d0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#88c0d0] sm:min-w-60">
-                <span class="flex items-center gap-2">
-                  <Icon name="lucide:tags" class="size-4 text-[#88c0d0]" />
-                  <span
-                    class="blog-filter-summary"
-                    data-all-label={blogFilterCopy.all}
-                    data-selected-one-label={blogFilterCopy.selectedOne}
-                    data-selected-label={blogFilterCopy.selected}
-                  >
-                    {blogFilterCopy.all}
-                  </span>
-                </span>
-                <Icon
-                  name="lucide:chevron-down"
-                  class="size-4 text-white/55 transition group-open:rotate-180"
-                />
-              </summary>
-              <div class="absolute right-0 z-20 mt-2 w-[min(34rem,calc(100vw-2.5rem))] border border-white/20 bg-[#2e3440] p-3 shadow-2xl shadow-black/40">
-                <label class="relative block">
-                  <Icon
-                    name="lucide:search"
-                    class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-white/35"
-                  />
-                  <input
-                    type="search"
-                    class="blog-filter-search w-full border border-white/15 bg-black/20 py-2.5 pr-3 pl-9 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#88c0d0] focus:ring-1 focus:ring-[#88c0d0]"
-                    placeholder={blogFilterCopy.search}
-                    aria-label={blogFilterCopy.search}
-                  />
-                </label>
-                <div
-                  class="blog-filter-selection mt-3 hidden border-y border-white/10 py-2"
-                  data-label={blogFilterCopy.selectedTopics}
-                  data-remove-label={blogFilterCopy.remove}
-                >
-                  <div class="flex items-start gap-3">
-                    <p class="mt-1 text-[0.65rem] font-black tracking-[0.13em] text-white/65 uppercase">
-                      {blogFilterCopy.selectedTopics}
-                    </p>
-                    <div class="blog-filter-selected flex flex-wrap gap-1.5" />
-                  </div>
-                </div>
-                <div class="blog-filter-options mt-3 max-h-[24rem] space-y-4 overflow-y-auto pr-1 custom-scrollbar">
-                  {groupedBlogTags.map(group => (
-                    <section class="blog-filter-group" data-tag-group>
-                      <p class="mb-1.5 px-2 text-[0.65rem] font-black tracking-[0.15em] text-[#8fbcbb]/80 uppercase">
-                        {group.label}
-                      </p>
-                      <div class="grid grid-cols-2 gap-1 md:grid-cols-3">
-                        {group.tags.map(({ tag, count }) => (
-                          <label class="blog-filter-option flex min-w-0 cursor-pointer items-center justify-between gap-2 px-2 py-1.5 text-sm text-white/65 transition hover:bg-white/[0.07] hover:text-white">
-                            <span class="flex min-w-0 items-center gap-2">
-                              <input
-                                type="checkbox"
-                                value={tag}
-                                class="blog-filter-input peer sr-only"
-                              />
-                              <span class="flex size-4 shrink-0 items-center justify-center border border-white/25 bg-black/20 transition peer-checked:border-[#88c0d0] peer-checked:bg-[#88c0d0] peer-checked:[&>svg]:opacity-100">
-                                <Icon
-                                  name="lucide:check"
-                                  class="size-3 text-white opacity-0 transition peer-checked:opacity-100"
-                                />
-                              </span>
-                              <span class="truncate">{tag}</span>
-                            </span>
-                            <span class="text-xs font-bold text-white/25">{count}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </section>
-                  ))}
-                  <p class="blog-filter-no-matches hidden px-2 py-6 text-center text-sm text-white/65">
-                    {blogFilterCopy.noMatches}
-                  </p>
-                </div>
-                <div class="mt-3 flex border-t border-white/15 pt-3">
-                  <button
-                    type="button"
-                    class="blog-filter-clear border border-white/30 bg-white/[0.07] px-3 py-2 text-[0.65rem] font-black tracking-[0.13em] text-white/80 uppercase transition hover:border-[#88c0d0] hover:bg-white/[0.12] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#88c0d0]"
-                  >
-                    {blogFilterCopy.clear}
-                  </button>
-                </div>
-              </div>
-            </details>
-          </div>
-        </section>
-        <div
-          class="blog-post-grid mt-7 grid gap-5 lg:grid-cols-2"
-          data-result-label={blogFilterCopy.result}
-          data-results-label={blogFilterCopy.results}
-        >
-          {posts.map(post => (
-            <div class="blog-post-item h-full" data-tags={(post.tags ?? []).join("|")}>
-              <BlogCard post={post} locale={locale} />
-            </div>
-          ))}
+<section class="mx-auto max-w-6xl px-4 pt-14 pb-10 sm:px-6 lg:pt-20">
+  <SectionHeader
+    level="h1"
+    eyebrow={labels.eyebrow}
+    title={labels.title}
+    description={labels.description}
+  />
+
+  {kind === "work" && (
+    <div class="mt-12">
+      <WorkLog items={work} locale={locale} detailed />
+    </div>
+  )}
+
+  {kind === "projects" && (
+    <div class="mt-12 grid gap-8 md:grid-cols-2">
+      {projects.map((project, index) => (
+        <div data-reveal style={`--delay: ${(index % 2) * 0.12}s`}>
+          <ProjectCard project={project} eager={index < 2} locale={locale} />
         </div>
-        <p class="blog-filter-empty mt-12 hidden text-center text-lg font-semibold text-white/65">
-          {blogFilterCopy.empty}
-        </p>
-        <script>
-          import "@/scripts/blog-tag-filter"
-        </script>
-      </>
-    )}
-  </div>
+      ))}
+    </div>
+  )}
+
+  {kind === "blog" && (
+    <>
+      <section
+        class="blog-tag-filter mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        aria-label={filter.label}
+      >
+        <div class="flex items-baseline gap-3 font-mono text-xs">
+          <p class="text-accent">
+            <span aria-hidden="true">$ grep --tag · </span>
+            {filter.label}
+          </p>
+          <p class="blog-filter-count text-muted" aria-live="polite" />
+        </div>
+        <details class="blog-filter-menu group relative w-full sm:w-auto">
+          <summary class="flex h-10 cursor-pointer list-none items-center justify-between gap-3 rounded-md border border-line bg-sheet px-3.5 font-mono text-xs text-ink transition hover:border-accent sm:min-w-64 [&::-webkit-details-marker]:hidden">
+            <span class="flex items-center gap-2">
+              <Icon name="lucide:tags" class="size-4 text-accent" />
+              <span
+                class="blog-filter-summary"
+                data-all-label={filter.all}
+                data-selected-one-label={filter.selectedOne}
+                data-selected-label={filter.selected}
+              >
+                {filter.all}
+              </span>
+            </span>
+            <Icon
+              name="lucide:chevron-down"
+              class="size-4 text-muted transition group-open:rotate-180"
+            />
+          </summary>
+          <div class="sheet absolute right-0 z-20 mt-2 w-[min(34rem,calc(100vw-2rem))] rounded-md p-3">
+            <label class="relative block">
+              <Icon
+                name="lucide:search"
+                class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted"
+              />
+              <input
+                type="search"
+                class="blog-filter-search w-full rounded-md border border-line bg-paper py-2.5 pr-3 pl-9 font-mono text-sm text-ink outline-none placeholder:text-muted focus:border-accent"
+                placeholder={filter.search}
+                aria-label={filter.search}
+              />
+            </label>
+            <div
+              class="blog-filter-selection mt-3 hidden border-y border-dashed border-line py-2"
+              data-label={filter.selectedTopics}
+              data-remove-label={filter.remove}
+            >
+              <div class="flex items-start gap-3">
+                <p class="mt-1 font-mono text-xs text-muted">{filter.selectedTopics}</p>
+                <div class="blog-filter-selected flex flex-wrap gap-1.5" />
+              </div>
+            </div>
+            <div class="blog-filter-options mt-3 max-h-[24rem] space-y-4 overflow-y-auto pr-1">
+              {groupedBlogTags.map(group => (
+                <section class="blog-filter-group" data-tag-group>
+                  <p class="mb-1.5 px-2 font-mono text-xs text-accent">{group.label}</p>
+                  <div class="grid grid-cols-2 gap-1 md:grid-cols-3">
+                    {group.tags.map(({ tag, count }) => (
+                      <label class="blog-filter-option flex min-w-0 cursor-pointer items-center justify-between gap-2 rounded px-2 py-1.5 text-sm text-ink-soft transition hover:bg-accent-soft hover:text-ink">
+                        <span class="flex min-w-0 items-center gap-2">
+                          <input
+                            type="checkbox"
+                            value={tag}
+                            class="blog-filter-input peer sr-only"
+                          />
+                          <span class="flex size-4 shrink-0 items-center justify-center rounded-sm border border-line bg-paper transition peer-checked:border-accent peer-checked:bg-accent peer-checked:[&>svg]:opacity-100 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent">
+                            <Icon
+                              name="lucide:check"
+                              class="size-3 text-on-ink opacity-0 transition"
+                            />
+                          </span>
+                          <span class="truncate">{tag}</span>
+                        </span>
+                        <span class="font-mono text-xs text-muted">{count}</span>
+                      </label>
+                    ))}
+                  </div>
+                </section>
+              ))}
+              <p class="blog-filter-no-matches hidden px-2 py-6 text-center text-sm text-muted">
+                {filter.noMatches}
+              </p>
+            </div>
+            <div class="mt-3 flex border-t border-dashed border-line pt-3">
+              <button type="button" class="blog-filter-clear btn-line py-1.5 text-xs">
+                {filter.clear}
+              </button>
+            </div>
+          </div>
+        </details>
+      </section>
+      <div
+        class="blog-post-grid mt-8 grid gap-8 md:grid-cols-2"
+        data-result-label={filter.result}
+        data-results-label={filter.results}
+      >
+        {posts.map((post, index) => (
+          <div class="blog-post-item h-full" data-tags={(post.tags ?? []).join("|")}>
+            <BlogCard post={post} locale={locale} tilt={tilts[index % tilts.length]} />
+          </div>
+        ))}
+      </div>
+      <p class="blog-filter-empty hand mt-12 hidden text-center text-2xl text-annot">
+        {filter.empty}
+      </p>
+      <script>
+        import "@/scripts/blog-tag-filter"
+      </script>
+    </>
+  )}
 </section>
