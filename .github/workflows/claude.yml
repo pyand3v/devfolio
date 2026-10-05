@@ -53,7 +53,7 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Run Claude Code
-        uses: anthropics/claude-code-action@fd1c128679612beff4ca259c78021c506e8aa7a7 # anthropics/claude-code-action@v1.0.237
+        uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # anthropics/claude-code-action@v1.0.240
         with:
           # Set whichever secret you use: a Claude subscription token (`claude setup-token`)
           # or an Anthropic API key.
