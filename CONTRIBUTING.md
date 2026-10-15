@@ -48,8 +48,8 @@ To get started, follow the steps below.
    `feat(blog): add tag filter` or `fix(i18n): translate 404 page` (the **PR Title** check enforces it), and
    describe your changes in detail in the description (fill in the PR template).
 9. Wait for feedback and make any requested changes. Every PR runs the checks above, gets a Vercel preview
-   deployment, and (unless it only touches content or docs) gets an automated review from Claude. Maintainers can also comment `@claude` on a PR or
-   issue to ask Claude a question or have it push a fix.
+   deployment. Maintainers can also comment `@claude` on a PR or issue to ask Claude a question or have it
+   push a fix.
 
 ### Development Environment Setup
 
