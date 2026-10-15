@@ -134,7 +134,6 @@ The `@/` import alias maps to `src/`.
 - Fill in `.github/pull_request_template.md`: summary, type of change, and checklist. Screenshots aren't
   required; check UI changes on the PR's Vercel preview instead.
 - CI on every PR (`.github/workflows/`): the PR title format, Prettier, ESLint, `astro check`, Vitest with a coverage comment, a
-  production build with an internal link check, Lighthouse budgets, Playwright e2e and axe accessibility checks, and a Vercel preview deployment. All checks must pass before merging. Commenting `@claude` on an
-  issue or PR asks Claude to respond or push a fix.
+  production build with an internal link check, Lighthouse budgets, Playwright e2e and axe accessibility checks, and a Vercel preview deployment. All checks must pass before merging.
 - There are no versioned releases or tags: every promotion merged into `main` deploys to production on
   Vercel, and the commit history is the changelog. Don't bump the version in `package.json`.
